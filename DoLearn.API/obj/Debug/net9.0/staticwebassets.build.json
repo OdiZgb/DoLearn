@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "Pz8MFWtm8G9vEPHN3EiUjzuC+kzXOjZKiUX5KxQOOsE=",
+  "Source": "DoLearn.API",
+  "BasePath": "_content/DoLearn.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
