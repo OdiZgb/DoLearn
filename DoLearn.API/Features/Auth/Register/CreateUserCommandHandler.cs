@@ -2,6 +2,7 @@ using MediatR;
 using DoLearn.API.Models;
 using DoLearn.API.Data;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace DoLearn.API.Features.Auth.Register
 {
@@ -19,25 +20,30 @@ namespace DoLearn.API.Features.Auth.Register
             CreateUserCommand request,
             CancellationToken cancellationToken)
         {
-            var user = new User
-            {
-                Username = request.Username,
-                Email = request.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password), // Changed to Password
-                Birthdate = request.Birthdate,
-                EmailVerificationToken = GenerateToken()
-            };
+         var emailExists = await _context.Users
+            .AnyAsync(u => u.Email == request.Email, cancellationToken);
 
+    if (emailExists)
+        throw new DuplicateEmailException("Email already registered");
+        var user = new User
+        {
+            Username = request.Username,
+            Email = request.Email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            Birthdate = request.Birthdate,
+            Role = request.Role, // Add this line
+            EmailVerificationToken = GenerateToken()
+        };
             _context.Users.Add(user);
             await _context.SaveChangesAsync(cancellationToken);
-            return new UserResponse
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Email = user.Email,
-                Birthdate = user.Birthdate,
-                Registered = user.Registered
-            };
+        return new UserResponse(
+            Id: user.Id,
+            Username: user.Username,
+            Email: user.Email,
+            Birthdate: user.Birthdate,
+            Registered: user.Registered,
+            Role: user.Role
+        );
         }
 
         private static string GenerateToken()

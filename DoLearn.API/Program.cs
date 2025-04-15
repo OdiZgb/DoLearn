@@ -1,8 +1,10 @@
 using System.Text;
+using System.Text.Json;
 using DoLearn.API.Data;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -36,6 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // 4. Controllers
 builder.Services.AddControllers();
+builder.Services.AddScoped<TokenService>();
 
 // 5. Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -55,7 +58,23 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "DoLearn API v1");
     });
 }
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
+    {
+        context.Response.ContentType = "application/json";
+        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
+        if (exception is DuplicateEmailException)
+        {
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new
+            {
+                error = exception.Message
+            }));
+        }
+    });
+});
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

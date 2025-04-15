@@ -1,5 +1,6 @@
 // Models/User.cs
 using System;
+using System.ComponentModel;
 
 namespace DoLearn.API.Models
 {
@@ -11,14 +12,33 @@ namespace DoLearn.API.Models
         public required string PasswordHash { get; set; }
         public DateTime Birthdate { get; set; }
         
+        // Authentication & Status
         public DateTime Registered { get; set; } = DateTime.UtcNow;
         public DateTime? LastLogin { get; set; }
-        
         public bool Active { get; set; } = true;
         public bool EmailVerified { get; set; } = false;
         
+        // Security Tokens
         public string? EmailVerificationToken { get; set; }
         public string? PasswordResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; }
+
+        // Roles
+        public UserRole Role { get; set; } = UserRole.Student; // New role property
+    }
+
+    public enum UserRole
+    {
+        [Description("Student")]
+        Student = 0,
+        
+        [Description("Teacher")]
+        Teacher = 1,
+        
+        [Description("Parent")]
+        Parent = 2,
+        
+        [Description("Administrator")]
+        Admin = 3
     }
 }

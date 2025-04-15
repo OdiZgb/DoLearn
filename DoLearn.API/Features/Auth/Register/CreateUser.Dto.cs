@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using DoLearn.API.Models;
 
 namespace DoLearn.API.Features.Auth.Register
 {
@@ -15,5 +16,7 @@ namespace DoLearn.API.Features.Auth.Register
 
         [Required]
         public DateTime Birthdate { get; set; }
+
+        public UserRole Role { get; set; } = UserRole.Student;
     }
 }

@@ -16,5 +16,41 @@
         <member name="M:DoLearn.API.Migrations.firstCommmit.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:DoLearn.API.Migrations.AddUserRole">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddUserRole.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddUserRole.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddUserRole.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:DoLearn.API.Migrations.AddRoleToUserCommand">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddRoleToUserCommand.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddRoleToUserCommand.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddRoleToUserCommand.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:DoLearn.API.Migrations.AddUserRoleColumn">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddUserRoleColumn.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddUserRoleColumn.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.AddUserRoleColumn.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

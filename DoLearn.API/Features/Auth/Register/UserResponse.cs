@@ -1,12 +1,14 @@
 // Features/Auth/Register/UserResponse.cs
+using DoLearn.API.Models;
+
 namespace DoLearn.API.Features.Auth.Register
 {
-    public sealed class UserResponse
-    {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public DateTime Birthdate { get; set; }
-        public DateTime Registered { get; set; }
-    }
+public sealed record UserResponse(
+    int Id,
+    string Username,
+    string Email,
+    DateTime Birthdate,
+    DateTime Registered,
+    UserRole Role // Add this parameter
+);
 }
