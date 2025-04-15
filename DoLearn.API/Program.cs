@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Json;
+using System.Threading.RateLimiting;
 using DoLearn.API.Data;
+using DoLearn.API.Validators;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -39,14 +41,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // 4. Controllers
 builder.Services.AddControllers();
 builder.Services.AddScoped<TokenService>();
-
+builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 // 5. Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "DoLearn API", Version = "v1" });
 });
-
+builder.Services.AddTransient(
+    typeof(IPipelineBehavior<,>), 
+    typeof(ValidationBehavior<,>)
+);
 var app = builder.Build();
 
 // Development Middleware
@@ -75,6 +82,9 @@ app.UseExceptionHandler(exceptionHandlerApp =>
         }
     });
 });
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

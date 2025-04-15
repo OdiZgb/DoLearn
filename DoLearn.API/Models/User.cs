@@ -24,7 +24,10 @@ namespace DoLearn.API.Models
         public DateTime? ResetTokenExpires { get; set; }
 
         // Roles
-        public UserRole Role { get; set; } = UserRole.Student; // New role property
+        public UserRole Role { get; set; } = UserRole.Student; 
+
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiry { get; set; }
     }
 
     public enum UserRole
