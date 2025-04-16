@@ -4,16 +4,16 @@
         <name>DoLearn.API</name>
     </assembly>
     <members>
-        <member name="T:DoLearn.API.Migrations.FixedCascadeDeleteIssues">
+        <member name="T:DoLearn.API.Migrations.InitialCreate">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.FixedCascadeDeleteIssues.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:DoLearn.API.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.FixedCascadeDeleteIssues.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:DoLearn.API.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.FixedCascadeDeleteIssues.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:DoLearn.API.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

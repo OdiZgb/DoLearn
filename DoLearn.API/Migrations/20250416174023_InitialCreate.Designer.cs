@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoLearn.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250416172010_FixedCascadeDeleteIssues")]
-    partial class FixedCascadeDeleteIssues
+    [Migration("20250416174023_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
