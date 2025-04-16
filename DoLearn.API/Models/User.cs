@@ -28,6 +28,9 @@ namespace DoLearn.API.Models
 
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiry { get; set; }
+        public List<Course> CreatedCourses { get; set; } = [];
+            public List<Enrollment> Enrollments { get; set; } = []; // Add this
+
     }
 
     public enum UserRole

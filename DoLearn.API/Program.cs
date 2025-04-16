@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.RateLimiting;
 using DoLearn.API.Data;
+using DoLearn.API.Models;
 using DoLearn.API.Validators;
 using FluentValidation;
 using MediatR;
@@ -54,6 +55,12 @@ builder.Services.AddTransient(
     typeof(IPipelineBehavior<,>), 
     typeof(ValidationBehavior<,>)
 );
+// Add after AddAuthentication()
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => 
+        policy.RequireRole(UserRole.Admin.ToString()));
+});
 var app = builder.Build();
 
 // Development Middleware
