@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using DoLearn.API.Data;
 using DoLearn.API.Models;
@@ -61,6 +62,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy => 
         policy.RequireRole(UserRole.Admin.ToString()));
 });
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 var app = builder.Build();
 
 // Development Middleware
@@ -71,6 +77,7 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "DoLearn API v1");
     });
+    
 }
 app.UseExceptionHandler(exceptionHandlerApp =>
 {

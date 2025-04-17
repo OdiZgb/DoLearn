@@ -16,5 +16,17 @@
         <member name="M:DoLearn.API.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:DoLearn.API.Migrations.mig002">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig002.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig002.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig002.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

@@ -4,8 +4,15 @@ using System.Text;
 using DoLearn.API.Models;
 using Microsoft.IdentityModel.Tokens;
 
-public class TokenService(IConfiguration config)
+public class TokenService
 {
+    private readonly IConfiguration _config;
+
+    public TokenService(IConfiguration config)
+    {
+        _config = config;
+    }
+
     public string CreateToken(User user)
     {
         var claims = new List<Claim>
@@ -16,16 +23,18 @@ public class TokenService(IConfiguration config)
         };
 
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
+            Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
 
-        return new JwtSecurityTokenHandler().WriteToken(
-            new JwtSecurityToken(
-                issuer: config["Jwt:Issuer"],
-                audience: config["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(60),
-                signingCredentials: new SigningCredentials(
-                    key, SecurityAlgorithms.HmacSha512Signature)
-            ));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature); // Change to HmacSha256
+
+        var token = new JwtSecurityToken(
+            issuer: _config["Jwt:Issuer"],
+            audience: _config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(60),
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

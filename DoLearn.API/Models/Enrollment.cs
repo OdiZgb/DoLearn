@@ -1,13 +1,5 @@
 using DoLearn.API.Models;
 
-public enum EnrollmentStatus
-{
-    Active,
-    Completed,
-    Withdrawn,
-    Failed,
-    Transferred
-}
 
 public class Enrollment
 {

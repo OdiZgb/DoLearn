@@ -1,21 +1,12 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace DoLearn.API.Features.Courses.CreateCourse
+public class CreateCourseDto
 {
-    public sealed class CreateCourseDto
-    {
-        [Required, MinLength(3)]
-        public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string CourseCode { get; set; } = string.Empty;
 
-        public string? Description { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 
-        [Required, StringLength(20)]
-        public string CourseCode { get; set; }
-
-        [Required]
-        public DateTime StartDate { get; set; }
-
-        [Required]
-        public DateTime EndDate { get; set; }
-    }
+    public List<DateTime> SessionStartTimes { get; set; } = [];
+    public List<DateTime> SessionEndTimes { get; set; } = [];
 }

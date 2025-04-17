@@ -9,6 +9,7 @@ namespace DoLearn.API.Data
         
         public DbSet<User> Users { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<CourseSchedule> CourseSchedules { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<CoursePricing> CoursePricings { get; set; }
 
@@ -30,21 +31,14 @@ namespace DoLearn.API.Data
                     .HasForeignKey(c => c.CreatedById)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                // A user can have many enrollments
-                entity.HasMany(u => u.Enrollments)
-                    .WithOne(e => e.Student)
-                    .HasForeignKey(e => e.StudentId)
-                    .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             // Course Configuration
             modelBuilder.Entity<Course>(entity =>
             {
                 // A course can have many enrollments
-                entity.HasMany(c => c.Enrollments)
-                    .WithOne(e => e.Course)
-                    .HasForeignKey(e => e.CourseId)
-                    .OnDelete(DeleteBehavior.Restrict);
+
 
                 // A course has one pricing
                 entity.HasOne(c => c.Pricing)
@@ -58,17 +52,6 @@ namespace DoLearn.API.Data
             {
                 entity.HasKey(e => e.Id);
 
-                // Enrollment belongs to one student
-                entity.HasOne(e => e.Student)
-                    .WithMany(u => u.Enrollments)
-                    .HasForeignKey(e => e.StudentId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                // Enrollment belongs to one course
-                entity.HasOne(e => e.Course)
-                    .WithMany(c => c.Enrollments)
-                    .HasForeignKey(e => e.CourseId)
-                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             // CoursePricing Configuration

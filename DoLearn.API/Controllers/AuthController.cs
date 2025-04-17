@@ -17,7 +17,7 @@ namespace DoLearn.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] CreateUserDto dto)
+    public async Task<IActionResult> Register([FromBody] CreateUserDto dto)
         {
             var command = new CreateUserCommand(
                 dto.Username,

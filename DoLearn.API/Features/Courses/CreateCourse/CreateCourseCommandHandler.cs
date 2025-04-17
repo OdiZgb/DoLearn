@@ -1,4 +1,3 @@
-// Features/Courses/CreateCourse/CreateCourseCommandHandler.cs
 using DoLearn.API.Data;
 using DoLearn.API.Models;
 using MediatR;
@@ -20,7 +19,6 @@ namespace DoLearn.API.Features.Courses.CreateCourse
             CreateCourseCommand request,
             CancellationToken cancellationToken)
         {
-            // Admin validation
             var creator = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == request.CreatedById, cancellationToken);
 
@@ -32,22 +30,45 @@ namespace DoLearn.API.Features.Courses.CreateCourse
                 Title = request.Title,
                 Description = request.Description,
                 CourseCode = request.CourseCode,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-                CreatedById = request.CreatedById
+                CreatedById = request.CreatedById,
+                CreatedAt = DateTime.UtcNow,
+                LastUpdated = DateTime.UtcNow
             };
 
             _context.Courses.Add(course);
             await _context.SaveChangesAsync(cancellationToken);
 
+            var sessions = request.SessionStartTimes
+                .Zip(request.SessionEndTimes, (start, end) => new CourseSession
+                {
+                    Start = start,
+                    Finish = end,
+                    IsCanceled = false
+                })
+                .ToList();
+
+            var schedule = new CourseSchedule
+            {
+                CourseId = course.Id,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                Sessions = sessions,
+                IsSoftDeleted = false
+            };
+
+            _context.CourseSchedules.Add(schedule);
+            await _context.SaveChangesAsync(cancellationToken);
             return new CourseResponse(
                 course.Id,
                 course.Title,
                 course.CourseCode,
                 course.CreatedAt,
-                course.StartDate,
-                course.EndDate
+                request.StartDate,
+                request.EndDate,
+                request.SessionStartTimes,
+                request.SessionEndTimes
             );
+
         }
     }
 }
