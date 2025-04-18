@@ -2,15 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CoursesService } from '../../../services/courses.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
  
 @Component({
+  standalone: true,
   selector: 'app-courses-list',
   templateUrl: './courses-list.component.html',
   styleUrls: ['./courses-list.component.scss'],
-  
-  providers:[    CommonModule,
-    
-  ]
+  imports: [CommonModule, ReactiveFormsModule]
   
 })
 export class CoursesListComponent implements OnInit {

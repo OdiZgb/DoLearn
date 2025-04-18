@@ -2,8 +2,8 @@ import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
 @Component({
+  standalone: true,
   selector: 'app-root',
-  
   imports: [RouterModule], // for <router-outlet> and routerLink
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

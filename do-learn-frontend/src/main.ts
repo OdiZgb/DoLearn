@@ -1,7 +1,11 @@
-import { AppModule } from './app/app.module';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { provideRouter } from '@angular/router';
+import { routes } from './app/app.routes';
 
-platformBrowserDynamic()
-function platformBrowserDynamic() {
-  throw new Error('Function not implemented.');
-}
-
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(routes)
+    // other providers (like HttpClientModule via `importProvidersFrom`)
+  ]
+}).catch(err => console.error(err));
