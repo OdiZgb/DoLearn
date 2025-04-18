@@ -21,10 +21,14 @@ export class CoursesService {
   }
 
   // Create a new course
-  createCourse(coursePayload: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, coursePayload);
-  }
 
+  createCourse(courseData: any) {
+    return this.http.post(this.apiUrl, courseData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
   // Enroll in a course
   enrollInCourse(courseId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${courseId}/enroll`, {});

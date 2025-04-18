@@ -1,0 +1,275 @@
+// Variables
+$color-primary: #6366f1;
+$color-primary-dark: #4f46e5;
+$color-error: #ef4444;
+$color-white: #ffffff;
+$color-border: #e5e7eb;
+$color-text-primary: #1f2937;
+$color-text-secondary: #6b7280;
+$color-disabled: #d1d5db;
+$background-gradient: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+
+// Mixins
+@mixin transition($properties) {
+  transition: $properties;
+}
+
+@mixin spinner($size, $border-width, $color) {
+  width: $size;
+  height: $size;
+  border: $border-width solid rgba($color, 0.2);
+  border-top-color: $color;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+:host {
+  display: flex;
+  min-height: 100vh;
+  background: $background-gradient;
+  padding: 2rem;
+}
+
+.login-container {
+  margin: auto;
+  width: 100%;
+  max-width: 480px;
+}
+
+.login-card {
+  background: $color-white;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  @include transition(all 0.3s ease);
+
+  &:hover {
+    box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+  }
+}
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+
+  .logo {
+    height: 48px;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: $color-primary;
+  }
+
+  .subtext {
+    color: $color-text-secondary;
+    font-size: 0.9rem;
+  }
+}
+
+.login-form {
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: $color-text-primary;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.875rem;
+      border: 1px solid $color-border;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      @include transition(all 0.3s ease);
+
+      &:focus {
+        border-color: $color-primary;
+        box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+        outline: none;
+      }
+
+      &.invalid {
+        border-color: $color-error;
+      }
+    }
+
+    .error-message {
+      color: $color-error;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .password-input {
+    position: relative;
+    
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: $color-text-secondary;
+      padding: 0.25rem;
+      
+      &:hover {
+        color: $color-primary;
+      }
+
+      svg {
+        display: block;
+      }
+    }
+  }
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.5rem 0;
+
+  .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $color-text-secondary;
+    font-size: 0.875rem;
+  }
+
+  .forgot-password {
+    color: $color-primary;
+    text-decoration: none;
+    font-size: 0.875rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  background: $color-primary;
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  @include transition(all 0.3s ease);
+  position: relative;
+
+  &:hover:not([disabled]) {
+    background: $color-primary-dark;
+    transform: translateY(-1px);
+  }
+
+  &[disabled] {
+    background: $color-disabled;
+    cursor: not-allowed;
+  }
+
+  .spinner {
+    @include spinner(1.5rem, 3px, white);
+    margin: 0 auto;
+  }
+}
+
+.alternative-auth {
+  margin: 2rem 0;
+
+  .divider {
+    text-align: center;
+    position: relative;
+    color: $color-text-secondary;
+    margin: 1.5rem 0;
+
+    span {
+      background: white;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: $color-border;
+    }
+  }
+
+  .social-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+
+    .social-button {
+      width: 40px;
+      height: 40px;
+      border: 1px solid $color-border;
+      border-radius: 50%;
+      background: none;
+      cursor: pointer;
+      @include transition(all 0.3s ease);
+
+      &:hover {
+        border-color: $color-primary;
+        background: rgba($color-primary, 0.1);
+      }
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
+.signup-link {
+  text-align: center;
+  color: $color-text-secondary;
+  margin-top: 1.5rem;
+
+  a {
+    color: $color-primary;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  @include transition(all 0.3s ease);
+
+  &.error {
+    background: $color-error;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

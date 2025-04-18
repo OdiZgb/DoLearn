@@ -1,16 +1,89 @@
-<h2>Login</h2>
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label>Email</label>
-    <input type="email" formControlName="email" />
+<div class="login-container">
+  <div class="login-card">
+    <div class="brand-header">
+      <img src="/assets/logo.svg" alt="DoLearn Logo" class="logo">
+      <h1>Welcome Back</h1>
+      <p class="subtext">Please sign in to continue</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          placeholder="Enter your email"
+          [ngClass]="{ 'invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched }">
+        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            id="password" 
+            formControlName="password"
+            placeholder="••••••••"
+            [ngClass]="{ 'invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched }">
+          <button 
+            type="button" 
+            class="password-toggle"
+            (click)="togglePasswordVisibility()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path *ngIf="!showPassword" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle *ngIf="!showPassword" cx="12" cy="12" r="3"/>
+              <line *ngIf="showPassword" x1="1" y1="1" x2="23" y2="23"/>
+              <path *ngIf="showPassword" d="M15.536 8.464a5 5 0 0 1 0 7.072"/>
+              <path *ngIf="showPassword" d="M4.93 19.07c3.905-3.905 10.237-3.905 14.142 0"/>
+            </svg>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
+          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Minimum 8 characters required</span>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="remember-me">
+          <input type="checkbox" formControlName="rememberMe"> Remember me
+        </label>
+        <a routerLink="/forgot-password" class="forgot-password">Forgot Password?</a>
+      </div>
+
+      <button 
+        type="submit" 
+        class="login-button"
+        [disabled]="loginForm.invalid"
+        [ngClass]="{ 'loading': isLoading }">
+        <span *ngIf="!isLoading">Sign In</span>
+        <div class="spinner" *ngIf="isLoading"></div>
+      </button>
+
+      <div class="alternative-auth">
+        <p class="divider"><span>Or continue with</span></p>
+        <div class="social-buttons">
+          <button type="button" class="social-button google">
+            <img src="/assets/google-icon.svg" alt="Google">
+          </button>
+          <button type="button" class="social-button github">
+            <img src="/assets/github-icon.svg" alt="GitHub">
+          </button>
+        </div>
+      </div>
+
+      <p class="signup-link">
+        Don't have an account? <a routerLink="/register">Sign up</a>
+      </p>
+    </form>
   </div>
 
-  <div>
-    <label>Password</label>
-    <input type="password" formControlName="password" />
+  <div *ngIf="errorMessage" class="toast error">
+    {{ errorMessage }}
   </div>
-
-  <button type="submit" [disabled]="loginForm.invalid">Login</button>
-
-  <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
-</form>
+</div>

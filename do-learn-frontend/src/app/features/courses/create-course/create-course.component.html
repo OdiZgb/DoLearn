@@ -1,38 +1,98 @@
-<h2>Create New Course</h2>
 <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
-  <label>Title:</label>
-  <input formControlName="title" type="text" />
-
-  <label>Course Code:</label>
-  <input formControlName="courseCode" type="text" />
-
-  <label>Description:</label>
-  <textarea formControlName="description"></textarea>
-
-  <label>Start Date:</label>
-  <input formControlName="startDate" type="datetime-local" />
-
-  <label>End Date:</label>
-  <input formControlName="endDate" type="datetime-local" />
-
-  <label>Price:</label>
-  <input formControlName="price" type="number" />
-
-  <h4>Sessions</h4>
-  <div 
-    *ngFor="let session of sessions.controls; let i = index" 
-    [formGroupName]="i"
-  >
-    <label>Start Time:</label>
-    <input formControlName="startTime" type="datetime-local" />
-
-    <label>End Time:</label>
-    <input formControlName="endTime" type="datetime-local" />
-
-    <button type="button" (click)="removeSession(i)">Remove</button>
-  </div>
-
-  <button type="button" (click)="addSession()">Add Session</button>
-  <br /><br />
-  <button type="submit">Create Course</button>
-</form>
+    <h2>Create New Course</h2>
+    
+    <!-- Title -->
+    <div class="form-group">
+      <label>Title:</label>
+      <input formControlName="title" type="text">
+      <div class="error" *ngIf="courseForm.get('title')?.invalid && courseForm.get('title')?.touched">
+        <div *ngIf="courseForm.get('title')?.errors?.['required']">Title is required</div>
+        <div *ngIf="courseForm.get('title')?.errors?.['minlength']">Minimum 3 characters required</div>
+      </div>
+    </div>
+  
+    <!-- Course Code -->
+    <div class="form-group">
+      <label>Course Code:</label>
+      <input formControlName="courseCode" type="text">
+      <div class="error" *ngIf="courseForm.get('courseCode')?.invalid && courseForm.get('courseCode')?.touched">
+        <div *ngIf="courseForm.get('courseCode')?.errors?.['required']">Course code is required</div>
+        <div *ngIf="courseForm.get('courseCode')?.errors?.['pattern']">3-10 uppercase letters/numbers</div>
+      </div>
+    </div>
+  
+    <!-- Description -->
+    <div class="form-group">
+      <label>Description:</label>
+      <textarea formControlName="description"></textarea>
+      <div class="error" *ngIf="courseForm.get('description')?.invalid && courseForm.get('description')?.touched">
+        Maximum 500 characters allowed
+      </div>
+    </div>
+  
+    <!-- Date Section -->
+    <div class="date-section">
+      <div class="form-group">
+        <label>Start Date:</label>
+        <input formControlName="startDate" type="datetime-local">
+        <div class="error" *ngIf="courseForm.get('startDate')?.invalid && courseForm.get('startDate')?.touched">
+          Start date is required
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label>End Date:</label>
+        <input formControlName="endDate" type="datetime-local">
+        <div class="error" *ngIf="courseForm.get('endDate')?.invalid && courseForm.get('endDate')?.touched">
+          End date is required
+        </div>
+      </div>
+    </div>
+  
+    <!-- Price -->
+    <div class="form-group">
+      <label>Price:</label>
+      <input formControlName="price" type="number" step="0.01">
+      <div class="error" *ngIf="courseForm.get('price')?.invalid && courseForm.get('price')?.touched">
+        <div *ngIf="courseForm.get('price')?.errors?.['required']">Price is required</div>
+        <div *ngIf="courseForm.get('price')?.errors?.['min']">Must be positive value</div>
+      </div>
+    </div>
+  
+    <!-- Sessions -->
+    <div class="sessions-section">
+      <h3>Sessions</h3>
+      <div formArrayName="sessions">
+        <div *ngFor="let session of sessions.controls; let i = index" [formGroupName]="i">
+          <div class="session-group">
+            <div class="form-group">
+              <label>Start Time:</label>
+              <input formControlName="startTime" type="datetime-local">
+              <div class="error" *ngIf="sessions.at(i)?.get('startTime')?.invalid">
+                Start time is required
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <label>End Time:</label>
+              <input formControlName="endTime" type="datetime-local">
+              <div class="error" *ngIf="sessions.at(i)?.get('endTime')?.invalid">
+                End time is required
+              </div>
+            </div>
+  
+            <button type="button" class="remove-btn" (click)="removeSession(i)">
+              Remove Session
+            </button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="add-btn" (click)="addSession()">
+        Add Session
+      </button>
+    </div>
+  
+    <button type="submit" class="submit-btn" [disabled]="courseForm.invalid">
+      Create Course
+    </button>
+  </form>
