@@ -46,6 +46,18 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+// 4. CORS (Allow requests from Angular frontend)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", builder =>
+    {
+        builder.WithOrigins("http://localhost:4200") // your frontend URL
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+    });
+});
+
 // 5. Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -100,6 +112,7 @@ app.UseExceptionHandler(exceptionHandlerApp =>
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
+app.UseCors("AllowFrontend"); // Enable CORS policy
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

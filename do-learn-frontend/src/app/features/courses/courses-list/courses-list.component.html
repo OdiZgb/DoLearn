@@ -2,5 +2,6 @@
 
 <ul *ngIf="courses.length > 0">
   <li *ngFor="let course of courses">
-   </li>
+   {{course?.title}} <!-- Adjust to match the properties of your course object -->
+  </li>
 </ul>

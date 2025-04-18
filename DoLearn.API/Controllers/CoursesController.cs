@@ -99,5 +99,15 @@ namespace DoLearn.API.Controllers
 
             return Ok("Successfully withdrawn.");
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAllCourses()
+        {
+            var query = new GetAllCoursesQuery();
+            var courses = await _mediator.Send(query);
+            return Ok(courses);
+        }
+
     }
 }

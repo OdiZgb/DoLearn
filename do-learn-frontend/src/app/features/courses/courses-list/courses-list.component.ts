@@ -3,6 +3,7 @@ import { CoursesService } from '../../../services/courses.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Course } from '../../../models/Course';
  
 @Component({
   standalone: true,
@@ -14,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class CoursesListComponent implements OnInit {
 
-  courses = [];
+  courses: Course[] = []; // ← This fixes the error!
 
   constructor(private coursesService: CoursesService,private route: ActivatedRoute) { }
 

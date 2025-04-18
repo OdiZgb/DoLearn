@@ -1,0 +1,38 @@
+<h2>Create New Course</h2>
+<form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+  <label>Title:</label>
+  <input formControlName="title" type="text" />
+
+  <label>Course Code:</label>
+  <input formControlName="courseCode" type="text" />
+
+  <label>Description:</label>
+  <textarea formControlName="description"></textarea>
+
+  <label>Start Date:</label>
+  <input formControlName="startDate" type="datetime-local" />
+
+  <label>End Date:</label>
+  <input formControlName="endDate" type="datetime-local" />
+
+  <label>Price:</label>
+  <input formControlName="price" type="number" />
+
+  <h4>Sessions</h4>
+  <div 
+    *ngFor="let session of sessions.controls; let i = index" 
+    [formGroupName]="i"
+  >
+    <label>Start Time:</label>
+    <input formControlName="startTime" type="datetime-local" />
+
+    <label>End Time:</label>
+    <input formControlName="endTime" type="datetime-local" />
+
+    <button type="button" (click)="removeSession(i)">Remove</button>
+  </div>
+
+  <button type="button" (click)="addSession()">Add Session</button>
+  <br /><br />
+  <button type="submit">Create Course</button>
+</form>
