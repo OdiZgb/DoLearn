@@ -1,48 +1,165 @@
 // courses-list.component.scss
 .courses-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px;
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.course-card {
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  background: rgb(255, 255, 255);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   
-  .course-card {
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease-in-out;
-  
-    &:hover {
-      transform: translateY(-5px);
-    }
-  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    
     .course-image {
-      height: 120px;
-      width: 120px;
+      transform: scale(1.05);
+    }
+  }
+
+  .image-container {
+    position: relative;
+    height: 250px; // Increased image height
+    overflow: hidden;
+    
+    .course-image {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      border-radius: 8px;
-      margin-right: 16px;
+      transition: transform 0.3s ease;
     }
-  
-    mat-card-header {
-      display: flex;
-      align-items: center;
-      padding: 16px;
+
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.6) 100%);
     }
-  
-    mat-card-content {
-      padding: 16px;
+  }
+
+  mat-card-header {
+    padding: 1.5rem 1.5rem 0;
+    
+    mat-card-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: rgb(45, 45, 45);
+    }
+
+    .course-code {
+      font-size: 1rem;
+      font-weight: 500;
+      color: rgb(128, 128, 128);
+    }
+  }
+
+  mat-card-content {
+    padding: 1rem 1.5rem;
+    flex-grow: 1;
+    
+    .description {
+      color: rgb(97, 97, 97);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .date-info {
+      border-top: 1px solid rgb(224, 224, 224);
+      padding-top: 1rem;
+      font-size: 0.95rem;
+      color: rgb(117, 117, 117);
       
       p {
-        margin: 8px 0;
-        line-height: 1.5;
+        display: flex;
+        align-items: center;
+        margin: 0.5rem 0;
+        
+        mat-icon {
+          font-size: 1.2rem;
+          margin-right: 0.5rem;
+          color: rgb(158, 158, 158);
+        }
       }
     }
   }
-  
-  .empty-state {
-    text-align: center;
-    margin-top: 50px;
-    font-size: 1.2rem;
-    color: #888;
-    padding: 20px;
+
+  .actions {
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    border-top: 1px solid rgb(240, 240, 240);
+    background: rgb(248, 248, 248);
+
+    .action-button {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.85rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+    }
   }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgb(117, 117, 117);
+
+  mat-icon {
+    font-size: 4.5rem;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-bottom: 1.5rem;
+    color: rgb(200, 200, 200);
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    color: rgb(97, 97, 97);
+  }
+
+  p {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .courses-grid {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    gap: 2rem;
+  }
+
+  .course-card {
+    border-radius: 18px;
+    
+    .image-container {
+      height: 220px;
+    }
+    
+    mat-card-header mat-card-title {
+      font-size: 1.4rem;
+    }
+  }
+}

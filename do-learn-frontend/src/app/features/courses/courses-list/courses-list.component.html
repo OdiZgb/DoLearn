@@ -1,25 +1,40 @@
 <!-- courses-list.component.html -->
 <div *ngIf="courses.length > 0" class="courses-grid">
   <mat-card class="course-card" *ngFor="let course of courses">
-    <mat-card-header>
-      <img mat-card-sm-image 
-           [src]="course.imgURL" 
+    <div class="image-container">
+      <img [src]="course.imgURL" 
            alt="{{ course.title }} image"
            class="course-image"
-           >
+         >
+      <div class="image-overlay"></div>
+    </div>
+    
+    <mat-card-header>
       <mat-card-title>{{ course.title }}</mat-card-title>
-      <mat-card-subtitle>{{ course.courseCode }}</mat-card-subtitle>
+      <mat-card-subtitle class="course-code">{{ course.courseCode }}</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      <p>{{ course.description }}</p>
-      <p><strong>Created:</strong> {{ course.createdAt | date }}</p>
-      <p><strong>Updated:</strong> {{ course.lastUpdated | date }}</p>
+      <p class="description">{{ course.description }}</p>
+      <div class="date-info">
+        <p><mat-icon>schedule</mat-icon> Created: {{ course.createdAt | date }}</p>
+        <p><mat-icon>update</mat-icon> Updated: {{ course.lastUpdated | date }}</p>
+      </div>
     </mat-card-content>
 
-    <mat-card-actions>
-      <button mat-button color="primary">View</button>
-      <button mat-button color="accent">Enroll</button>
+    <mat-card-actions class="actions">
+      <button mat-raised-button color="primary" class="action-button">
+        <mat-icon>visibility</mat-icon> View
+      </button>
+      <button mat-raised-button color="accent" class="action-button">
+        <mat-icon>how_to_reg</mat-icon> Enroll
+      </button>
     </mat-card-actions>
   </mat-card>
+</div>
+
+<div *ngIf="courses.length === 0" class="empty-state">
+  <mat-icon>class</mat-icon>
+  <h2>No courses available</h2>
+  <p>Check back later for new courses!</p>
 </div>

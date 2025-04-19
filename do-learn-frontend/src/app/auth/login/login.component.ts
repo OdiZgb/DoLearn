@@ -63,7 +63,7 @@ export class LoginComponent {
         if (this.loginForm.value.rememberMe) {
           localStorage.setItem('rememberedEmail', this.loginForm.value.email);
         }
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/courses']);
       },
       error: (err) => {
         this.isLoading = false;
