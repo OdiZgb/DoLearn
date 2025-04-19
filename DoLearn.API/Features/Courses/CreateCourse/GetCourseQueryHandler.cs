@@ -27,7 +27,6 @@ namespace DoLearn.API.Features.Courses.GetCourse
 
             var sessionStartTimes = schedule?.Sessions.Select(s => s.Start).ToList() ?? new List<DateTime>();
             var sessionEndTimes = schedule?.Sessions.Select(s => s.Finish).ToList() ?? new List<DateTime>();
-            course.ImgURL = "http://localhost:5055/"+ course.ImgURL;
 
             return new CourseResponse(
                 course.Id,

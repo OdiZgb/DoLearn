@@ -49,9 +49,9 @@ export class CoursesService {
     return this.http.post<CourseResponse>(this.apiUrl, fd);
   }
   getEnrollmentStatus(courseId: number): Observable<'enrolled' | 'pending' | 'not-enrolled'> {
-    return this.http.get<{ status: string }>(`${this.apiUrl}courses/${courseId}/enrollment-status`)
+    return this.http.get<{ status: string }>(`${this.apiUrl}/${courseId}/enrollment-status`)
       .pipe(map(res => res.status as any));
   }
-
+  
 
 }
