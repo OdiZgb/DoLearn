@@ -1,85 +1,183 @@
 <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
-    <h2>Create New Course</h2>
-    
-    <!-- Title -->
-    <div class="form-group">
-      <label>Title:</label>
-      <input formControlName="title" type="text">
-      <div class="error" *ngIf="courseForm.get('title')?.invalid && courseForm.get('title')?.touched">
-        <div *ngIf="courseForm.get('title')?.errors?.['required']">Title is required</div>
-        <div *ngIf="courseForm.get('title')?.errors?.['minlength']">Minimum 3 characters required</div>
-      </div>
-    </div>
+  <h2>Create New Course</h2>
   
-    <!-- Course Code -->
-    <div class="form-group">
-      <label>Course Code:</label>
-      <input formControlName="courseCode" type="text">
-      <div class="error" *ngIf="courseForm.get('courseCode')?.invalid && courseForm.get('courseCode')?.touched">
-        <div *ngIf="courseForm.get('courseCode')?.errors?.['required']">Course code is required</div>
-        <div *ngIf="courseForm.get('courseCode')?.errors?.['pattern']">3-10 uppercase letters/numbers</div>
-      </div>
-    </div>
-  
-    <!-- Description -->
-    <div class="form-group">
-      <label>Description:</label>
-      <textarea formControlName="description"></textarea>
-      <div class="error" *ngIf="courseForm.get('description')?.invalid && courseForm.get('description')?.touched">
-        Maximum 500 characters allowed
-      </div>
-    </div>
-  
-    <!-- Date Section -->
-    <div class="date-section">
+  <!-- Course Basics Section -->
+  <div class="form-section">
+      <h3>Course Details</h3>
+      
+      <!-- Title -->
       <div class="form-group">
-        <label>Start Date:</label>
-        <input formControlName="startDate" type="datetime-local">
-        <div class="error" *ngIf="courseForm.get('startDate')?.invalid && courseForm.get('startDate')?.touched">
-          Start date is required
-        </div>
+          <label>Title:</label>
+          <input formControlName="title" type="text" class="modern-input">
+          <div class="error" *ngIf="courseForm.get('title')?.invalid && courseForm.get('title')?.touched">
+              <div *ngIf="courseForm.get('title')?.errors?.['required']">Title is required</div>
+              <div *ngIf="courseForm.get('title')?.errors?.['minlength']">Minimum 3 characters required</div>
+          </div>
       </div>
-  
+
+      <!-- Course Code -->
       <div class="form-group">
-        <label>End Date:</label>
-        <input formControlName="endDate" type="datetime-local">
-        <div class="error" *ngIf="courseForm.get('endDate')?.invalid && courseForm.get('endDate')?.touched">
-          End date is required
-        </div>
+          <label>Course Code:</label>
+          <input formControlName="courseCode" type="text" class="modern-input">
+          <div class="error" *ngIf="courseForm.get('courseCode')?.invalid && courseForm.get('courseCode')?.touched">
+              <div *ngIf="courseForm.get('courseCode')?.errors?.['required']">Course code is required</div>
+              <div *ngIf="courseForm.get('courseCode')?.errors?.['pattern']">3-10 uppercase letters/numbers</div>
+          </div>
       </div>
-    </div>
-  
-    <!-- Price -->
-    <div class="form-group">
-      <label>Price:</label>
-      <input formControlName="price" type="number" step="0.01">
-      <div class="error" *ngIf="courseForm.get('price')?.invalid && courseForm.get('price')?.touched">
-        <div *ngIf="courseForm.get('price')?.errors?.['required']">Price is required</div>
-        <div *ngIf="courseForm.get('price')?.errors?.['min']">Must be positive value</div>
+
+      <!-- Description -->
+      <div class="form-group">
+          <label>Description:</label>
+          <textarea formControlName="description" class="modern-textarea"></textarea>
+          <div class="counter">{{ courseForm.get('description')?.value?.length || 0 }}/500</div>
+          <div class="error" *ngIf="courseForm.get('description')?.invalid && courseForm.get('description')?.touched">
+              Maximum 500 characters allowed
+          </div>
       </div>
-    </div>
-  
-    <!-- Sessions -->
-    <div formArrayName="sessions">
-      <div *ngFor="let s of sessions.controls; let i = index" [formGroupName]="i">
-        <label>Session {{ i + 1 }} Start</label>
-        <input formControlName="startTime" type="datetime-local">
-  
-        <label>Session {{ i + 1 }} End</label>
-        <input formControlName="endTime" type="datetime-local">
-  
-        <button type="button" (click)="removeSession(i)" *ngIf="sessions.length > 1">
-          Remove
-        </button>
+  </div>
+
+  <!-- Schedule Section -->
+  <div class="form-section">
+      <h3>Schedule Configuration</h3>
+      
+      <!-- Date Range -->
+      <div class="date-section">
+          <div class="form-group">
+              <label>Start Date:</label>
+              <input formControlName="startDate" type="datetime-local" class="modern-input">
+              <div class="error" *ngIf="courseForm.get('startDate')?.invalid && courseForm.get('startDate')?.touched">
+                  Start date is required
+              </div>
+          </div>
+
+          <div class="form-group">
+              <label>End Date:</label>
+              <input formControlName="endDate" type="datetime-local" class="modern-input">
+              <div class="error" *ngIf="courseForm.get('endDate')?.invalid && courseForm.get('endDate')?.touched">
+                  End date is required
+              </div>
+          </div>
       </div>
-      <button type="button" (click)="addSession()">Add Session</button>
-    </div>
-    <div class="form-group">
-      <label>Course Image:</label>
-      <input type="file" (change)="onFileChange($event)" />
-    </div>
-  
-    <button type="submit" class="submit-btn" [disabled]="courseForm.invalid">
-      Create Course
-    </button>
-  </form>
+
+      <!-- Session Recurrence -->
+      <div class="recurrence-section">
+          <h4>Session Pattern</h4>
+          
+          <div class="recurrence-options">
+              <label class="toggle-switch">
+                  <input type="checkbox" formControlName="recurring">
+                  <span class="slider"></span>
+                  Recurring Sessions
+              </label>
+
+              <div *ngIf="courseForm.get('recurring')?.value" class="recurrence-config">
+                  <div class="form-group">
+                      <label>Repeat Every</label>
+                      <select formControlName="repeatInterval" class="modern-select">
+                          <option value="1">Week</option>
+                          <option value="2">2 Weeks</option>
+                      </select>
+                  </div>
+
+                  <div class="form-group">
+                      <label>Days of Week</label>
+                      <div class="day-selector">
+                          <button *ngFor="let day of daysOfWeek" 
+                                  type="button" 
+                                  [class.active]="isDaySelected(day)"
+                                  (click)="toggleDay(day)">
+                              {{ day | slice:0:3 }}
+                          </button>
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label>Session Time</label>
+                      <div class="time-picker">
+                          <input type="time" formControlName="sessionStart" class="modern-input">
+                          <span>to</span>
+                          <input type="time" formControlName="sessionEnd" class="modern-input">
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label>Number of Weeks</label>
+                      <input type="number" formControlName="repeatWeeks" min="1" max="12" class="modern-input">
+                  </div>
+
+                  <button type="button" class="generate-btn" (click)="generateSessions()">
+                      Generate Sessions
+                  </button>
+              </div>
+          </div>
+      </div>
+
+      <!-- Sessions Preview -->
+      <div class="sessions-preview" *ngIf="sessions.controls.length > 0">
+          <h4>Sessions Preview</h4>
+          <div class="session-card" *ngFor="let session of sessions.controls; let i = index" 
+          [formGroup]="$any(session)" [class.inactive]="!session.get('active')?.value">
+                         [formGroup]="session" [class.inactive]="!session.get('active')?.value">
+              <div class="session-header">
+                  <span class="session-number">Session {{ i + 1 }}</span>
+                  <label class="toggle-switch small">
+                      <input type="checkbox" formControlName="active">
+                      <span class="slider"></span>
+                  </label>
+              </div>
+              <div class="session-dates">
+                  <div>
+                      <label>Start:</label>
+                      <span>{{ session.get('startTime')?.value | date:'medium' }}</span>
+                  </div>
+                  <div>
+                      <label>End:</label>
+                      <span>{{ session.get('endTime')?.value | date:'medium' }}</span>
+                  </div>
+              </div>
+              <button type="button" class="icon-btn delete-btn" (click)="removeSession(i)">
+                  <i class="material-icons">delete</i>
+              </button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Price & Image Section -->
+  <div class="form-section">
+      <h3>Pricing & Media</h3>
+      
+      <div class="price-image-row">
+          <div class="form-group">
+              <label>Price (USD):</label>
+              <div class="price-input">
+                  <span>$</span>
+                  <input formControlName="price" type="number" step="0.01" class="modern-input">
+              </div>
+              <div class="error" *ngIf="courseForm.get('price')?.invalid && courseForm.get('price')?.touched">
+                  <div *ngIf="courseForm.get('price')?.errors?.['required']">Price is required</div>
+                  <div *ngIf="courseForm.get('price')?.errors?.['min']">Must be positive value</div>
+              </div>
+          </div>
+
+          <div class="form-group">
+              <label>Course Image:</label>
+              <div class="file-upload">
+                  <input type="file" (change)="onFileChange($event)" id="fileInput" hidden>
+                  <label for="fileInput" class="upload-btn">
+                      <i class="material-icons">cloud_upload</i>
+                      {{ selectedFile?.name || 'Choose File' }}
+                  </label>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="form-actions">
+      <button type="submit" class="submit-btn" [disabled]="courseForm.invalid">
+          Create Course
+      </button>
+      <button type="button" class="cancel-btn" (click)="router.navigate(['/courses'])">
+          Cancel
+      </button>
+  </div>
+</form>

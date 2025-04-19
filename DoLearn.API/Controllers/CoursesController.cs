@@ -120,6 +120,25 @@ namespace DoLearn.API.Controllers
         }
 
         
+[HttpGet("enrolled")]
+[Authorize(Roles = "Student")]
+public async Task<IActionResult> GetEnrolledCourses()
+{
+    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var query = new GetEnrolledCoursesQuery(userId);
+    var courses = await _mediator.Send(query);
+    return Ok(courses);
+}
+
+[HttpGet("created")]
+[Authorize(Roles = "Teacher,Admin")]
+public async Task<IActionResult> GetCreatedCourses()
+{
+    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var query = new GetCreatedCoursesQuery(userId);
+    var courses = await _mediator.Send(query);
+    return Ok(courses);
+}
 
     }
 }

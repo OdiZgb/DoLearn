@@ -5,12 +5,14 @@ import { CoursesListComponent } from './features/courses/courses-list/courses-li
 import { CreateCourseComponent } from './features/courses/create-course/create-course.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { CourseDetailsComponent } from './features/courses/course-details.component';
+import { DashboardComponent } from './features/dashboard/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'courses', pathMatch: 'full' },
   { path: 'courses', component: CoursesListComponent },
   { path: 'courses/create', component: CreateCourseComponent },
   { path: 'courses/:id', component: CourseDetailsComponent },
+  { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent }

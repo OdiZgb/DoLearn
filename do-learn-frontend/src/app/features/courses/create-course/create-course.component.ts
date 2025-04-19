@@ -1,22 +1,44 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { CoursesService } from '../../../services/courses.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit } from "@angular/core";
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CoursesService } from "../../../services/courses.service";
+import { Router } from "@angular/router";
+import { addWeeks, eachDayOfInterval, setHours, setMinutes, isBefore } from 'date-fns';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatCardModule } from "@angular/material/card";
+import { MatButtonModule } from "@angular/material/button";
+
 
 @Component({
   selector: 'app-create-course',
   templateUrl: './create-course.component.html',
-  imports: [CommonModule, ReactiveFormsModule], // Add these
+  imports: [CommonModule, ReactiveFormsModule,
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatProgressSpinnerModule
+  ], // Add these
   styleUrls: ['./create-course.component.scss']
 })
+
+
 export class CreateCourseComponent implements OnInit {
   courseForm!: FormGroup;
-  selectedFile!: File;
+  selectedFile?: File;
+  daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  selectedDays: string[] = [];
+
   constructor(
     private fb: FormBuilder,
     private coursesService: CoursesService,
-    private router: Router
+    public router: Router
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +53,12 @@ export class CreateCourseComponent implements OnInit {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
-      sessions: this.fb.array([this.createSessionGroup()])
+      recurring: [false],
+      repeatInterval: [1],
+      sessionStart: [''],
+      sessionEnd: [''],
+      repeatWeeks: [1, [Validators.min(1), Validators.max(12)]],
+      sessions: this.fb.array([])
     });
   }
 
@@ -39,20 +66,59 @@ export class CreateCourseComponent implements OnInit {
     return this.courseForm.get('sessions') as FormArray;
   }
 
-  private createSessionGroup(): FormGroup {
-    return this.fb.group({
-      startTime: ['', Validators.required],
-      endTime: ['', Validators.required]
-    });
+  isDaySelected(day: string): boolean {
+    return this.selectedDays.includes(day);
   }
 
-  addSession(): void {
-    this.sessions.push(this.createSessionGroup());
+  toggleDay(day: string): void {
+    const index = this.selectedDays.indexOf(day);
+    if (index > -1) {
+      this.selectedDays.splice(index, 1);
+    } else {
+      this.selectedDays.push(day);
+    }
+  }
+
+  generateSessions(): void {
+    const startDate = new Date(this.courseForm.value.startDate);
+    const endDate = new Date(this.courseForm.value.endDate);
+    const repeatWeeks = this.courseForm.value.repeatWeeks;
+    const sessionStart = this.courseForm.value.sessionStart;
+    const sessionEnd = this.courseForm.value.sessionEnd;
+
+    this.sessions.clear();
+
+    for (let week = 0; week < repeatWeeks; week++) {
+      const weekStart = addWeeks(startDate, week * this.courseForm.value.repeatInterval);
+      const weekEnd = addWeeks(endDate, week * this.courseForm.value.repeatInterval);
+
+      eachDayOfInterval({ start: weekStart, end: weekEnd }).forEach(date => {
+        const dayName = this.daysOfWeek[date.getDay()];
+        if (this.selectedDays.includes(dayName)) {
+          const startTime = this.setTime(date, sessionStart);
+          const endTime = this.setTime(date, sessionEnd);
+
+          if (isBefore(startTime, endTime)) {
+            this.sessions.push(this.fb.group({
+              startTime: [startTime.toISOString(), Validators.required],
+              endTime: [endTime.toISOString(), Validators.required],
+              active: [true]
+            }));
+          }
+        }
+      });
+    }
+  }
+
+  private setTime(date: Date, timeString: string): Date {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    return setMinutes(setHours(date, hours), minutes);
   }
 
   removeSession(index: number): void {
     this.sessions.removeAt(index);
   }
+
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) {

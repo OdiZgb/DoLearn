@@ -52,6 +52,12 @@ export class CoursesService {
     return this.http.get<{ status: string }>(`${this.apiUrl}/${courseId}/enrollment-status`)
       .pipe(map(res => res.status as any));
   }
+  getEnrolledCourses(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/enrolled`);
+  }
   
+  getCreatedCourses(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/created`);
+  }
 
 }
