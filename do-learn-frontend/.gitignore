@@ -6,6 +6,12 @@
 /out-tsc
 /bazel-out
 
+*.suo
+*.user
+_ReSharper.*
+bin
+obj
+packages
 # Node
 /node_modules
 npm-debug.log

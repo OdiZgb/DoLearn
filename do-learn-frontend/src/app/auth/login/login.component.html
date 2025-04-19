@@ -1,89 +1,106 @@
-<div class="login-container">
-  <div class="login-card">
-    <div class="brand-header">
-      <img src="/assets/logo.svg" alt="DoLearn Logo" class="logo">
-      <h1>Welcome Back</h1>
-      <p class="subtext">Please sign in to continue</p>
+<!-- login.component.html -->
+<div class="container-fluid min-vh-100 d-flex align-items-center bg-light">
+  <div class="row justify-content-center w-100">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-4">
+      <mat-card class="shadow-lg">
+        <mat-card-header class="justify-content-center mb-4">
+          <img src="/assets/logo.svg" alt="Logo" class="brand-logo">
+          <mat-card-title class="text-center mt-3 h2 text-primary">Welcome to DoLearn</mat-card-title>
+          <mat-card-subtitle class="text-muted text-center">Please sign in to continue</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <!-- Email Input -->
+            <div class="mb-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email" required>
+                <mat-icon matPrefix>mail</mat-icon>
+                <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+                  Email is required
+                </mat-error>
+                <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+                  Please enter a valid email
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Password Input -->
+            <div class="mb-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Password</mat-label>
+                <input matInput 
+                  [type]="hidePassword ? 'password' : 'text'" 
+                  formControlName="password"
+                  required>
+                <mat-icon matPrefix>lock</mat-icon>
+                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+                  <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                  Password is required
+                </mat-error>
+                <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+                  Minimum 8 characters required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <mat-checkbox formControlName="rememberMe" color="primary">
+                Remember me
+              </mat-checkbox>
+              <a routerLink="/forgot-password" class="text-decoration-none text-primary">
+                Forgot password?
+              </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+              mat-raised-button 
+              color="primary" 
+              class="w-100 py-2" 
+              type="submit"
+              [disabled]="loginForm.invalid || isLoading">
+              <span *ngIf="!isLoading">Sign In</span>
+              <mat-spinner *ngIf="isLoading" diameter="24"></mat-spinner>
+            </button>
+
+            <!-- Social Login -->
+            <div class="text-center mt-4">
+              <p class="text-muted mb-3">Or continue with</p>
+              <div class="d-flex justify-content-center gap-3">
+                <button mat-icon-button class="bg-light">
+                  <img src="/assets/google-icon.svg" alt="Google" width="24">
+                </button>
+                <button mat-icon-button class="bg-light">
+                  <img src="/assets/github-icon.svg" alt="GitHub" width="24">
+                </button>
+              </div>
+            </div>
+
+            <!-- Signup Link -->
+            <div class="text-center mt-4">
+              <span class="text-muted">Don't have an account? </span>
+              <a routerLink="/register" class="text-decoration-none text-primary fw-bold">
+                Sign up
+              </a>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
     </div>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input 
-          type="email" 
-          id="email" 
-          formControlName="email"
-          placeholder="Enter your email"
-          [ngClass]="{ 'invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched }">
-        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
-          <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="password-input">
-          <input 
-            [type]="showPassword ? 'text' : 'password'" 
-            id="password" 
-            formControlName="password"
-            placeholder="••••••••"
-            [ngClass]="{ 'invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched }">
-          <button 
-            type="button" 
-            class="password-toggle"
-            (click)="togglePasswordVisibility()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path *ngIf="!showPassword" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle *ngIf="!showPassword" cx="12" cy="12" r="3"/>
-              <line *ngIf="showPassword" x1="1" y1="1" x2="23" y2="23"/>
-              <path *ngIf="showPassword" d="M15.536 8.464a5 5 0 0 1 0 7.072"/>
-              <path *ngIf="showPassword" d="M4.93 19.07c3.905-3.905 10.237-3.905 14.142 0"/>
-            </svg>
-          </button>
-        </div>
-        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          <span *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</span>
-          <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Minimum 8 characters required</span>
-        </div>
-      </div>
-
-      <div class="form-options">
-        <label class="remember-me">
-          <input type="checkbox" formControlName="rememberMe"> Remember me
-        </label>
-        <a routerLink="/forgot-password" class="forgot-password">Forgot Password?</a>
-      </div>
-
-      <button 
-        type="submit" 
-        class="login-button"
-        [disabled]="loginForm.invalid"
-        [ngClass]="{ 'loading': isLoading }">
-        <span *ngIf="!isLoading">Sign In</span>
-        <div class="spinner" *ngIf="isLoading"></div>
-      </button>
-
-      <div class="alternative-auth">
-        <p class="divider"><span>Or continue with</span></p>
-        <div class="social-buttons">
-          <button type="button" class="social-button google">
-            <img src="/assets/google-icon.svg" alt="Google">
-          </button>
-          <button type="button" class="social-button github">
-            <img src="/assets/github-icon.svg" alt="GitHub">
-          </button>
-        </div>
-      </div>
-
-      <p class="signup-link">
-        Don't have an account? <a routerLink="/register">Sign up</a>
-      </p>
-    </form>
   </div>
 
-  <div *ngIf="errorMessage" class="toast error">
-    {{ errorMessage }}
+  <!-- Toast Notification -->
+  <div *ngIf="errorMessage" class="position-fixed bottom-0 end-0 m-3">
+    <mat-card class="bg-danger text-white">
+      <mat-card-content class="d-flex align-items-center gap-2">
+        <mat-icon>error</mat-icon>
+        {{ errorMessage }}
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
