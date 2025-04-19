@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "idpUixZ2SeMrZqMfVkVH4RBFEMb+PXIY+j9H2Ye9fN4=",
+  "Hash": "aC7ARJmvH/1AhqUNzTzUKIgtksiQ7QWNDMN9ak2eNiM=",
   "Source": "DoLearn.API",
   "BasePath": "_content/DoLearn.API",
   "Mode": "Default",
@@ -38,6 +38,27 @@
       "OriginalItemSpec": "wwwroot\\images\\1567c11f-14b5-40a9-904d-6df08d0dbcc9.avif"
     },
     {
+      "Identity": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png",
+      "SourceId": "DoLearn.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\",
+      "BasePath": "_content/DoLearn.API",
+      "RelativePath": "images/3dca4bc4-210a-48c5-8d8b-e4aa40ed319b#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "4u46jkf8r1",
+      "Integrity": "BO8slHgT6uPkvwOfJexYTCKODeTlkm0f+gqY3oDqt/Q=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png"
+    },
+    {
       "Identity": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\92118683-b626-42fb-a922-3c00c2d7ae2a.avif",
       "SourceId": "DoLearn.API",
       "SourceType": "Discovered",
@@ -57,6 +78,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\92118683-b626-42fb-a922-3c00c2d7ae2a.avif"
+    },
+    {
+      "Identity": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\dasdas.png",
+      "SourceId": "DoLearn.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\",
+      "BasePath": "_content/DoLearn.API",
+      "RelativePath": "images/dasdas#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "rrs78g6o9c",
+      "Integrity": "mcqJox2uIXuUvl5bSgTfMB3CrRcy0vpfTzz2M1yzm6A=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\dasdas.png"
+    },
+    {
+      "Identity": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\image123.png",
+      "SourceId": "DoLearn.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\",
+      "BasePath": "_content/DoLearn.API",
+      "RelativePath": "images/image123#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "qbjmgka2n3",
+      "Integrity": "qvTKvINjPC6tpjxb14HlwlZkq3KydFSOV7GF6a6FEvc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\image123.png"
     }
   ],
   "Endpoints": [
@@ -143,6 +206,88 @@
       ]
     },
     {
+      "Route": "images/3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.4u46jkf8r1.png",
+      "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "376621"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"BO8slHgT6uPkvwOfJexYTCKODeTlkm0f+gqY3oDqt/Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 12:17:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4u46jkf8r1"
+        },
+        {
+          "Name": "label",
+          "Value": "images/3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-BO8slHgT6uPkvwOfJexYTCKODeTlkm0f+gqY3oDqt/Q="
+        }
+      ]
+    },
+    {
+      "Route": "images/3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png",
+      "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "376621"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"BO8slHgT6uPkvwOfJexYTCKODeTlkm0f+gqY3oDqt/Q=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 12:17:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-BO8slHgT6uPkvwOfJexYTCKODeTlkm0f+gqY3oDqt/Q="
+        }
+      ]
+    },
+    {
       "Route": "images/92118683-b626-42fb-a922-3c00c2d7ae2a.avif",
       "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\92118683-b626-42fb-a922-3c00c2d7ae2a.avif",
       "Selectors": [],
@@ -221,6 +366,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-t9BgPhg0JVLN7FKY4yjCLqIAL8lXqzKD5e83JVaqXlA="
+        }
+      ]
+    },
+    {
+      "Route": "images/dasdas.png",
+      "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\dasdas.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12522"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mcqJox2uIXuUvl5bSgTfMB3CrRcy0vpfTzz2M1yzm6A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:38:12 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mcqJox2uIXuUvl5bSgTfMB3CrRcy0vpfTzz2M1yzm6A="
+        }
+      ]
+    },
+    {
+      "Route": "images/dasdas.rrs78g6o9c.png",
+      "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\dasdas.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12522"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mcqJox2uIXuUvl5bSgTfMB3CrRcy0vpfTzz2M1yzm6A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:38:12 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rrs78g6o9c"
+        },
+        {
+          "Name": "label",
+          "Value": "images/dasdas.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mcqJox2uIXuUvl5bSgTfMB3CrRcy0vpfTzz2M1yzm6A="
+        }
+      ]
+    },
+    {
+      "Route": "images/image123.png",
+      "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\image123.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "82966"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"qvTKvINjPC6tpjxb14HlwlZkq3KydFSOV7GF6a6FEvc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:42:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-qvTKvINjPC6tpjxb14HlwlZkq3KydFSOV7GF6a6FEvc="
+        }
+      ]
+    },
+    {
+      "Route": "images/image123.qbjmgka2n3.png",
+      "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\image123.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "82966"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"qvTKvINjPC6tpjxb14HlwlZkq3KydFSOV7GF6a6FEvc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 19 Apr 2025 13:42:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qbjmgka2n3"
+        },
+        {
+          "Name": "label",
+          "Value": "images/image123.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-qvTKvINjPC6tpjxb14HlwlZkq3KydFSOV7GF6a6FEvc="
         }
       ]
     }

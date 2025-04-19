@@ -2,6 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using DoLearn.API.Features.Auth.Register;
 using DoLearn.API.Features.Auth.Login;
+using System.Security.Claims;
+using DoLearn.API.Features.Auth;
 
 namespace DoLearn.API.Controllers
 {
@@ -40,6 +42,14 @@ namespace DoLearn.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginQuery query)
         {
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var query = new GetUser.Query(userId);
             var result = await _mediator.Send(query);
             return Ok(result);
         }

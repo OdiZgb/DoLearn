@@ -1,16 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private baseUrl = 'http://localhost:5055/api/Auth'; // Update if needed
-
+  private currentUser = new BehaviorSubject<any>(null);
+  currentUser$ = this.currentUser.asObservable();
   constructor(private http: HttpClient) {
     this.checkAuthState();
+    
   }
+  
+
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn$ = this.isAuthenticatedSubject.asObservable();
 
@@ -46,7 +50,12 @@ export class AuthService {
   login(data: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/login`, data);
   }
-
+  fetchUserProfile(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/me`).pipe(
+      tap(user => this.currentUser.next(user))
+    );
+  }
+    
   saveToken(token: string) {
     localStorage.setItem('token', token);
     this.isAuthenticatedSubject.next(true);

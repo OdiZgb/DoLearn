@@ -5,8 +5,20 @@
       "PackagePath": "staticwebassets\\images\\1567c11f-14b5-40a9-904d-6df08d0dbcc9.avif"
     },
     {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png",
+      "PackagePath": "staticwebassets\\images\\3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png"
+    },
+    {
       "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\92118683-b626-42fb-a922-3c00c2d7ae2a.avif",
       "PackagePath": "staticwebassets\\images\\92118683-b626-42fb-a922-3c00c2d7ae2a.avif"
+    },
+    {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\dasdas.png",
+      "PackagePath": "staticwebassets\\images\\dasdas.png"
+    },
+    {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\image123.png",
+      "PackagePath": "staticwebassets\\images\\image123.png"
     },
     {
       "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DoLearn.API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
