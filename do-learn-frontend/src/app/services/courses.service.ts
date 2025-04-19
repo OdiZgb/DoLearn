@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Course } from '../models/Course';
+import { CourseResponse } from '../models/CourseResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -43,4 +45,8 @@ export class CoursesService {
   cancelSession(sessionId: number): Observable<any> {
     return this.http.put(`${this.apiUrl}/cancel-session/${sessionId}`, {});
   }
+  createCourseWithImage(fd: FormData): Observable<CourseResponse> {
+    return this.http.post<CourseResponse>(this.apiUrl, fd);
+  }
+
 }

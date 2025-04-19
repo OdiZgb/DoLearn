@@ -1,74 +1,66 @@
+// Features/Courses/CreateCourse/CreateCourseCommandHandler.cs
 using DoLearn.API.Data;
 using DoLearn.API.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace DoLearn.API.Features.Courses.CreateCourse
+public class CreateCourseCommandHandler
+    : IRequestHandler<CreateCourseCommand, CourseResponse>
 {
-    public sealed class CreateCourseCommandHandler
-        : IRequestHandler<CreateCourseCommand, CourseResponse>
+    private readonly AppDbContext _context;
+
+    public CreateCourseCommandHandler(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public CreateCourseCommandHandler(AppDbContext context)
-        {
-            _context = context;
-        }
+    public async Task<CourseResponse> Handle(CreateCourseCommand req, CancellationToken ct)
+    {
+        // Authorization, entity creation, schedule, sessions…
+        var course = new Course {
+            Title       = req.Title,
+            Description = req.Description,
+            CourseCode  = req.CourseCode,
+            CreatedById = req.CreatedById,
+            ImgURL      = req.ImgURL,
+            CreatedAt   = DateTime.UtcNow,
+            LastUpdated = DateTime.UtcNow
+        };
+        _context.Courses.Add(course);
+        await _context.SaveChangesAsync(ct);
 
-        public async Task<CourseResponse> Handle(
-            CreateCourseCommand request,
-            CancellationToken cancellationToken)
-        {
-            var creator = await _context.Users
-                .FirstOrDefaultAsync(u => u.Id == request.CreatedById, cancellationToken);
+        var sessions = req.SessionStartTimes
+            .Zip(req.SessionEndTimes, (st, et) => new CourseSession {
+                Start      = st,
+                Finish     = et,
+                IsCanceled = false
+            })
+            .ToList();
 
-            if (creator?.Role != UserRole.Admin)
-                throw new UnauthorizedAccessException("Only admins can create courses");
+        var schedule = new CourseSchedule {
+            CourseId      = course.Id,
+            StartDate     = req.StartDate,
+            EndDate       = req.EndDate,
+            Sessions      = sessions,
+            IsSoftDeleted = false
+        };
+        _context.CourseSchedules.Add(schedule);
+        await _context.SaveChangesAsync(ct);
 
-            var course = new Course
-            {
-                Title = request.Title,
-                Description = request.Description,
-                CourseCode = request.CourseCode,
-                CreatedById = request.CreatedById,
-                CreatedAt = DateTime.UtcNow,
-                LastUpdated = DateTime.UtcNow
-            };
-
-            _context.Courses.Add(course);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            var sessions = request.SessionStartTimes
-                .Zip(request.SessionEndTimes, (start, end) => new CourseSession
-                {
-                    Start = start,
-                    Finish = end,
-                    IsCanceled = false
-                })
-                .ToList();
-
-            var schedule = new CourseSchedule
-            {
-                CourseId = course.Id,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-                Sessions = sessions,
-                IsSoftDeleted = false
-            };
-
-            _context.CourseSchedules.Add(schedule);
-            await _context.SaveChangesAsync(cancellationToken);
-            return new CourseResponse(
-                course.Id,
-                course.Title,
-                course.CourseCode,
-                course.CreatedAt,
-                request.StartDate,
-                request.EndDate,
-                request.SessionStartTimes,
-                request.SessionEndTimes
-            );
-
-        }
+        return new CourseResponse(
+            course.Id,
+            course.Title,
+            course.CourseCode,
+            course.CreatedAt,
+            req.StartDate,
+            req.EndDate,
+            req.SessionStartTimes,
+            req.SessionEndTimes,
+            req.ImgURL
+        );
     }
 }

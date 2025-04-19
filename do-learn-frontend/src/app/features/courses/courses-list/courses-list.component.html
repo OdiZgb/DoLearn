@@ -1,18 +1,20 @@
-<div *ngIf="courses.length === 0" class="empty-state">
-  No courses available.
-</div>
-
+<!-- courses-list.component.html -->
 <div *ngIf="courses.length > 0" class="courses-grid">
   <mat-card class="course-card" *ngFor="let course of courses">
     <mat-card-header>
+      <img mat-card-sm-image 
+           [src]="course.imgURL || 'assets/default-course.png'" 
+           alt="{{ course.title }} image"
+           class="course-image"
+           (error)="course.imgURL = 'assets/default-course.png'">
       <mat-card-title>{{ course.title }}</mat-card-title>
       <mat-card-subtitle>{{ course.courseCode }}</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
       <p>{{ course.description }}</p>
-      <p><strong>Start:</strong> {{ course.startDate }}</p>
-      <p><strong>End:</strong> {{ course.endDate }}</p>
+      <p><strong>Created:</strong> {{ course.createdAt | date }}</p>
+      <p><strong>Updated:</strong> {{ course.lastUpdated | date }}</p>
     </mat-card-content>
 
     <mat-card-actions>

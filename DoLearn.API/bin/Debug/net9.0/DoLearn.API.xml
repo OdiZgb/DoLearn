@@ -40,5 +40,17 @@
         <member name="M:DoLearn.API.Migrations.addImageUrlCourse.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:DoLearn.API.Migrations.addImageUrlCourseCapital">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.addImageUrlCourseCapital.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.addImageUrlCourseCapital.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.addImageUrlCourseCapital.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

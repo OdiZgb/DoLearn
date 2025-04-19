@@ -1,3 +1,4 @@
+// in DoLearn.API.Features.Courses.Commands
 using MediatR;
 
 public record CreateCourseCommand(
@@ -8,5 +9,6 @@ public record CreateCourseCommand(
     DateTime EndDate,
     List<DateTime> SessionStartTimes,
     List<DateTime> SessionEndTimes,
-    int CreatedById
+    int CreatedById,
+    string? ImgURL
 ) : IRequest<CourseResponse>;

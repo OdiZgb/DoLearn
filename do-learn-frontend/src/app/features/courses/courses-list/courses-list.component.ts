@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CoursesService } from '../../../services/courses.service';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Course } from '../../../models/Course';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +18,8 @@ import { MatCardModule } from '@angular/material/card';
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    DatePipe 
   ]
   
 })

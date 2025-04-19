@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 })
 export class CreateCourseComponent implements OnInit {
   courseForm!: FormGroup;
-
+  selectedFile!: File;
   constructor(
     private fb: FormBuilder,
     private coursesService: CoursesService,
@@ -53,21 +53,54 @@ export class CreateCourseComponent implements OnInit {
   removeSession(index: number): void {
     this.sessions.removeAt(index);
   }
-
-  onSubmit(): void {
-    if (this.courseForm.valid) {
-      const formData = this.transformFormData();
-      this.coursesService.createCourse(formData).subscribe({
-        next: () => this.handleSuccess(),
-        error: (err) => this.handleError(err)
-      });
-    } else {
-      this.markAllAsTouched();
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.selectedFile = input.files[0];
     }
   }
 
+  onSubmit() {
+    if (this.courseForm.invalid || !this.selectedFile) {
+      this.courseForm.markAllAsTouched();
+      return;
+    }
+
+    const fd = new FormData();
+    const raw = this.courseForm.getRawValue();
+
+    // Basic fields
+    fd.append('title',       raw.title);
+    fd.append('description', raw.description);
+    fd.append('courseCode',  raw.courseCode);
+    fd.append('startDate',   raw.startDate);
+    fd.append('endDate',     raw.endDate);
+    fd.append('price',       raw.price.toString());
+
+    // Sessions: repeated entries so ASP.NET Core can bind List<DateTime>
+    raw.sessions.forEach((s: any) => {
+      fd.append('SessionStartTimes', s.startTime);
+      fd.append('SessionEndTimes',   s.endTime);
+    });
+
+    // File (must match DTO property name "Image")
+    fd.append('Image', this.selectedFile, this.selectedFile.name);
+
+    this.coursesService.createCourseWithImage(fd)
+      .subscribe({
+        next: () => {
+          alert('Course created successfully!');
+          this.router.navigate(['/courses']);
+        },
+        error: err => {
+          console.error(err);
+          alert('Error creating course');
+        }
+      });
+  }
   private transformFormData(): any {
     const rawValue = this.courseForm.getRawValue();
+    
     return {
       title: rawValue.title,
       description: rawValue.description,
@@ -98,4 +131,5 @@ export class CreateCourseComponent implements OnInit {
     console.error('Creation error:', err);
     alert(err.error?.message || 'Error creating course');
   }
+  
 }

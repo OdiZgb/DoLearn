@@ -1,5 +1,4 @@
 using DoLearn.API.Data;
-using DoLearn.API.Features.Courses.CreateCourse;
 using DoLearn.API.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -35,10 +34,12 @@ namespace DoLearn.API.Features.Courses.GetCourse
                 course.CourseCode,
                 course.CreatedAt,
                 schedule?.StartDate ?? DateTime.MinValue,
-                schedule?.EndDate ?? DateTime.MinValue,
+                schedule?.EndDate   ?? DateTime.MinValue,
                 sessionStartTimes,
-                sessionEndTimes
+                sessionEndTimes,
+                course.ImgURL            // ← pass the stored image URL here
             );
+            
         }
     }
 }

@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using DoLearn.API.Features.Courses.CreateCourse;
 using DoLearn.API.Features.Courses.GetCourse;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -14,35 +13,47 @@ namespace DoLearn.API.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IWebHostEnvironment _env;   // ← add this
 
-        public CoursesController(IMediator mediator)
+        public CoursesController(IMediator mediator, IWebHostEnvironment env)
         {
             _mediator = mediator;
+             _env      = env;
         }
+        
 
-        [HttpPost]
-        public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto dto)
+    [HttpPost]
+    public async Task<IActionResult> CreateCourse([FromForm] CreateCourseDto dto)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        if (dto.Image is not null)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var imagesFolder = Path.Combine(_env.WebRootPath, "images");
+            Directory.CreateDirectory(imagesFolder);
 
-            var command = new CreateCourseCommand(
-                dto.Title,
-                dto.Description,
-                dto.CourseCode,
-                dto.StartDate,
-                dto.EndDate,
-                dto.SessionStartTimes,
-                dto.SessionEndTimes,
-                userId   
-            );
-
-
-            var result = await _mediator.Send(command);
-
-            // Return the response
-            return CreatedAtAction(nameof(GetCourse), new { id = result.Id }, result);
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.Image.FileName)}";
+            var fullPath = Path.Combine(imagesFolder, fileName);
+            await using var stream = System.IO.File.Create(fullPath);
+            await dto.Image.CopyToAsync(stream);
+            dto.ImgURL = $"/images/{fileName}";
         }
 
+        var cmd = new CreateCourseCommand(
+            dto.Title,
+            dto.Description,
+            dto.CourseCode,
+            dto.StartDate,
+            dto.EndDate,
+            dto.SessionStartTimes,
+            dto.SessionEndTimes,
+            userId,
+            dto.ImgURL
+        );
+
+        var result = await _mediator.Send(cmd);
+        return CreatedAtAction(nameof(GetCourse), new { id = result.Id }, result);
+    }
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetCourse(int id)
