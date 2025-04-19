@@ -117,8 +117,8 @@
           <h4>Sessions Preview</h4>
           <div class="session-card" *ngFor="let session of sessions.controls; let i = index" 
           [formGroup]="$any(session)" [class.inactive]="!session.get('active')?.value">
-                         [formGroup]="session" [class.inactive]="!session.get('active')?.value">
-              <div class="session-header">
+
+          <div class="session-header">
                   <span class="session-number">Session {{ i + 1 }}</span>
                   <label class="toggle-switch small">
                       <input type="checkbox" formControlName="active">

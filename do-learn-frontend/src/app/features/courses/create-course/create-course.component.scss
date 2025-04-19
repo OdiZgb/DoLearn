@@ -1,160 +1,233 @@
-/* Advanced Styling */
+// Variables
+$primary-color: #2c3e50;
+$secondary-color: #3498db;
+$success-color: #27ae60;
+$danger-color: #e74c3c;
+$light-gray: #ecf0f1;
+$text-color: #2c3e50;
+$transition-speed: 0.3s;
+
+// Base styles
 .form-section {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+  margin: 2rem 0;
   padding: 2rem;
-  margin-bottom: 2rem;
+  position: relative;
+  transition: transform $transition-speed ease, box-shadow $transition-speed ease;
+
+  &:hover {
+    box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.1);
+    transform: translateY(-0.25rem);
+  }
 
   h3 {
-    color: #2c3e50;
+    color: $primary-color;
+    font-size: 1.5rem;
     margin-bottom: 1.5rem;
-    font-weight: 600;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 0.5rem;
-  }
-}
+    padding-bottom: 1rem;
+    position: relative;
 
-.modern-input {
-  width: 100%;
-  padding: 0.8rem;
-  border: 2px solid #ecf0f1;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-
-  &:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-  }
-}
-
-.day-selector {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
-
-  button {
-    padding: 0.5rem;
-    border: 2px solid #ecf0f1;
-    border-radius: 8px;
-    background: white;
-    transition: all 0.2s ease;
-
-    &.active {
-      background: #3498db;
-      color: white;
-      border-color: #3498db;
+    &::after {
+      background: $secondary-color;
+      bottom: 0;
+      content: '';
+      height: 3px;
+      left: 0;
+      position: absolute;
+      width: 3rem;
     }
   }
 }
 
+// Form elements
+.modern-input {
+  background: white;
+  border: 2px solid $light-gray;
+  border-radius: 0.75rem;
+  color: $text-color;
+  font-size: 1rem;
+  padding: 1rem;
+  transition: all $transition-speed ease;
+  width: 100%;
+
+  &:focus {
+    border-color: $secondary-color;
+    box-shadow: 0 0 0 3px rgba($secondary-color, 0.2);
+    outline: none;
+  }
+
+  &[type="datetime-local"] {
+    &::-webkit-calendar-picker-indicator {
+      filter: invert(0.5);
+      cursor: pointer;
+    }
+  }
+}
+
+.modern-textarea {
+  @extend .modern-input;
+  min-height: 8rem;
+  resize: vertical;
+}
+
+// Day selector
+.day-selector {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr));
+  margin: 1rem 0;
+
+  button {
+    background: white;
+    border: 2px solid $light-gray;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.75rem;
+    transition: all 0.2s ease;
+
+    &.active {
+      background: $secondary-color;
+      border-color: $secondary-color;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    &:hover:not(.active) {
+      border-color: darken($light-gray, 10%);
+    }
+  }
+}
+
+// Session cards
 .sessions-preview {
   margin-top: 2rem;
 
   .session-card {
-    position: relative;
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 1rem;
+    background: white;
+    border: 2px solid $light-gray;
+    border-radius: 0.75rem;
     margin-bottom: 1rem;
-    transition: all 0.2s ease;
+    padding: 1.5rem;
+    position: relative;
+    transition: all $transition-speed ease;
 
     &.inactive {
-      opacity: 0.6;
-      background: #f1f1f1;
+      background: #f8f9fa;
+      border-style: dashed;
+      opacity: 0.7;
     }
 
     .session-header {
+      align-items: center;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
     }
 
     .session-dates {
+      color: lighten($text-color, 20%);
       display: grid;
+      font-size: 0.9rem;
       gap: 0.5rem;
-      color: #7f8c8d;
-      font-size: 0.9em;
     }
 
     .delete-btn {
+      background: none;
+      border: none;
+      color: $danger-color;
+      cursor: pointer;
+      padding: 0.5rem;
       position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      color: #e74c3c;
-      padding: 0.25rem;
-    }
-  }
-}
+      right: 1rem;
+      top: 1rem;
+      transition: color 0.2s ease;
 
-.toggle-switch {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-
-  .slider {
-    width: 40px;
-    height: 20px;
-    background: #ecf0f1;
-    border-radius: 20px;
-    position: relative;
-    transition: all 0.3s ease;
-
-    &::before {
-      content: "";
-      position: absolute;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: white;
-      top: 2px;
-      left: 2px;
-      transition: all 0.3s ease;
-    }
-  }
-
-  input:checked + .slider {
-    background: #3498db;
-    
-    &::before {
-      transform: translateX(20px);
-    }
-  }
-
-  &.small {
-    .slider {
-      width: 28px;
-      height: 16px;
-      
-      &::before {
-        width: 12px;
-        height: 12px;
+      &:hover {
+        color: darken($danger-color, 10%);
       }
     }
   }
 }
 
-.file-upload {
-  .upload-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.8rem 1.5rem;
-    background: #3498db;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s ease;
+// Toggle switch
+.toggle-switch {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 0.75rem;
 
-    &:hover {
-      background: #2980b9;
+  .slider {
+    background: $light-gray;
+    border-radius: 1rem;
+    height: 1.5rem;
+    position: relative;
+    transition: background $transition-speed ease;
+    width: 3rem;
+
+    &::before {
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      content: '';
+      height: 1.25rem;
+      left: 0.125rem;
+      position: absolute;
+      top: 0.125rem;
+      transition: transform $transition-speed ease;
+      width: 1.25rem;
+    }
+  }
+
+  input {
+    display: none;
+
+    &:checked + .slider {
+      background: $secondary-color;
+
+      &::before {
+        transform: translateX(1.5rem);
+      }
+    }
+  }
+
+  &.small .slider {
+    height: 1rem;
+    width: 2rem;
+
+    &::before {
+      height: 0.75rem;
+      width: 0.75rem;
     }
   }
 }
 
+// File upload
+.file-upload {
+  .upload-btn {
+    align-items: center;
+    background: $secondary-color;
+    border-radius: 0.75rem;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: darken($secondary-color, 5%);
+    }
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// Form actions
 .form-actions {
   display: flex;
   gap: 1rem;
@@ -162,23 +235,82 @@
   margin-top: 2rem;
 
   button {
-    padding: 0.8rem 2rem;
-    border-radius: 8px;
-    font-weight: 500;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 1rem 2rem;
     transition: all 0.2s ease;
 
     &.submit-btn {
-      background: #2ecc71;
+      background: $success-color;
       color: white;
-      
+
       &:disabled {
-        background: #bdc3c7;
+        background: desaturate($success-color, 50%);
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
+      &:not(:disabled):hover {
+        background: darken($success-color, 5%);
       }
     }
 
     &.cancel-btn {
-      background: #e74c3c;
+      background: $danger-color;
       color: white;
+
+      &:hover {
+        background: darken($danger-color, 5%);
+      }
+    }
+  }
+}
+
+// Error messages
+.error {
+  color: $danger-color;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: rgba($danger-color, 0.1);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: '!';
+    background: $danger-color;
+    color: white;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .form-section {
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .date-section {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
     }
   }
 }
