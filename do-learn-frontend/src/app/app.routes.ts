@@ -9,6 +9,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'courses', pathMatch: 'full' },
   { path: 'courses', component: CoursesListComponent },
   { path: 'courses/create', component: CreateCourseComponent },
+  { path: 'courses/:id', component: CreateCourseComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent }

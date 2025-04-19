@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Course } from '../models/Course';
 import { CourseResponse } from '../models/CourseResponse';
 
@@ -48,5 +48,10 @@ export class CoursesService {
   createCourseWithImage(fd: FormData): Observable<CourseResponse> {
     return this.http.post<CourseResponse>(this.apiUrl, fd);
   }
+  getEnrollmentStatus(courseId: number): Observable<'enrolled' | 'pending' | 'not-enrolled'> {
+    return this.http.get<{ status: string }>(`${this.apiUrl}courses/${courseId}/enrollment-status`)
+      .pipe(map(res => res.status as any));
+  }
+
 
 }

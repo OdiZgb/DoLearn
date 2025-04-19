@@ -23,18 +23,26 @@
     </mat-card-content>
 
     <mat-card-actions class="actions">
-      <button mat-raised-button color="primary" class="action-button">
+      <button mat-raised-button 
+              color="primary" 
+              class="action-button"
+              [routerLink]="['/courses', course.id]">
         <mat-icon>visibility</mat-icon> View
       </button>
-      <button mat-raised-button color="accent" class="action-button">
-        <mat-icon>how_to_reg</mat-icon> Enroll
+
+      <button mat-raised-button 
+              color="accent" 
+              class="action-button"
+              (click)="onEnroll(course)"
+              [disabled]="!canEnroll() || course.enrollmentStatus !== 'not-enrolled' || course.isEnrollmentLoading">
+        <span *ngIf="course.isEnrollmentLoading">
+          <mat-spinner diameter="20"></mat-spinner>
+        </span>
+        <span *ngIf="!course.isEnrollmentLoading">
+          <mat-icon>how_to_reg</mat-icon> 
+          {{ course.enrollmentStatus === 'pending' ? 'Pending Approval' : 'Enroll' }}
+        </span>
       </button>
     </mat-card-actions>
   </mat-card>
-</div>
-
-<div *ngIf="courses.length === 0" class="empty-state">
-  <mat-icon>class</mat-icon>
-  <h2>No courses available</h2>
-  <p>Check back later for new courses!</p>
 </div>
