@@ -59,7 +59,7 @@ builder.Services.AddCors(options =>
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
-    });
+});
 });
 
 // 5. Swagger
@@ -113,7 +113,9 @@ app.UseExceptionHandler(exceptionHandlerApp =>
     });
 });
 
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend"); // Enable CORS policy

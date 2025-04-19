@@ -181,3 +181,4 @@ C:\Users\odizg\OneDrive\Desktop\Projects\DoLearn\DoLearn.API\obj\Debug\net9.0\Do
 C:\Users\odizg\OneDrive\Desktop\Projects\DoLearn\DoLearn.API\obj\Debug\net9.0\DoLearn.API.pdb
 C:\Users\odizg\OneDrive\Desktop\Projects\DoLearn\DoLearn.API\obj\Debug\net9.0\DoLearn.API.genruntimeconfig.cache
 C:\Users\odizg\OneDrive\Desktop\Projects\DoLearn\DoLearn.API\obj\Debug\net9.0\ref\DoLearn.API.dll
+C:\Users\odizg\OneDrive\Desktop\Projects\DoLearn\DoLearn.API\bin\Debug\net9.0\DoLearn.API.staticwebassets.runtime.json

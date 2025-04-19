@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DoLearn.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e121139474bc2f44f11168592b7c6d5918b9c55b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+26dbdff6184409cd858ab25634e0923bc9cad4a9")]
 [assembly: System.Reflection.AssemblyProductAttribute("DoLearn.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DoLearn.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

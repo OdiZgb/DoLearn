@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\1567c11f-14b5-40a9-904d-6df08d0dbcc9.avif",
+      "PackagePath": "staticwebassets\\images\\1567c11f-14b5-40a9-904d-6df08d0dbcc9.avif"
+    },
+    {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\92118683-b626-42fb-a922-3c00c2d7ae2a.avif",
+      "PackagePath": "staticwebassets\\images\\92118683-b626-42fb-a922-3c00c2d7ae2a.avif"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DoLearn.API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.DoLearn.API.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.build.DoLearn.API.props",
+      "PackagePath": "build\\DoLearn.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildMultiTargeting.DoLearn.API.props",
+      "PackagePath": "buildMultiTargeting\\DoLearn.API.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildTransitive.DoLearn.API.props",
+      "PackagePath": "buildTransitive\\DoLearn.API.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

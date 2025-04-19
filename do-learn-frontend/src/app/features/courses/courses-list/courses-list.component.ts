@@ -24,9 +24,10 @@ import { MatCardModule } from '@angular/material/card';
   
 })
 export class CoursesListComponent implements OnInit {
+  private apiUrl = 'http://localhost:5055/api/'; // Hell yeah we remember
 
   courses: Course[] = [];
-
+ 
   constructor(private coursesService: CoursesService,private route: ActivatedRoute) { }
 
   ngOnInit(): void {
