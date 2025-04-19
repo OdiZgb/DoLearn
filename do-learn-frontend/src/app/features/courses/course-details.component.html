@@ -1,34 +1,125 @@
-<mat-card *ngIf="course">
-    <img [src]="course.imgURL" alt="{{ course.title }}" style="width: 100%; max-height: 300px; object-fit: cover;">
+<mat-card *ngIf="course" class="modern-course-card">
+  <!-- Hero Section -->
+  <div class="course-hero">
+    <img [src]="course.imgURL" alt="{{ course.title }}" class="hero-image">
+    <div class="hero-overlay">
+      <h1 class="course-title">{{ course.title }}</h1>
+      <div class="course-meta">
+        <span class="course-code">{{ course.courseCode }}</span>
+        <span class="course-duration">
+          <mat-icon>calendar_today</mat-icon>
+          {{ course.startDate | date: 'MMM d' }} - {{ course.endDate | date: 'MMM d' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Course Details Grid -->
+  <div class="details-grid">
+    <!-- Main Content -->
+    <div class="course-content">
+      <mat-card-content>
+        <h2 class="section-title">About This Course</h2>
+        <p class="course-description">{{ course.description || 'No description available' }}</p>
+        
+        <div class="stats-container">
+          <div class="stat-item">
+            <mat-icon>schedule</mat-icon>
+            <div>
+              <div class="stat-label">Total Duration</div>
+              <div>{{ calculateTotalHours() }} Hours</div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>event_available</mat-icon>
+            <div>
+              <div class="stat-label">Sessions</div>
+              <div>{{ course.sessionStartTimes?.length || 0 }}</div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </div>
+
+    <!-- Schedule Sidebar -->
+    <div class="schedule-sidebar">
+      <h2 class="section-title">Course Schedule</h2>
+      
+      <!-- Calendar View Toggle -->
+      <mat-button-toggle-group [(value)]="viewMode">
+        <mat-button-toggle value="calendar">
+          <mat-icon>calendar_view_month</mat-icon> Calendar
+        </mat-button-toggle>
+        <mat-button-toggle value="list">
+          <mat-icon>view_list</mat-icon> List
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <!-- Calendar View -->
+      <div class="calendar-view" *ngIf="viewMode === 'calendar'">
+        <div class="calendar-grid">
+          <div *ngFor="let session of groupSessionsByWeek()" class="calendar-week">
+            <div class="week-header">Week {{ session.weekNumber }}</div>
+            <div class="session-blocks">
+              <div *ngFor="let date of session.dates" 
+                   class="session-block"
+                   [class.past]="isPastSession(date)"
+                   [class.current]="isCurrentSession(date)">
+                <div class="session-date">{{ date | date: 'MMM d' }}</div>
+                <div class="session-time">{{ date | date: 'shortTime' }} - {{ getEndTime(date) | date: 'shortTime' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- List View -->
+      <div class="list-view" *ngIf="viewMode === 'list'">
+        <div *ngFor="let date of course.sessionStartTimes; index as i" class="session-item">
+          <div class="session-date">
+            <div class="day">{{ date | date: 'EEE' }}</div>
+            <div class="date">{{ date | date: 'd' }}</div>
+            <div class="month">{{ date | date: 'MMM' }}</div>
+          </div>
+          <div class="session-info">
+            <div class="time-range">
+              {{ date | date: 'shortTime' }} - {{ course.sessionEndTimes[i] | date: 'shortTime' }}
+            </div>
+            <div class="session-status">
+              <mat-icon *ngIf="isPastSession(date)" class="past">check_circle</mat-icon>
+              <mat-icon *ngIf="isCurrentSession(date)" class="current">radio_button_checked</mat-icon>
+              <mat-icon *ngIf="isFutureSession(date)" class="future">schedule</mat-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enrollment Section -->
+  <mat-card-actions class="enrollment-section">
+    <div class="price-tag">
+      <div class="price-label">Total Price</div>
+      <div class="price-amount">{{ course.price | currency }}</div>
+    </div>
     
-    <mat-card-header>
-      <mat-card-title>{{ course.title }}</mat-card-title>
-      <mat-card-subtitle>{{ course.courseCode }}</mat-card-subtitle>
-    </mat-card-header>
-  
-    <mat-card-content>
-      <p>{{ course.description }}</p>
-      <p><mat-icon>schedule</mat-icon> Start: {{ course.startDate | date }}</p>
-      <p><mat-icon>event</mat-icon> End: {{ course.endDate | date }}</p>
-      <p><mat-icon>attach_money</mat-icon> Price: {{ course.price }}</p>
-    </mat-card-content>
-  
-    <mat-card-actions>
-      <button mat-raised-button color="accent"
-              *ngIf="canEnroll()"
-              (click)="enroll()"
-              [disabled]="isEnrollmentLoading">
-        <mat-icon>how_to_reg</mat-icon>
-        <ng-container *ngIf="isEnrollmentLoading; else notLoading">
-          <mat-spinner diameter="20"></mat-spinner>
-        </ng-container>
-        <ng-template #notLoading>
-          Enroll
-        </ng-template>
-      </button>
-  
-      <span *ngIf="enrollmentStatus === 'pending'">Pending Approval</span>
-      <span *ngIf="enrollmentStatus === 'enrolled'">Already Enrolled</span>
-    </mat-card-actions>
-  </mat-card>
-  
+    <button mat-raised-button 
+            class="enroll-button"
+            *ngIf="canEnroll()"
+            (click)="enroll()"
+            [disabled]="isEnrollmentLoading">
+      <mat-icon>rocket_launch</mat-icon>
+      <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
+      <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
+    </button>
+
+    <div class="enrollment-status">
+      <span *ngIf="enrollmentStatus === 'pending'" class="status-pending">
+        <mat-icon>pending_actions</mat-icon> Enrollment Pending
+      </span>
+      <span *ngIf="enrollmentStatus === 'enrolled'" class="status-enrolled">
+        <mat-icon>verified</mat-icon> Successfully Enrolled
+      </span>
+    </div>
+  </mat-card-actions>
+</mat-card>

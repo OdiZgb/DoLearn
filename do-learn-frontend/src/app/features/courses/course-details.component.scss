@@ -1,0 +1,263 @@
+.modern-course-card {
+    max-width: 1200px;
+    margin: 2rem auto;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  
+    .course-hero {
+      position: relative;
+      .hero-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        filter: brightness(0.8);
+      }
+      
+      .hero-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 2rem;
+        background: linear-gradient(transparent, rgba(0,0,0,0.7));
+        color: white;
+        
+        .course-title {
+          margin: 0;
+          font-size: 2.5rem;
+          font-weight: 700;
+        }
+        
+        .course-meta {
+          display: flex;
+          gap: 1.5rem;
+          margin-top: 1rem;
+          align-items: center;
+          
+          .course-code {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 2rem;
+      padding: 2rem;
+  
+      .section-title {
+        font-size: 1.5rem;
+        margin: 1rem 0;
+        color: #333;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 0.5rem;
+      }
+  
+      .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+  
+        .stat-item {
+          display: flex;
+          align-items: center;
+          padding: 1rem;
+          background: #f8f9fa;
+          border-radius: 12px;
+          
+          mat-icon {
+            margin-right: 1rem;
+            color: #666;
+          }
+  
+          .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+          }
+        }
+      }
+    }
+  
+    .schedule-sidebar {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.5rem;
+  
+      mat-button-toggle-group {
+        margin-bottom: 1.5rem;
+        width: 100%;
+        
+        mat-button-toggle {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+  
+      .calendar-view {
+        .calendar-grid {
+          display: grid;
+          gap: 1rem;
+  
+          .calendar-week {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  
+            .week-header {
+              font-weight: 600;
+              margin-bottom: 0.5rem;
+              color: #444;
+            }
+  
+            .session-blocks {
+              display: grid;
+              grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+              gap: 0.5rem;
+  
+              .session-block {
+                padding: 0.5rem;
+                border-radius: 8px;
+                background: #f0f2f5;
+                border-left: 4px solid #3f51b5;
+                transition: transform 0.2s;
+  
+                &.past {
+                  opacity: 0.6;
+                  border-color: #ccc;
+                }
+  
+                &.current {
+                  background: #e8f4ff;
+                  border-color: #2196f3;
+                }
+  
+                .session-date {
+                  font-size: 0.9rem;
+                  font-weight: 500;
+                }
+  
+                .session-time {
+                  font-size: 0.8rem;
+                  color: #666;
+                }
+              }
+            }
+          }
+        }
+      }
+  
+      .list-view {
+        .session-item {
+          display: flex;
+          align-items: center;
+          padding: 1rem;
+          margin: 0.5rem 0;
+          background: white;
+          border-radius: 8px;
+          transition: transform 0.2s;
+  
+          .session-date {
+            text-align: center;
+            min-width: 60px;
+            margin-right: 1rem;
+            
+            .day {
+              font-size: 0.8rem;
+              color: #666;
+            }
+            
+            .date {
+              font-size: 1.4rem;
+              font-weight: 600;
+            }
+            
+            .month {
+              font-size: 0.8rem;
+              color: #666;
+            }
+          }
+  
+          .session-info {
+            flex: 1;
+            
+            .time-range {
+              font-weight: 500;
+            }
+            
+            .session-status {
+              margin-top: 0.3rem;
+              
+              mat-icon {
+                font-size: 1.2rem;
+                
+                &.past { color: #4caf50; }
+                &.current { color: #2196f3; }
+                &.future { color: #ff9800; }
+              }
+            }
+          }
+        }
+      }
+    }
+  
+    .enrollment-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 2rem;
+      border-top: 2px solid #eee;
+  
+      .price-tag {
+        background: #f0f2f5;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        
+        .price-label {
+          font-size: 0.9rem;
+          color: #666;
+        }
+        
+        .price-amount {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #3f51b5;
+        }
+      }
+  
+      .enroll-button {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        transition: transform 0.2s;
+        
+        &:hover {
+          transform: translateY(-2px);
+        }
+  
+        mat-icon {
+          margin-right: 0.5rem;
+        }
+      }
+  
+      .enrollment-status {
+        font-weight: 500;
+        
+        .status-pending { color: #ff9800; }
+        .status-enrolled { color: #4caf50; }
+        
+        mat-icon {
+          vertical-align: middle;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }

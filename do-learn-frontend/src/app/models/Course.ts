@@ -6,6 +6,8 @@ export interface Course {
     startDate: string;
     endDate: string;
     price:any
+    sessionStartTimes:any;
+    sessionEndTimes:any;
     imgIRL: string;
     createdAt: string;       // Changed from createdById
     lastUpdated: string;     // Changed from lastUpdated

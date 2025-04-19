@@ -10,7 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../auth/auth.service';
 import { Course } from '../../models/Course';
 import { CoursesService } from '../../services/courses.service';
-
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 @Component({
   selector: 'app-course-details',
   standalone: true,
@@ -22,7 +22,8 @@ import { CoursesService } from '../../services/courses.service';
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule
   ]
 })
 export class CourseDetailsComponent implements OnInit {
@@ -31,6 +32,7 @@ export class CourseDetailsComponent implements OnInit {
   isEnrollmentLoading = false;
   userRole?: string;
   userId?: number;
+  viewMode: 'calendar' | 'list' = 'calendar';
 
   constructor(
     private route: ActivatedRoute,
@@ -79,5 +81,54 @@ export class CourseDetailsComponent implements OnInit {
 
   canEnroll(): boolean {
     return this.userRole === 'Student' && this.enrollmentStatus === 'not-enrolled';
+  }
+  groupSessionsByWeek() {
+    const weeks = new Map<number, any>();
+    this.course.sessionStartTimes?.forEach((dateStr:any) => {
+      const date = new Date(dateStr);
+      const weekNumber = this.getWeekNumber(date);
+      
+      if (!weeks.has(weekNumber)) {
+        weeks.set(weekNumber, {
+          weekNumber,
+          dates: []
+        });
+      }
+      weeks.get(weekNumber).dates.push(date);
+    });
+    return Array.from(weeks.values());
+  }
+  
+  getWeekNumber(d: Date) {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    return Math.ceil(((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  }
+  
+  isPastSession(date: Date) {
+    return new Date(date) < new Date();
+  }
+  
+  isCurrentSession(date: Date) {
+    const now = new Date();
+    return new Date(date) <= now && now <= new Date(date.getTime() + (5 * 60 * 60 * 1000));
+  }
+  
+  isFutureSession(date: Date) {
+    return new Date(date) > new Date();
+  }
+  
+  calculateTotalHours() {
+    return this.course.sessionStartTimes?.reduce((acc:any, start:any, i:any) => {
+      const end = new Date(this.course.sessionEndTimes[i]);
+      const startDate = new Date(start);
+      return acc + Math.round((end.getTime() - startDate.getTime()) / (1000 * 60 * 60));
+    }, 0) || 0;
+  }
+  
+  getEndTime(startDate: string) {
+    const index = this.course.sessionStartTimes.indexOf(startDate);
+    return this.course.sessionEndTimes[index];
   }
 }
