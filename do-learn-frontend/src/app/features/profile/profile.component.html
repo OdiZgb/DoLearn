@@ -1,1 +1,58 @@
-<p>profile works!</p>
+<!-- profile.component.html -->
+<div class="profile-container">
+    <mat-card class="profile-card">
+      <!-- Profile Header with Gradient -->
+      <div class="profile-header">
+        <div class="avatar-container">
+          <div class="avatar" [style.background]="avatarGradient">
+            {{ userInitials }}
+          </div>
+        </div>
+        <div class="profile-info">
+          <h1 class="username">{{ user?.username }}</h1>
+          <div class="role-badge" [class]="user?.role.toLowerCase()">
+            {{ user?.role }}
+          </div>
+        </div>
+      </div>
+  
+      <!-- Profile Details -->
+      <mat-card-content>
+        <div class="details-grid">
+          <!-- Left Column -->
+          <div class="detail-item">
+            <mat-icon>email</mat-icon>
+            <div class="detail-content">
+              <h3>Email</h3>
+              <p>{{ user?.email }}</p>
+            </div>
+          </div>
+  
+          <div class="detail-item">
+            <mat-icon>cake</mat-icon>
+            <div class="detail-content">
+              <h3>Birthdate</h3>
+              <p>{{ user?.birthdate | date: 'longDate' }}</p>
+            </div>
+          </div>
+  
+          <!-- Right Column -->
+          <div class="detail-item">
+            <mat-icon>event</mat-icon>
+            <div class="detail-content">
+              <h3>Member Since</h3>
+              <p>{{ user?.registered | date: 'MMM yyyy' }}</p>
+            </div>
+          </div>
+  
+          <div class="detail-item">
+            <mat-icon>library_books</mat-icon>
+            <div class="detail-content">
+              <h3>Courses Managed</h3>
+              <p>{{ user?.createdCoursesCount }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
