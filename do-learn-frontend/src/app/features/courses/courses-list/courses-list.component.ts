@@ -4,18 +4,27 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Course } from '../../../models/Course';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
  
 @Component({
   standalone: true,
   selector: 'app-courses-list',
   templateUrl: './courses-list.component.html',
   styleUrls: ['./courses-list.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule,
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule
+  ]
   
 })
 export class CoursesListComponent implements OnInit {
 
-  courses: Course[] = []; // ← This fixes the error!
+  courses: Course[] = [];
 
   constructor(private coursesService: CoursesService,private route: ActivatedRoute) { }
 

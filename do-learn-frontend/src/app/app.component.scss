@@ -1,0 +1,31 @@
+mat-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  mat-sidenav-container {
+    height: calc(100vh - 64px);
+  }
+  
+  mat-sidenav {
+    width: 250px;
+    box-shadow: 3px 0 6px rgba(0,0,0,.24);
+  }
+  
+  .content-container {
+    padding: 20px;
+  }
+  
+  mat-nav-list a.active {
+    background-color: rgba(0,0,0,.04);
+    font-weight: 500;
+  }
+  
+  mat-icon {
+    margin-right: 10px;
+  }

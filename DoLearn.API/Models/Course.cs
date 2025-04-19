@@ -11,6 +11,8 @@ public class Course
     public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 
     public int CreatedById { get; set; }
+    public string? imgURL { get; set; }
+
     public User CreatedBy { get; set; } = null!;
 
     public CoursePricing? Pricing { get; set; }
