@@ -4,88 +4,16 @@
         <name>DoLearn.API</name>
     </assembly>
     <members>
-        <member name="T:DoLearn.API.Migrations.InitialCreate">
+        <member name="T:DoLearn.API.Migrations.mig011">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:DoLearn.API.Migrations.mig011.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:DoLearn.API.Migrations.mig011.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.mig002">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig002.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig002.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig002.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.addImageUrlCourse">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.addImageUrlCourse.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.addImageUrlCourse.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.addImageUrlCourse.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.addImageUrlCourseCapital">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.addImageUrlCourseCapital.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.addImageUrlCourseCapital.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.addImageUrlCourseCapital.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.capacityToCourse002">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.capacityToCourse002.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.capacityToCourse002.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.capacityToCourse002.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.mig008">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig008.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig008.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig008.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.mig009">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig009.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig009.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig009.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:DoLearn.API.Migrations.mig011.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

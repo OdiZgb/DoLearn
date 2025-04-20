@@ -11,12 +11,12 @@ import { AuthService } from '../../auth/auth.service';
 import { Course } from '../../models/Course';
 import { CoursesService } from '../../services/courses.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { SessionDto } from './session.dto';
 
 interface CalendarDay {
   date: Date;
+  sessions: SessionDto[];
   isCurrentMonth: boolean;
-  isSession: boolean;
-  isAvailable: boolean;
   isToday: boolean;
 }
 
@@ -46,6 +46,8 @@ export class CourseDetailsComponent implements OnInit {
   weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   calendarDays: CalendarDay[] = [];
   currentMonth: Date = new Date();
+  selectedSessions: Set<number> = new Set();
+  sessionDetails = new Map<number, SessionDto>();
 
   constructor(
     private route: ActivatedRoute,
@@ -57,7 +59,9 @@ export class CourseDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    
+    this.coursesService.getCourseSessions(id).subscribe(sessions => {
+      this.sessionDetails = new Map(sessions.map(s => [s.id, s]));
+    });
     this.authService.currentUser$.subscribe(user => {
       this.userRole = user?.role;
       this.userId = user?.id;
@@ -83,7 +87,6 @@ export class CourseDetailsComponent implements OnInit {
   generateCalendar(): void {
     const year = this.currentMonth.getFullYear();
     const month = this.currentMonth.getMonth();
-    const sessionDates = this.course.sessionStartTimes?.map((d: string) => new Date(d).toDateString()) || [];
     
     const days: CalendarDay[] = [];
     const firstDay = new Date(year, month, 1);
@@ -92,68 +95,99 @@ export class CourseDetailsComponent implements OnInit {
 
     // Previous month
     for (let i = startDay; i > 0; i--) {
-      days.push(this.createCalendarDay(new Date(year, month, 1 - i), false, sessionDates));
+      days.push(this.createCalendarDay(new Date(year, month, 1 - i), false));
     }
 
     // Current month
     for (let i = 1; i <= lastDay.getDate(); i++) {
-      days.push(this.createCalendarDay(new Date(year, month, i), true, sessionDates));
+      days.push(this.createCalendarDay(new Date(year, month, i), true));
     }
 
     // Next month
     while (days.length < 42) {
-      days.push(this.createCalendarDay(new Date(year, month + 1, days.length - lastDay.getDate() + 1), false, sessionDates));
+      days.push(this.createCalendarDay(
+        new Date(year, month + 1, days.length - lastDay.getDate() + 1), 
+        false
+      ));
     }
 
     this.calendarDays = days;
-  }
-
-  private createCalendarDay(date: Date, isCurrentMonth: boolean, sessionDates: string[]): CalendarDay {
+}
+  private createCalendarDay(
+    date: Date, 
+    isCurrentMonth: boolean
+  ): CalendarDay {
+    const today = new Date();
     return {
       date,
       isCurrentMonth,
-      isSession: sessionDates.includes(date.toDateString()),
-      isAvailable: Math.random() > 0.5, // Replace with actual availability check
-      isToday: date.toDateString() === new Date().toDateString()
+      sessions: this.getSessionsForDate(date),
+      isToday: this.isSameDate(date, today)
     };
   }
-
   prevMonth(): void {
     this.currentMonth = new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() - 1));
     this.generateCalendar();
   }
+  private getSessionsForDate(date: Date): SessionDto[] {
+    return Array.from(this.sessionDetails.values()).filter(session => 
+      this.isSameDate(new Date(session.start), date)
+    );
+  }
 
+  private isSameDate(date1: Date, date2: Date): boolean {
+    return date1.getFullYear() === date2.getFullYear() &&
+           date1.getMonth() === date2.getMonth() &&
+           date1.getDate() === date2.getDate();
+  }
+
+  toggleSession(session: SessionDto): void {
+    if (this.selectedSessions.has(session.id)) {
+      this.selectedSessions.delete(session.id);
+    } else if (this.isSessionAvailable(session)) {
+      this.selectedSessions.add(session.id);
+    }
+  }
   nextMonth(): void {
     this.currentMonth = new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() + 1));
     this.generateCalendar();
   }
 
   handleDayClick(day: CalendarDay): void {
-    if (day.isSession) {
-      this.snackBar.open(
-        day.isAvailable ? 'Available session' : 'Session occupied',
-        'Dismiss', { duration: 2000 }
-      );
-    }
+    day.sessions.forEach(session => {
+      if (this.isSessionAvailable(session)) {
+        if (this.selectedSessions.has(session.id)) {
+          this.selectedSessions.delete(session.id);
+        } else {
+          this.selectedSessions.add(session.id);
+        }
+      }
+    });
   }
 
-  enroll() {
-    if (!this.userId) return;
+  enroll(): void {
+    if (!this.userId || this.selectedSessions.size === 0) return;
+    
     this.isEnrollmentLoading = true;
-
-    this.coursesService.enrollInCourse(this.course.id).pipe(
+    this.coursesService.enrollWithSessions(
+      this.course.id,
+      Array.from(this.selectedSessions)
+    ).pipe(
       finalize(() => this.isEnrollmentLoading = false)
     ).subscribe({
       next: () => {
         this.enrollmentStatus = 'pending';
-        this.snackBar.open('Enrollment request sent!', 'Dismiss', { duration: 3000 });
+        this.snackBar.open('Enrollment submitted!', 'Dismiss', { duration: 3000 });
       },
-      error: (err: any) => {
+      error: (err) => {
         this.snackBar.open(err.error || 'Enrollment failed', 'Dismiss');
       }
     });
   }
 
+  isSessionAvailable(session: SessionDto): boolean {
+    return session.reserved < session.capacity && !session.isCanceled;
+  }
   canEnroll(): boolean {
     return this.userRole === 'Student' && this.enrollmentStatus === 'not-enrolled';
   }

@@ -1,36 +1,75 @@
 using DoLearn.API.Data;
 using DoLearn.API.Features.Courses.Commands;
+using DoLearn.API.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DoLearn.API.Features.Courses.EnrollInCourse
+public class EnrollInCourseCommandHandler : IRequestHandler<EnrollInCourseCommand, EnrollmentResult>
 {
-    public class EnrollInCourseCommandHandler : IRequestHandler<EnrollInCourseCommand, bool>
-    {
-        private readonly AppDbContext _context;
+    private readonly AppDbContext _context;
 
-        public EnrollInCourseCommandHandler(AppDbContext context)
+    public EnrollInCourseCommandHandler(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<EnrollmentResult> Handle(EnrollInCourseCommand request, CancellationToken cancellationToken)
+    {
+        // Get course with schedule and sessions
+        var course = await _context.Courses
+            .Include(c => c.Schedule)
+                .ThenInclude(s => s.Sessions)
+            .FirstOrDefaultAsync(c => c.Id == request.CourseId);
+
+        if (course == null) return EnrollmentResult.NotFound;
+
+        // Get user with existing enrollments
+        var user = await _context.Users
+            .Include(u => u.Enrollments)
+                .ThenInclude(e => e.ReservedSessions)
+            .FirstOrDefaultAsync(u => u.Id == request.UserId);
+
+        if (user == null) return EnrollmentResult.NotFound;
+
+        // Get selected sessions
+        var sessions = await _context.CourseSessions
+            .Include(s => s.Reservations)
+            .Where(s => request.SessionIds.Contains(s.Id))
+            .ToListAsync();
+
+        // Validate sessions
+        foreach (var session in sessions)
         {
-            _context = context;
+            // Check session capacity
+            if (session.Reservations.Count >= session.Capacity)
+                return EnrollmentResult.SessionFull;
+
+            // Check if user already has conflicting sessions
+            var hasConflict = user.Enrollments
+                .SelectMany(e => e.ReservedSessions)
+                .Any(rs => rs.Start < session.Finish && rs.Finish > session.Start);
+
+            if (hasConflict) return EnrollmentResult.Conflict;
         }
 
-        public async Task<bool> Handle(EnrollInCourseCommand request, CancellationToken cancellationToken)
+        // Create enrollment
+        var enrollment = new Enrollment
         {
-            var alreadyEnrolled = await _context.Enrollments
-                .AnyAsync(e => e.CourseId == request.CourseId && e.StudentId == request.UserId, cancellationToken);
+            CourseId = course.Id,
+            StudentId = user.Id,
+            Status = EnrollmentStatus.Pending,
+            ReservedSessions = sessions
+        };
 
-            if (alreadyEnrolled) return false;
-
-            _context.Enrollments.Add(new  Enrollment
-            {
-                CourseId = request.CourseId,
-                StudentId = request.UserId,
-                Status =  EnrollmentStatus.Active,
-                EnrolledAt = DateTime.UtcNow
-            });
-
-            await _context.SaveChangesAsync(cancellationToken);
-            return true;
+        try
+        {
+            await _context.Enrollments.AddAsync(enrollment);
+            await _context.SaveChangesAsync();
+            return EnrollmentResult.Success;
+        }
+        catch
+        {
+            return EnrollmentResult.Error;
         }
     }
 }

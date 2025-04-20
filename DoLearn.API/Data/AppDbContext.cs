@@ -10,12 +10,29 @@ namespace DoLearn.API.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseSchedule> CourseSchedules { get; set; }
+        public DbSet<CourseSession> CourseSessions { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<CoursePricing> CoursePricings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+    modelBuilder.Entity<Enrollment>()
+        .HasMany(e => e.ReservedSessions)
+        .WithMany(s => s.Reservations)
+        .UsingEntity<Dictionary<string, object>>(
+            "CourseSessionEnrollment",
+            j => j
+                .HasOne<CourseSession>()
+                .WithMany()
+                .HasForeignKey("ReservedSessionsId")
+                .OnDelete(DeleteBehavior.Cascade),
+            j => j
+                .HasOne<Enrollment>()
+                .WithMany()
+                .HasForeignKey("ReservationsId")
+                .OnDelete(DeleteBehavior.Restrict) // Changed to Restrict
+        );
 
             // User Configuration
             modelBuilder.Entity<User>(entity =>

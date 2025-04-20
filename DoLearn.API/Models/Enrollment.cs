@@ -1,21 +1,20 @@
 using DoLearn.API.Models;
 
-
 public class Enrollment
 {
     public int Id { get; set; }
+    public List<CourseSession> ReservedSessions { get; set; } = new();
 
     public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
-    public DateTime? EndedAt { get; set; } // If they dropped, completed, etc.
+    public DateTime? EndedAt { get; set; }
+    public string? Notes { get; set; }
 
-    public EnrollmentStatus Status { get; set; } = EnrollmentStatus.Active;
+    // Add session reservations
+    public EnrollmentStatus Status { get; set; } = EnrollmentStatus.Pending;
 
-    public string? Notes { get; set; } // Optional: reason for drop, transfer, etc.
-
-    // Foreign keys
     public int StudentId { get; set; }
     public User Student { get; set; } = null!;
-
     public int CourseId { get; set; }
     public Course Course { get; set; } = null!;
+
 }

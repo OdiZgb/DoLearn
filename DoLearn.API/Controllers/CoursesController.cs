@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DoLearn.API.Models;
 using DoLearn.API.Features.Courses.Commands;
+using DoLearn.API.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DoLearn.API.Controllers
 {
@@ -14,11 +16,13 @@ namespace DoLearn.API.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IWebHostEnvironment _env;   // ← add this
+            private readonly AppDbContext _context;
 
-        public CoursesController(IMediator mediator, IWebHostEnvironment env)
+        public CoursesController(IMediator mediator, IWebHostEnvironment env, AppDbContext context)
         {
             _mediator = mediator;
              _env      = env;
+             _context = context;
         }
         
 
@@ -81,20 +85,7 @@ namespace DoLearn.API.Controllers
             return NoContent();
         }
 
-        // Endpoint to enroll a user in a course
-        [HttpPost("{courseId}/enroll")]
-        [Authorize(Roles = "Student")]
-        public async Task<IActionResult> EnrollInCourse(int courseId)
-        {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var command = new EnrollInCourseCommand(courseId, userId);
-            var result = await _mediator.Send(command);
 
-            if (!result)
-                return BadRequest("Failed to enroll in the course.");
-
-            return Ok("Successfully enrolled.");
-        }
 
         // Endpoint to withdraw a user from a course
         [HttpPost("{courseId}/withdraw")]
@@ -139,5 +130,61 @@ public async Task<IActionResult> GetCreatedCourses()
     return Ok(courses);
 }
 
-    }
+    
+[HttpPost("{courseId}/enroll")]
+[Authorize(Roles = "Student")]
+public async Task<IActionResult> EnrollInCourse(
+    int courseId, 
+    [FromBody] List<int> sessionIds) // Add session IDs from request body
+{
+    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    
+    // Create command with session IDs
+    var command = new EnrollInCourseCommand(
+        courseId, 
+        userId, 
+        sessionIds
+    );
+    
+    var result = await _mediator.Send(command);
+
+    // Check against enum values
+    return result switch
+    {
+        EnrollmentResult.Success => Ok("Successfully enrolled"),
+        EnrollmentResult.SessionFull => BadRequest("One or more sessions are full"),
+        EnrollmentResult.Conflict => Conflict("Scheduling conflict detected"),
+        EnrollmentResult.NotFound => NotFound("Course or user not found"),
+        _ => BadRequest("Enrollment failed")
+    };
 }
+    [HttpGet("{courseId}/sessions")]
+public async Task<IActionResult> GetCourseSessions(int courseId)
+{
+    var sessions = await _context.CourseSessions
+        .Where(s => s.CourseSchedule.CourseId == courseId)
+        .Select(s => new SessionDto
+        {
+            Id = s.Id,
+            Start = s.Start,
+            End = s.Finish,
+            Capacity = s.Capacity,
+            Reserved = s.Reservations.Count,
+            IsCanceled = s.IsCanceled
+        })
+        .ToListAsync();
+
+    return Ok(sessions);
+}
+
+public class SessionDto
+{
+    public int Id { get; set; }
+    public DateTime Start { get; set; }
+    public DateTime End { get; set; }
+    public int Capacity { get; set; }
+    public int Reserved { get; set; }
+    public bool IsCanceled { get; set; }
+}
+    }
+    }

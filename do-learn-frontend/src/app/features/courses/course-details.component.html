@@ -73,21 +73,27 @@
             <mat-icon>chevron_right</mat-icon>
           </button>
         </div>
-
+      
         <div class="calendar-grid">
           <div class="calendar-header" *ngFor="let day of weekDays">{{ day[0] }}</div>
           <div *ngFor="let day of calendarDays" 
                class="calendar-day"
                [class.current-month]="day.isCurrentMonth"
-               [class.session-day]="day.isSession"
-               [class.available]="day.isAvailable"
-               [class.occupied]="day.isSession && !day.isAvailable"
-               [class.today]="day.isToday"
-               (click)="handleDayClick(day)">
-            <div class="date-number">{{ day.date.getDate() }}</div>
-            <div class="session-status">
-              <mat-icon *ngIf="day.isSession && day.isAvailable">circle</mat-icon>
-              <mat-icon *ngIf="day.isSession && !day.isAvailable">warning</mat-icon>
+               [class.today]="day.isToday">
+            <div class="date-number">{{ day.date | date:'d' }}</div>
+            <div class="session-slots">
+              <div *ngFor="let session of day.sessions" 
+                   class="session-slot"
+                   [class.available]="isSessionAvailable(session)"
+                   [class.selected]="selectedSessions.has(session.id)"
+                   (click)="toggleSession(session)">
+                <div class="session-time">
+                  {{ session.start | date:'shortTime' }}
+                </div>
+                <div class="session-availability">
+                  {{ session.reserved }}/{{ session.capacity }}
+                </div>
+              </div>
             </div>
           </div>
         </div>

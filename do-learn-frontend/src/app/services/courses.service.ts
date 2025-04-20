@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Course } from '../models/Course';
 import { CourseResponse } from '../models/CourseResponse';
+import { SessionDto } from '../features/courses/session.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -59,5 +60,13 @@ export class CoursesService {
   getCreatedCourses(): Observable<any> {
     return this.http.get(`${this.apiUrl}/created`);
   }
-
+  enrollWithSessions(courseId: number, sessionIds: number[]): Observable<any> {
+    return this.http.post(`/api/courses/enroll-with-sessions`, {
+      courseId,
+      selectedSessionIds: sessionIds
+    });
+  }
+  getCourseSessions(courseId: number): Observable<SessionDto[]> {
+    return this.http.get<SessionDto[]>(`/api/courses/${courseId}/sessions`);
+  }
 }

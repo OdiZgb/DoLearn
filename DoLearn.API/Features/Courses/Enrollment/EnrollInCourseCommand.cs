@@ -1,6 +1,15 @@
 using MediatR;
 
-namespace DoLearn.API.Features.Courses.Commands
+public class EnrollInCourseCommand : IRequest<EnrollmentResult>
 {
-    public record EnrollInCourseCommand(int CourseId, int UserId) : IRequest<bool>;
+    public int CourseId { get; }
+    public int UserId { get; }
+    public List<int> SessionIds { get; }
+
+    public EnrollInCourseCommand(int courseId, int userId, List<int> sessionIds)
+    {
+        CourseId = courseId;
+        UserId = userId;
+        SessionIds = sessionIds;
+    }
 }

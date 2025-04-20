@@ -210,4 +210,36 @@
       }
     }
   }
+}.session-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.session-slot {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.available {
+    background: #e8f5e9;
+    border: 1px solid #4caf50;
+
+    &:hover {
+      background: #c8e6c9;
+    }
+  }
+
+  &.selected {
+    background: #4caf50;
+    color: white;
+  }
+
+  .session-availability {
+    font-size: 0.65rem;
+    opacity: 0.8;
+  }
 }
