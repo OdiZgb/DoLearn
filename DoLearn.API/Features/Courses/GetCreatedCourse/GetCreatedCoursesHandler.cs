@@ -2,16 +2,16 @@ using DoLearn.API.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class GetEnrolledCoursesHandler : IRequestHandler<GetEnrolledCoursesQuery, List<Course>>
+public class GetCreatedCoursesHandler : IRequestHandler<GetCreatedCoursesQuery, List<Course>>
 {
     private readonly AppDbContext _context;
 
-    public GetEnrolledCoursesHandler(AppDbContext context)
+    public GetCreatedCoursesHandler(AppDbContext context)
     {
         _context = context;
     }
 
-    public async Task<List<Course>> Handle(GetEnrolledCoursesQuery request, CancellationToken cancellationToken)
+    public async Task<List<Course>> Handle(GetCreatedCoursesQuery request, CancellationToken cancellationToken)
     {
 
         var courses  = await _context.Courses

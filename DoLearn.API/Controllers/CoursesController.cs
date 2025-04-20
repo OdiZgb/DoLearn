@@ -122,7 +122,6 @@ namespace DoLearn.API.Controllers
 
         
 [HttpGet("enrolled")]
-[Authorize(Roles = "Student")]
 public async Task<IActionResult> GetEnrolledCourses()
 {
     var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -132,7 +131,6 @@ public async Task<IActionResult> GetEnrolledCourses()
 }
 
 [HttpGet("created")]
-[Authorize(Roles = "Teacher,Admin")]
 public async Task<IActionResult> GetCreatedCourses()
 {
     var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

@@ -2,34 +2,32 @@ using DoLearn.API.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class GetCreatedCoursesHandler : IRequestHandler<GetCreatedCoursesQuery, List<Course>>
+public class GetEnrolledCoursesHandler : IRequestHandler<GetEnrolledCoursesQuery, List<Course>>
 {
     private readonly AppDbContext _context;
 
-    public GetCreatedCoursesHandler(AppDbContext context)
+    public GetEnrolledCoursesHandler(AppDbContext context)
     {
         _context = context;
     }
 
-    public async Task<List<Course>> Handle(GetCreatedCoursesQuery request, CancellationToken cancellationToken)
+    public async Task<List<Course>> Handle(GetEnrolledCoursesQuery request, CancellationToken cancellationToken)
     {
+        // Fetch enrollments for the user and include the Course details
+        var enrollments = await _context.Enrollments
+            .Where(e => e.StudentId == request.UserId)
+            .Include(e => e.Course)
+            .ThenInclude(c => c.CreatedBy) // Include if needed
+            .ToListAsync(cancellationToken);
 
-         var courses  = await _context.Courses
-            .Where(uc => uc.CreatedBy.Id == request.UserId).Include(uc=>uc.Students).ToListAsync(cancellationToken);;
-        
-   
-         var coursesEnrolledByStudent  = await _context.Enrollments.Where(x=>x.StudentId==request.UserId).ToListAsync(cancellationToken);
-             
-            foreach (var item in coursesEnrolledByStudent)
-            {
-                Course simirCourse =  await _context.Courses.Where(uc => uc.Id == item.CourseId).FirstOrDefaultAsync();
-                courses.Add(simirCourse);
-            }
+        var courses = enrollments.Select(e => e.Course).ToList();
 
-    foreach (var course in courses)
-            {
-            course.ImgURL = "http://localhost:5055"+ course.ImgURL;
-            }
+        // Update image URLs (consider moving this to a DTO or service)
+        foreach (var course in courses)
+        {
+            course.ImgURL = $"http://localhost:5055{course.ImgURL}";
+        }
+
         return courses;
     }
 }
