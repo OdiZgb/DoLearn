@@ -11,6 +11,7 @@ public class Course
     public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 
     public int CreatedById { get; set; }
+    public int Capacity { get; set; }
     public string? ImgURL { get; set; }
 
     public User CreatedBy { get; set; } = null!;

@@ -10,5 +10,6 @@ public record CreateCourseCommand(
     List<DateTime> SessionStartTimes,
     List<DateTime> SessionEndTimes,
     int CreatedById,
+    int Capacity,
     string? ImgURL
 ) : IRequest<CourseResponse>;

@@ -17,5 +17,6 @@ public class CreateCourseDto
     public List<DateTime> SessionEndTimes   { get; set; } = new();
 
     public IFormFile? Image { get; set; }
+    public int Capacity{set;get;} = 1;
     public string? ImgURL { get; set; }
 }

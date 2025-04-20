@@ -48,6 +48,7 @@ namespace DoLearn.API.Controllers
             dto.SessionStartTimes,
             dto.SessionEndTimes,
             userId,
+            dto.Capacity,
             dto.ImgURL
         );
 
