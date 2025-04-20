@@ -11,11 +11,12 @@
           {{ course.startDate | date: 'MMM d' }} - {{ course.endDate | date: 'MMM d' }}
         </span>
         <button mat-raised-button 
-        class="enroll-button"
-        (click)="enroll()">
-        <mat-icon>rocket_launch</mat-icon>
-        <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
-        <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
+                class="enroll-button"
+                (click)="enroll()"
+                [disabled]="!canEnroll()">
+          <mat-icon>rocket_launch</mat-icon>
+          <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
+          <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
         </button>
       </div>
     </div>
@@ -25,8 +26,6 @@
   <div class="details-grid">
     <!-- Main Content -->
     <div class="course-content">
-
-
       <mat-card-content>
         <h2 class="section-title">About This Course</h2>
         <p class="course-description">{{ course.description || 'No description available' }}</p>
@@ -54,7 +53,6 @@
     <div class="schedule-sidebar">
       <h2 class="section-title">Course Schedule</h2>
       
-      <!-- Calendar View Toggle -->
       <mat-button-toggle-group [(value)]="viewMode">
         <mat-button-toggle value="calendar">
           <mat-icon>calendar_view_month</mat-icon> Calendar
@@ -64,19 +62,32 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
 
-      <!-- Calendar View -->
+      <!-- Compact Calendar View -->
       <div class="calendar-view" *ngIf="viewMode === 'calendar'">
+        <div class="calendar-navigation">
+          <button mat-icon-button (click)="prevMonth()">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <div class="current-month">{{ currentMonth | date: 'MMM y' }}</div>
+          <button mat-icon-button (click)="nextMonth()">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+
         <div class="calendar-grid">
-          <div *ngFor="let session of groupSessionsByWeek()" class="calendar-week">
-            <div class="week-header">Week {{ session.weekNumber }}</div>
-            <div class="session-blocks">
-              <div *ngFor="let date of session.dates" 
-                   class="session-block"
-                   [class.past]="isPastSession(date)"
-                   [class.current]="isCurrentSession(date)">
-                <div class="session-date">{{ date | date: 'MMM d' }}</div>
-                <div class="session-time">{{ date | date: 'shortTime' }} - {{ getEndTime(date) | date: 'shortTime' }}</div>
-              </div>
+          <div class="calendar-header" *ngFor="let day of weekDays">{{ day[0] }}</div>
+          <div *ngFor="let day of calendarDays" 
+               class="calendar-day"
+               [class.current-month]="day.isCurrentMonth"
+               [class.session-day]="day.isSession"
+               [class.available]="day.isAvailable"
+               [class.occupied]="day.isSession && !day.isAvailable"
+               [class.today]="day.isToday"
+               (click)="handleDayClick(day)">
+            <div class="date-number">{{ day.date.getDate() }}</div>
+            <div class="session-status">
+              <mat-icon *ngIf="day.isSession && day.isAvailable">circle</mat-icon>
+              <mat-icon *ngIf="day.isSession && !day.isAvailable">warning</mat-icon>
             </div>
           </div>
         </div>
@@ -111,7 +122,6 @@
       <div class="price-label">Total Price</div>
       <div class="price-amount">{{ course.price | currency }}</div>
     </div>
-    
 
     <div class="enrollment-status">
       <span *ngIf="enrollmentStatus === 'pending'" class="status-pending">
