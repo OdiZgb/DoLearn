@@ -72,6 +72,42 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\92118683-b626-42fb-a922-3c00c2d7ae2a.avif'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\9574ae05-9c48-4e71-bdfb-c7310216e0ef.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>DoLearn.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/DoLearn.API</BasePath>
+      <RelativePath>images/9574ae05-9c48-4e71-bdfb-c7310216e0ef.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>m0w2sslwbf</Fingerprint>
+      <Integrity>luqkyfvnNxBPAUxtP3bD84f6uJhoFpu4rX+4SPT2U0g=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\9574ae05-9c48-4e71-bdfb-c7310216e0ef.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\c7855f57-14d2-4ed5-a31d-839e3d78e178.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>DoLearn.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/DoLearn.API</BasePath>
+      <RelativePath>images/c7855f57-14d2-4ed5-a31d-839e3d78e178.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>42kfupqtua</Fingerprint>
+      <Integrity>TNXwJKxwiqcv/2uP21mM+LlfbKC5SnVBao9D9SFsYHI=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\c7855f57-14d2-4ed5-a31d-839e3d78e178.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\cc36e284-c58b-4b66-899c-2460d4d55832.jpg'))">
       <SourceType>Package</SourceType>
       <SourceId>DoLearn.API</SourceId>

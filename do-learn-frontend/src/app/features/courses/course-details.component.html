@@ -10,6 +10,13 @@
           <mat-icon>calendar_today</mat-icon>
           {{ course.startDate | date: 'MMM d' }} - {{ course.endDate | date: 'MMM d' }}
         </span>
+        <button mat-raised-button 
+        class="enroll-button"
+        (click)="enroll()">
+        <mat-icon>rocket_launch</mat-icon>
+        <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
+        <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
+        </button>
       </div>
     </div>
   </div>
@@ -18,14 +25,7 @@
   <div class="details-grid">
     <!-- Main Content -->
     <div class="course-content">
-      <button mat-raised-button 
-      class="enroll-button"
-      *ngIf="canEnroll()"
-      (click)="enroll()">
-<mat-icon>rocket_launch</mat-icon>
-<span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
-<mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
-</button>
+
 
       <mat-card-content>
         <h2 class="section-title">About This Course</h2>

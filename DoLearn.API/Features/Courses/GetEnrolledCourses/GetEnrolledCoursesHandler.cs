@@ -15,13 +15,21 @@ public class GetCreatedCoursesHandler : IRequestHandler<GetCreatedCoursesQuery, 
     {
 
          var courses  = await _context.Courses
-            .Where(uc => uc.CreatedBy.Id == request.UserId).ToListAsync(cancellationToken);;
-            foreach (var course in courses)
+            .Where(uc => uc.CreatedBy.Id == request.UserId).Include(uc=>uc.Students).ToListAsync(cancellationToken);;
+        
+   
+         var coursesEnrolledByStudent  = await _context.Enrollments.Where(x=>x.StudentId==request.UserId).ToListAsync(cancellationToken);
+             
+            foreach (var item in coursesEnrolledByStudent)
+            {
+                Course simirCourse =  await _context.Courses.Where(uc => uc.Id == item.CourseId).FirstOrDefaultAsync();
+                courses.Add(simirCourse);
+            }
+
+    foreach (var course in courses)
             {
             course.ImgURL = "http://localhost:5055"+ course.ImgURL;
             }
-
         return courses;
-
     }
 }
