@@ -64,5 +64,29 @@
         <member name="M:DoLearn.API.Migrations.capacityToCourse002.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:DoLearn.API.Migrations.mig008">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig008.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig008.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig008.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:DoLearn.API.Migrations.mig009">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig009.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig009.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.mig009.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

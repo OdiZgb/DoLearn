@@ -18,6 +18,15 @@
   <div class="details-grid">
     <!-- Main Content -->
     <div class="course-content">
+      <button mat-raised-button 
+      class="enroll-button"
+      *ngIf="canEnroll()"
+      (click)="enroll()">
+<mat-icon>rocket_launch</mat-icon>
+<span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
+<mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
+</button>
+
       <mat-card-content>
         <h2 class="section-title">About This Course</h2>
         <p class="course-description">{{ course.description || 'No description available' }}</p>
@@ -103,15 +112,6 @@
       <div class="price-amount">{{ course.price | currency }}</div>
     </div>
     
-    <button mat-raised-button 
-            class="enroll-button"
-            *ngIf="canEnroll()"
-            (click)="enroll()"
-            [disabled]="isEnrollmentLoading">
-      <mat-icon>rocket_launch</mat-icon>
-      <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
-      <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
-    </button>
 
     <div class="enrollment-status">
       <span *ngIf="enrollmentStatus === 'pending'" class="status-pending">
