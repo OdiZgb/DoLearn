@@ -86,7 +86,6 @@ export class CreateCourseComponent implements OnInit {
     const sessionStart = this.courseForm.value.sessionStart;
     const sessionEnd = this.courseForm.value.sessionEnd;
 
-    this.sessions.clear();
 
     for (let week = 0; week < repeatWeeks; week++) {
       const weekStart = addWeeks(startDate, week * this.courseForm.value.repeatInterval);
