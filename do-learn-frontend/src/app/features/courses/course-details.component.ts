@@ -18,8 +18,8 @@ interface CalendarDay {
   sessions: SessionDto[];
   isCurrentMonth: boolean;
   isToday: boolean;
+  isFull: boolean; // Add this
 }
-
 @Component({
   selector: 'app-course-details',
   standalone: true,
@@ -37,6 +37,9 @@ interface CalendarDay {
   ]
 })
 export class CourseDetailsComponent implements OnInit {
+  readonly REQUIRED_SESSIONS = 5;
+  selectedDays: Set<string> = new Set(); // Stores dates as ISO strings
+
   course!: Course;
   enrollmentStatus: 'enrolled' | 'pending' | 'not-enrolled' = 'not-enrolled';
   isEnrollmentLoading = false;
@@ -113,18 +116,18 @@ export class CourseDetailsComponent implements OnInit {
 
     this.calendarDays = days;
 }
-  private createCalendarDay(
-    date: Date, 
-    isCurrentMonth: boolean
-  ): CalendarDay {
-    const today = new Date();
-    return {
+private createCalendarDay(date: Date, isCurrentMonth: boolean): CalendarDay {
+  const today = new Date();
+  const sessions = this.getSessionsForDate(date);
+  
+  return {
       date,
       isCurrentMonth,
-      sessions: this.getSessionsForDate(date),
-      isToday: this.isSameDate(date, today)
-    };
-  }
+      sessions,
+      isToday: this.isSameDate(date, today),
+      isFull: sessions.length > 0 && sessions.every(s => !this.isSessionAvailable(s))
+  };
+}
   prevMonth(): void {
     this.currentMonth = new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() - 1));
     this.generateCalendar();
@@ -142,55 +145,78 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   toggleSession(session: SessionDto): void {
+    if (!this.isSessionAvailable(session)) return;
+    
     if (this.selectedSessions.has(session.id)) {
-      this.selectedSessions.delete(session.id);
-    } else if (this.isSessionAvailable(session)) {
-      this.selectedSessions.add(session.id);
+        this.selectedSessions.delete(session.id);
+    } else {
+        if (this.selectedSessions.size >= this.REQUIRED_SESSIONS) {
+            this.snackBar.open(`Please select exactly ${this.REQUIRED_SESSIONS} sessions`, 'Dismiss');
+            return;
+        }
+        this.selectedSessions.add(session.id);
     }
-  }
+}
   nextMonth(): void {
     this.currentMonth = new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() + 1));
     this.generateCalendar();
   }
 
   handleDayClick(day: CalendarDay): void {
-    day.sessions.forEach(session => {
-      if (this.isSessionAvailable(session)) {
-        if (this.selectedSessions.has(session.id)) {
-          this.selectedSessions.delete(session.id);
-        } else {
+    const dateStr = day.date.toISOString();
+    
+    if (this.selectedDays.has(dateStr)) {
+      this.selectedDays.delete(dateStr);
+      // Remove all sessions for this day
+      day.sessions.forEach(session => this.selectedSessions.delete(session.id));
+    } else {
+      this.selectedDays.add(dateStr);
+      // Add all available sessions for this day
+      day.sessions.forEach(session => {
+        if (this.isSessionAvailable(session)) {
           this.selectedSessions.add(session.id);
         }
-      }
-    });
+      });
+    }
   }
-
+  
   enroll(): void {
-    if (!this.userId || this.selectedSessions.size === 0) return;
+    if (!this.userId || this.selectedSessions.size !== this.REQUIRED_SESSIONS) return;
     
+    const confirm = window.confirm(`You're enrolling in ${this.REQUIRED_SESSIONS} sessions. Confirm?`);
+    if (!confirm) return;
+
     this.isEnrollmentLoading = true;
     this.coursesService.enrollWithSessions(
-      this.course.id,
-      Array.from(this.selectedSessions)
+        this.course.id,
+        Array.from(this.selectedSessions)
     ).pipe(
-      finalize(() => this.isEnrollmentLoading = false)
+        finalize(() => this.isEnrollmentLoading = false)
     ).subscribe({
-      next: () => {
-        this.enrollmentStatus = 'pending';
-        this.snackBar.open('Enrollment submitted!', 'Dismiss', { duration: 3000 });
-      },
-      error: (err) => {
-        this.snackBar.open(err.error || 'Enrollment failed', 'Dismiss');
-      }
+        next: () => {
+            this.enrollmentStatus = 'pending';
+            this.selectedSessions.clear();
+            this.snackBar.open(`Successfully enrolled in ${this.REQUIRED_SESSIONS} sessions!`, 'Dismiss', { duration: 3000 });
+            this.generateCalendar();
+        },
+        error: (err) => {
+            this.snackBar.open(err.error || 'Enrollment failed', 'Dismiss');
+        }
     });
-  }
-
+}
+hasSelectedSessions(day: CalendarDay): boolean {
+  return day.sessions.some(session => 
+    this.selectedSessions.has(session.id) && this.isSessionAvailable(session)
+  );
+}
   isSessionAvailable(session: SessionDto): boolean {
     return session.reserved < session.capacity && !session.isCanceled;
   }
   canEnroll(): boolean {
-    return this.userRole === 'Student' && this.enrollmentStatus === 'not-enrolled';
-  }
+    return this.userRole === 'Student' && 
+           this.enrollmentStatus === 'not-enrolled' &&
+           this.selectedSessions.size === this.REQUIRED_SESSIONS;
+}
 
   // Existing date methods
   isPastSession(date: Date) {
@@ -218,4 +244,8 @@ export class CourseDetailsComponent implements OnInit {
     const index = this.course.sessionStartTimes.indexOf(startDate);
     return this.course.sessionEndTimes[index];
   }
+  isDaySelected(day: CalendarDay): boolean {
+    return this.selectedDays.has(day.date.toISOString());
+  }
+  
 }

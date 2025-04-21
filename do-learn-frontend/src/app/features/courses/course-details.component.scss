@@ -210,7 +210,8 @@
       }
     }
   }
-}.session-slots {
+}
+.session-slots {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -241,5 +242,83 @@
   .session-availability {
     font-size: 0.65rem;
     opacity: 0.8;
+  }
+}
+.session-slots {
+  min-height: 40px;
+}
+
+.session-slot {
+  margin: 2px;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.available {
+    background: #e8f5e9;
+    border: 1px solid #4caf50;
+    &:hover {
+      background: #c8e6c9;
+    }
+  }
+
+  &.selected {
+    background: #4caf50 !important;
+    color: white;
+  }
+
+  .session-availability {
+    font-size: 0.65rem;
+    opacity: 0.8;
+  }
+  
+}
+// Add these styles
+.calendar-day {
+  position: relative;
+  
+  &.full-day {
+    background: #ffebee;
+    border-color: #f44336;
+    
+    .date-number {
+      color: #f44336;
+    }
+  }
+
+  .session-slots {
+    min-height: 50px;
+  }
+}
+
+.session-availability {
+  font-weight: bold;
+  
+  &:after {
+    content: ' spots';
+    font-weight: normal;
+    font-size: 0.6em;
+  }
+}.selection-help {
+  color: #f44336;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.calendar-day {
+  &.selected-day {
+    border: 2px solid #3f51b5 !important;
+    background-color: #e8eaf6;
+    transform: scale(1.02);
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(63, 81, 181, 0.2);
+    
+    .date-number {
+      color: #3f51b5;
+      font-weight: bold;
+    }
   }
 }

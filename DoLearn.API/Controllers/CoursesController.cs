@@ -129,7 +129,22 @@ public async Task<IActionResult> GetCreatedCourses()
     var courses = await _mediator.Send(query);
     return Ok(courses);
 }
-
+[HttpGet("{courseId}/enrollment-status")]
+[Authorize(Roles = "Student")]
+public async Task<IActionResult> GetEnrollmentStatus(int courseId)
+{
+    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    
+    var enrollment = await _context.Enrollments
+        .FirstOrDefaultAsync(e => e.CourseId == courseId && e.StudentId == userId);
+    
+    if (enrollment == null)
+    {
+        return Ok("not-enrolled");
+    }
+    
+    return Ok(enrollment.Status.ToString().ToLower());
+}
     
 [HttpPost("{courseId}/enroll")]
 [Authorize(Roles = "Student")]

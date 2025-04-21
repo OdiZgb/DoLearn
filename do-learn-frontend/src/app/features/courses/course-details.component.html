@@ -48,7 +48,10 @@
         </div>
       </mat-card-content>
     </div>
-
+    <div class="selection-help" *ngIf="canEnroll() && selectedSessions.size !== REQUIRED_SESSIONS">
+      Please select exactly {{ REQUIRED_SESSIONS }} sessions to enroll
+    </div>
+    
     <!-- Schedule Sidebar -->
     <div class="schedule-sidebar">
       <h2 class="section-title">Course Schedule</h2>
@@ -77,9 +80,12 @@
         <div class="calendar-grid">
           <div class="calendar-header" *ngFor="let day of weekDays">{{ day[0] }}</div>
           <div *ngFor="let day of calendarDays" 
-               class="calendar-day"
-               [class.current-month]="day.isCurrentMonth"
-               [class.today]="day.isToday">
+          class="calendar-day"
+          [class.current-month]="day.isCurrentMonth"
+          [class.today]="day.isToday"
+          [class.full-day]="day.isFull"
+          [class.selected-day]="isDaySelected(day)"
+          (click)="handleDayClick(day)">
             <div class="date-number">{{ day.date | date:'d' }}</div>
             <div class="session-slots">
               <div *ngFor="let session of day.sessions" 
