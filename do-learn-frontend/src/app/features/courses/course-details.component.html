@@ -48,58 +48,67 @@
         </div>
       </mat-card-content>
     </div>
-    <div class="selection-help" *ngIf="canEnroll() && selectedSessions.size !== REQUIRED_SESSIONS">
-      Please select exactly {{ REQUIRED_SESSIONS }} sessions to enroll
-    </div>
-    
+
     <!-- Schedule Sidebar -->
     <div class="schedule-sidebar">
-      <h2 class="section-title">Course Schedule</h2>
+      <h2 class="section-title">Available Sessions</h2>
       
-      <mat-button-toggle-group [(value)]="viewMode">
-        <mat-button-toggle value="calendar">
-          <mat-icon>calendar_view_month</mat-icon> Calendar
-        </mat-button-toggle>
-        <mat-button-toggle value="list">
-          <mat-icon>view_list</mat-icon> List
-        </mat-button-toggle>
-      </mat-button-toggle-group>
+      <div class="view-toggle">
+        <mat-button-toggle-group [(value)]="viewMode">
+          <mat-button-toggle value="calendar">
+            <mat-icon>calendar_view_month</mat-icon> Calendar
+          </mat-button-toggle>
+          <mat-button-toggle value="list">
+            <mat-icon>view_list</mat-icon> List
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
 
-      <!-- Compact Calendar View -->
+      <!-- Calendar View -->
       <div class="calendar-view" *ngIf="viewMode === 'calendar'">
-        <div class="calendar-navigation">
+        <div class="calendar-header">
           <button mat-icon-button (click)="prevMonth()">
             <mat-icon>chevron_left</mat-icon>
           </button>
-          <div class="current-month">{{ currentMonth | date: 'MMM y' }}</div>
+          <div class="current-month">{{ currentMonth | date: 'MMMM y' }}</div>
           <button mat-icon-button (click)="nextMonth()">
             <mat-icon>chevron_right</mat-icon>
           </button>
         </div>
-      
+
         <div class="calendar-grid">
-          <div class="calendar-header" *ngFor="let day of weekDays">{{ day[0] }}</div>
+          <div class="calendar-weekday" *ngFor="let day of weekDays">{{ day }}</div>
           <div *ngFor="let day of calendarDays" 
-          class="calendar-day"
-          [class.current-month]="day.isCurrentMonth"
-          [class.today]="day.isToday"
-          [class.full-day]="day.isFull"
-          [class.selected-day]="isDaySelected(day)"
-          (click)="handleDayClick(day)">
+               class="calendar-day"
+               [class.current-month]="day.isCurrentMonth"
+               [class.has-sessions]="day.sessions.length > 0"
+               [class.selected-day]="isDaySelected(day)"
+               (click)="handleDayClick(day)">
             <div class="date-number">{{ day.date | date:'d' }}</div>
-            <div class="session-slots">
-              <div *ngFor="let session of day.sessions" 
-                   class="session-slot"
+            <div class="session-indicator" *ngIf="day.sessions.length > 0">
+              <div class="session-dot" *ngFor="let session of day.sessions"
                    [class.available]="isSessionAvailable(session)"
-                   [class.selected]="selectedSessions.has(session.id)"
-                   (click)="toggleSession(session)">
-                <div class="session-time">
-                  {{ session.start | date:'shortTime' }}
-                </div>
-                <div class="session-availability">
-                  {{ session.reserved }}/{{ session.capacity }}
-                </div>
+                   [class.selected]="selectedSessions.has(session.id)">
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Sessions Panel -->
+      <div class="day-sessions-panel" *ngIf="selectedDay">
+        <h3 class="panel-title">{{ selectedDay.date | date:'fullDate' }}</h3>
+        <div class="time-slots">
+          <div *ngFor="let session of selectedDay.sessions" 
+               class="time-slot"
+               [class.available]="isSessionAvailable(session)"
+               [class.selected]="selectedSessions.has(session.id)"
+               (click)="toggleSession(session)">
+            <div class="time-range">
+              {{ session.start | date:'shortTime' }} - {{ session.finish | date:'shortTime' }}
+            </div>
+            <div class="session-availability">
+              {{ session.reserved }}/{{ session.capacity }} spots
             </div>
           </div>
         </div>
@@ -107,41 +116,45 @@
 
       <!-- List View -->
       <div class="list-view" *ngIf="viewMode === 'list'">
-        <div *ngFor="let date of course.sessionStartTimes; index as i" class="session-item">
+        <div *ngFor="let session of allSessions" 
+             class="session-item"
+             [class.selected]="selectedSessions.has(session.id)"
+             (click)="toggleSession(session)">
           <div class="session-date">
-            <div class="day">{{ date | date: 'EEE' }}</div>
-            <div class="date">{{ date | date: 'd' }}</div>
-            <div class="month">{{ date | date: 'MMM' }}</div>
+            {{ session.start | date:'EEE, MMM d' }}
           </div>
-          <div class="session-info">
-            <div class="time-range">
-              {{ date | date: 'shortTime' }} - {{ course.sessionEndTimes[i] | date: 'shortTime' }}
-            </div>
-            <div class="session-status">
-              <mat-icon *ngIf="isPastSession(date)" class="past">check_circle</mat-icon>
-              <mat-icon *ngIf="isCurrentSession(date)" class="current">radio_button_checked</mat-icon>
-              <mat-icon *ngIf="isFutureSession(date)" class="future">schedule</mat-icon>
-            </div>
+          <div class="session-time">
+            {{ session.start | date:'shortTime' }} - {{ session.finish | date:'shortTime' }}
+          </div>
+          <div class="session-availability">
+            <mat-icon class="availability-icon">group</mat-icon>
+            {{ session.reserved }}/{{ session.capacity }}
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Enrollment Section -->
-  <mat-card-actions class="enrollment-section">
-    <div class="price-tag">
-      <div class="price-label">Total Price</div>
-      <div class="price-amount">{{ course.price | currency }}</div>
+  <!-- Enrollment Status -->
+  <div class="enrollment-footer">
+    <div class="selection-help" *ngIf="canEnroll() && selectedSessions.size !== REQUIRED_SESSIONS">
+      Please select exactly {{ REQUIRED_SESSIONS }} sessions to enroll
     </div>
-
+    
     <div class="enrollment-status">
-      <span *ngIf="enrollmentStatus === 'pending'" class="status-pending">
-        <mat-icon>pending_actions</mat-icon> Enrollment Pending
-      </span>
-      <span *ngIf="enrollmentStatus === 'enrolled'" class="status-enrolled">
-        <mat-icon>verified</mat-icon> Successfully Enrolled
-      </span>
+      <div class="price-tag">
+        <div class="price-label">Total Price</div>
+        <div class="price-amount">{{ course.price | currency }}</div>
+      </div>
+      
+      <div class="status-message">
+        <span *ngIf="enrollmentStatus === 'pending'" class="status-pending">
+          <mat-icon>pending_actions</mat-icon> Enrollment Pending
+        </span>
+        <span *ngIf="enrollmentStatus === 'enrolled'" class="status-enrolled">
+          <mat-icon>verified</mat-icon> Successfully Enrolled
+        </span>
+      </div>
     </div>
-  </mat-card-actions>
+  </div>
 </mat-card>

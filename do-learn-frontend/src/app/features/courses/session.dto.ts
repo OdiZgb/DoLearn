@@ -1,8 +1,8 @@
 export interface SessionDto {
-    id: number;
-    start: Date;
-    finish: Date;
-    capacity: number;
-    reserved: number;
-    isCanceled: boolean;
-  }
+  id: number;
+  start: string;
+  finish: string; // Changed from 'end' to 'finish' to match backend
+  reserved: number;
+  capacity: number;
+  isCanceled: boolean;
+}
