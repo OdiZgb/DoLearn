@@ -37,7 +37,7 @@ interface CalendarDay {
   ]
 })
 export class CourseDetailsComponent implements OnInit {
-  readonly REQUIRED_SESSIONS = 5;
+  readonly REQUIRED_SESSIONS = 10;
 
   course!: Course;
   enrollmentStatus: 'enrolled' | 'pending' | 'not-enrolled' = 'not-enrolled';
