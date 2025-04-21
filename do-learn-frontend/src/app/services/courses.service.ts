@@ -67,6 +67,35 @@ export class CoursesService {
     });
   }
   getCourseSessions(courseId: number): Observable<SessionDto[]> {
-    return this.http.get<SessionDto[]>(`/api/courses/${courseId}/sessions`);
+    return this.http.get<any>(`${this.apiUrl}/${courseId}`).pipe(
+      map(response => {
+        // Create proper session objects with UTC dates
+        return response.sessionStartTimes.map((start: string, index: number) => {
+          const startDate = new Date(start);
+          const endDate = new Date(response.sessionEndTimes[index]);
+          
+          return {
+            id: index + 1,
+            start: new Date(Date.UTC(
+              startDate.getUTCFullYear(),
+              startDate.getUTCMonth(),
+              startDate.getUTCDate(),
+              startDate.getUTCHours(),
+              startDate.getUTCMinutes()
+            )),
+            finish: new Date(Date.UTC(
+              endDate.getUTCFullYear(),
+              endDate.getUTCMonth(),
+              endDate.getUTCDate(),
+              endDate.getUTCHours(),
+              endDate.getUTCMinutes()
+            )),
+            reserved: 0,
+            capacity: 20,
+            isCanceled: false
+          };
+        });
+      })
+    );
   }
 }
