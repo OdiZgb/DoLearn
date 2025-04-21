@@ -12,6 +12,18 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"xqg2ijb5pw"},{"Name":"integrity","Value":"sha256-t9BgPhg0JVLN7FKY4yjCLqIAL8lXqzKD5e83JVaqXlA="},{"Name":"label","Value":"_content/DoLearn.API/images/1567c11f-14b5-40a9-904d-6df08d0dbcc9.avif"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"8237"},{"Name":"Content-Type","Value":"application/octet-stream"},{"Name":"ETag","Value":"\u0022t9BgPhg0JVLN7FKY4yjCLqIAL8lXqzKD5e83JVaqXlA=\u0022"},{"Name":"Last-Modified","Value":"Sat, 19 Apr 2025 11:00:09 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/DoLearn.API/images/2ec27a97-8810-451c-a9fc-31548882a189.vgxef0kc59.webp">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\2ec27a97-8810-451c-a9fc-31548882a189.webp'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"vgxef0kc59"},{"Name":"integrity","Value":"sha256-709cnxVgAHZMyEzRRS/QayIv73s2q1haSyqtVSW7uzY="},{"Name":"label","Value":"_content/DoLearn.API/images/2ec27a97-8810-451c-a9fc-31548882a189.webp"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"43490"},{"Name":"Content-Type","Value":"image/webp"},{"Name":"ETag","Value":"\u0022709cnxVgAHZMyEzRRS/QayIv73s2q1haSyqtVSW7uzY=\u0022"},{"Name":"Last-Modified","Value":"Mon, 21 Apr 2025 16:29:12 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/DoLearn.API/images/2ec27a97-8810-451c-a9fc-31548882a189.webp">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\2ec27a97-8810-451c-a9fc-31548882a189.webp'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-709cnxVgAHZMyEzRRS/QayIv73s2q1haSyqtVSW7uzY="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"43490"},{"Name":"Content-Type","Value":"image/webp"},{"Name":"ETag","Value":"\u0022709cnxVgAHZMyEzRRS/QayIv73s2q1haSyqtVSW7uzY=\u0022"},{"Name":"Last-Modified","Value":"Mon, 21 Apr 2025 16:29:12 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/DoLearn.API/images/3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.4u46jkf8r1.png">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\3dca4bc4-210a-48c5-8d8b-e4aa40ed319b.png'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
