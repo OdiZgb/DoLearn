@@ -364,4 +364,22 @@
       }
     }
   }
+}.calendar-day {
+  &.has-sessions {
+    background: #e8f5e9 !important;
+    border-color: #2ecc71 !important;
+    
+    .session-indicator {
+      .session-dot {
+        background: #27ae60;
+        width: 8px;
+        height: 8px;
+      }
+    }
+  }
+  
+  &.selected-day {
+    border-color: #3498db !important;
+    background: #e3f2fd !important;
+  }
 }

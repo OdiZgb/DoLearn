@@ -65,10 +65,17 @@ export class CourseDetailsComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     
     this.coursesService.getCourseSessions(id).subscribe(sessions => {
-      this.sessionDetails = new Map(sessions.map(s => [s.id, s]));
-      this.allSessions = sessions;
+      // Convert string dates to Date objects
+      const parsedSessions = sessions.map(s => ({
+        ...s,
+        start: new Date(s.start),
+        finish: new Date(s.finish)
+      }));
+      
+      this.sessionDetails = new Map(parsedSessions.map(s => [s.id, s]));
+      this.allSessions = parsedSessions;
+      this.generateCalendar(); // Regenerate calendar after sessions load
     });
-
     this.authService.currentUser$.subscribe(user => {
       this.userRole = user?.role;
       this.userId = user?.id;
@@ -131,9 +138,12 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   private getSessionsForDate(date: Date): SessionDto[] {
-    return Array.from(this.sessionDetails.values()).filter(session => 
-      this.isSameDate(new Date(session.start), date)
-    );
+    return this.allSessions.filter(session => {
+      const sessionDate = new Date(session.start);
+      return sessionDate.getFullYear() === date.getFullYear() &&
+             sessionDate.getMonth() === date.getMonth() &&
+             sessionDate.getDate() === date.getDate();
+    });
   }
 
   private isSameDate(date1: Date, date2: Date): boolean {

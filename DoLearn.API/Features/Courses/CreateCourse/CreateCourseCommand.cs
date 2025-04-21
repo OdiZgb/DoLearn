@@ -12,4 +12,4 @@ public record CreateCourseCommand(
     int CreatedById,
     int Capacity,
     string? ImgURL
-) : IRequest<CourseResponse>;
+) : IRequest<CourseCreateResponse>;

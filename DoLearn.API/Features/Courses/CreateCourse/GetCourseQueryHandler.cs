@@ -25,8 +25,7 @@ namespace DoLearn.API.Features.Courses.GetCourse
 
             var schedule = course.Schedule;
 
-            var sessionStartTimes = schedule?.Sessions.Select(s => s.Start).ToList() ?? new List<DateTime>();
-            var sessionEndTimes = schedule?.Sessions.Select(s => s.Finish).ToList() ?? new List<DateTime>();
+ 
 
             return new CourseResponse(
                 course.Id,
@@ -35,8 +34,7 @@ namespace DoLearn.API.Features.Courses.GetCourse
                 course.CreatedAt,
                 schedule?.StartDate ?? DateTime.MinValue,
                 schedule?.EndDate   ?? DateTime.MinValue,
-                sessionStartTimes,
-                sessionEndTimes,
+                schedule.Sessions,
                 ImgURL:"http://localhost:5055/"+ course.ImgURL           // ← pass the stored image URL here
             );
             

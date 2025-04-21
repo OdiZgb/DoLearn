@@ -176,30 +176,13 @@ public async Task<IActionResult> EnrollInCourse(
     [HttpGet("{courseId}/sessions")]
 public async Task<IActionResult> GetCourseSessions(int courseId)
 {
-    var sessions = await _context.CourseSessions
+    var sessions = await _context.CourseSessions.Include(x=>x.ReservedByUserID).Include(x=>x.Reservations)
         .Where(s => s.CourseSchedule.CourseId == courseId)
-        .Select(s => new SessionDto
-        {
-            Id = s.Id,
-            Start = s.Start,
-            End = s.Finish,
-            Capacity = s.Capacity,
-            Reserved = s.Reservations.Count,
-            IsCanceled = s.IsCanceled
-        })
         .ToListAsync();
 
     return Ok(sessions);
 }
 
-public class SessionDto
-{
-    public int Id { get; set; }
-    public DateTime Start { get; set; }
-    public DateTime End { get; set; }
-    public int Capacity { get; set; }
-    public int Reserved { get; set; }
-    public bool IsCanceled { get; set; }
-}
+ 
     }
     }

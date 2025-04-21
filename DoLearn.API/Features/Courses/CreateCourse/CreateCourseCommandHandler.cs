@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 public class CreateCourseCommandHandler
-    : IRequestHandler<CreateCourseCommand, CourseResponse>
+    : IRequestHandler<CreateCourseCommand, CourseCreateResponse>
 {
     private readonly AppDbContext _context;
 
@@ -18,7 +18,7 @@ public class CreateCourseCommandHandler
         _context = context;
     }
 
-    public async Task<CourseResponse> Handle(CreateCourseCommand req, CancellationToken ct)
+    public async Task<CourseCreateResponse> Handle(CreateCourseCommand req, CancellationToken ct)
     {
         // Authorization, entity creation, schedule, sessions…
         var course = new Course {
@@ -51,7 +51,7 @@ public class CreateCourseCommandHandler
         _context.CourseSchedules.Add(schedule);
         await _context.SaveChangesAsync(ct);
 
-        return new CourseResponse(
+        return new CourseCreateResponse(
             course.Id,
             course.Title,
             course.CourseCode,
