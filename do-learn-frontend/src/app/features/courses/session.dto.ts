@@ -5,4 +5,5 @@ export interface SessionDto {
   reserved: number;
   capacity: number;
   isCanceled: boolean;
+  reservedByUserID:number[];
 }

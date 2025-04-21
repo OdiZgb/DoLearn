@@ -130,7 +130,6 @@ public async Task<IActionResult> GetCreatedCourses()
     return Ok(courses);
 }
 [HttpGet("{courseId}/enrollment-status")]
-[Authorize(Roles = "Student")]
 public async Task<IActionResult> GetEnrollmentStatus(int courseId)
 {
     var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

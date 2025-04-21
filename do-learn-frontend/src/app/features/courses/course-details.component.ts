@@ -65,12 +65,17 @@ export class CourseDetailsComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     
     this.coursesService.getCourseSessions(id).subscribe(sessions => {
+      let reserved=false;
       // Convert string dates to Date objects
-      const parsedSessions = sessions.map(s => ({
+      const parsedSessions = sessions.map(s => { 
+    
+        return ({
         ...s,
         start: new Date(s.start),
-        finish: new Date(s.finish)
-      }));
+        finish: new Date(s.finish),
+
+        reserved: s.reservedByUserID.length
+      })});
       
       this.sessionDetails = new Map(parsedSessions.map(s => [s.id, s]));
       this.allSessions = parsedSessions;
@@ -183,8 +188,9 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   enroll(): void {
-    if (!this.userId || this.selectedSessions.size !== this.REQUIRED_SESSIONS) return;
-    
+    console.log(this.selectedSessions,'this.selectedSessions');
+    if (this.selectedSessions.size !== this.REQUIRED_SESSIONS) return;
+    alert("go on")
     const confirm = window.confirm(`You're enrolling in ${this.REQUIRED_SESSIONS} sessions. Confirm?`);
     if (!confirm) return;
 

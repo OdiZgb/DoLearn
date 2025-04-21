@@ -13,7 +13,7 @@
         <button mat-raised-button 
                 class="enroll-button"
                 (click)="enroll()"
-                [disabled]="!canEnroll()">
+                [disabled]="canEnroll()">
           <mat-icon>rocket_launch</mat-icon>
           <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
           <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
