@@ -171,16 +171,25 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   prevMonth(): void {
-    this.currentMonth = new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() - 1));
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() - 1,
+      1
+    );
     this.generateCalendar();
     this.selectedDay = undefined;
   }
-
+  
   nextMonth(): void {
-    this.currentMonth = new Date(this.currentMonth.setMonth(this.currentMonth.getMonth() + 1));
+    this.currentMonth = new Date(
+      this.currentMonth.getFullYear(),
+      this.currentMonth.getMonth() + 1,
+      1
+    );
     this.generateCalendar();
     this.selectedDay = undefined;
   }
+  
   isDayFullyBooked(day: CalendarDay): boolean {
     return day.sessions.length > 0 && 
            day.sessions.every(s => 

@@ -39,7 +39,15 @@
       <!-- Calendar View -->
       <div class="calendar-view" *ngIf="viewMode === 'calendar'">
         <div class="calendar-header">
-          <!-- ... calendar header content unchanged ... -->
+          <button mat-icon-button (click)="prevMonth()">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <div class="current-month">
+            {{ currentMonth | date:'MMMM y' }}
+          </div>
+          <button mat-icon-button (click)="nextMonth()">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
         </div>
 
         <div class="calendar-grid">
