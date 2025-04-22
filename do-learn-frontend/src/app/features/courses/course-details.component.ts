@@ -49,8 +49,8 @@ export class CourseDetailsComponent implements OnInit {
   calendarDays: CalendarDay[] = [];
   currentMonth: Date = new Date();
   selectedSessions: Set<number> = new Set();
-  sessionDetails = new Map<number, SessionDto>();
-  allSessions: SessionDto[] = [];
+  sessionDetails :any= new Map<number, SessionDto>();
+  allSessions:any = [];
   selectedDay?: CalendarDay;
 
   constructor(
@@ -65,21 +65,16 @@ export class CourseDetailsComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     
     this.coursesService.getCourseSessions(id).subscribe(sessions => {
-      let reserved=false;
-      // Convert string dates to Date objects
-      const parsedSessions = sessions.map(s => { 
-    
-        return ({
+      const parsedSessions = sessions.map(s => ({
         ...s,
         start: new Date(s.start),
         finish: new Date(s.finish),
-
-        reserved: s.reservedByUserID.length
-      })});
+        reserved: s.reservations.length // Count actual reservations
+      }));
       
       this.sessionDetails = new Map(parsedSessions.map(s => [s.id, s]));
       this.allSessions = parsedSessions;
-      this.generateCalendar(); // Regenerate calendar after sessions load
+      this.generateCalendar();
     });
     this.authService.currentUser$.subscribe(user => {
       this.userRole = user?.role;
@@ -143,7 +138,7 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   private getSessionsForDate(date: Date): SessionDto[] {
-    return this.allSessions.filter(session => {
+    return this.allSessions.filter((session:any) => {
       const sessionDate = new Date(session.start);
       return sessionDate.getFullYear() === date.getFullYear() &&
              sessionDate.getMonth() === date.getMonth() &&
@@ -224,15 +219,15 @@ export class CourseDetailsComponent implements OnInit {
   }
 
   isSessionAvailable(session: SessionDto): boolean {
-    return session.reserved < session.capacity && !session.isCanceled;
+    // Consider session unavailable if there are ANY reservations
+    return session.reservations.length === 0 && !session.isCanceled;
   }
-
   isDaySelected(day: CalendarDay): boolean {
     return day.sessions.some(s => this.selectedSessions.has(s.id));
   }
 
   calculateTotalHours(): number {
-    return this.allSessions.reduce((total, session) => {
+    return this.allSessions.reduce((total:any, session:any) => {
       const start = new Date(session.start).getTime();
       const end = new Date(session.finish).getTime();
       return total + Math.round((end - start) / (1000 * 60 * 60));

@@ -425,4 +425,44 @@
       }
     }
   }
+}// Calendar session dots
+.session-dot.reserved {
+  background: #ff4444 !important; // Red color for reserved
+}
+
+// Day panel time slots
+.time-slot.reserved {
+  background: #ffebee !important;
+  border-color: #ff4444 !important;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+// List view items
+.session-item.reserved {
+  background: #ffebee !important;
+  border-color: #ff4444 !important;
+  pointer-events: none;
+  opacity: 0.7;
+
+  &:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}.reserved {
+  background-color: #ffebee !important;
+  border-color: #ef5350 !important;
+  position: relative;
+  
+  &::after {
+    content: "Reserved";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #d32f2f;
+    font-weight: bold;
+    font-size: 0.8em;
+    text-transform: uppercase;
+  }
 }
