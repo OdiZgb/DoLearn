@@ -455,7 +455,7 @@
   position: relative;
   
   &::after {
-    content: "Reserved";
+    content: " ";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -464,5 +464,24 @@
     font-weight: bold;
     font-size: 0.8em;
     text-transform: uppercase;
+  }
+}.calendar-day {
+  &.has-sessions.fully-reserved {
+    background: #ffebee !important;
+    border-color: #ef5350 !important;
+    
+    .session-indicator .session-dot {
+      background: #ef5350 !important;
+    }
+  }
+
+  // Existing styles
+  &.has-sessions {
+    background: #e8f5e9 !important;
+    border-color: #2ecc71 !important;
+    
+    .session-indicator .session-dot {
+      background: #2ecc71 !important;
+    }
   }
 }

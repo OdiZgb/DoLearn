@@ -233,7 +233,10 @@ export class CourseDetailsComponent implements OnInit {
       return total + Math.round((end - start) / (1000 * 60 * 60));
     }, 0);
   }
-
+  isDayFullyReserved(day: CalendarDay): boolean {
+    return day.sessions.length > 0 && 
+           day.sessions.every(session => !this.isSessionAvailable(session));
+  }
   canEnroll(): boolean {
     return this.userRole === 'Student' && 
            this.enrollmentStatus === 'not-enrolled' &&

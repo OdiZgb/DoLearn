@@ -45,11 +45,12 @@
         <div class="calendar-grid">
           <div class="calendar-weekday" *ngFor="let day of weekDays">{{ day }}</div>
           <div *ngFor="let day of calendarDays" 
-               class="calendar-day"
-               [class.current-month]="day.isCurrentMonth"
-               [class.has-sessions]="day.sessions.length > 0"
-               [class.selected-day]="isDaySelected(day)"
-               (click)="handleDayClick(day)">
+          class="calendar-day"
+          [class.current-month]="day.isCurrentMonth"
+          [class.has-sessions]="day.sessions.length > 0"
+          [class.fully-reserved]="isDayFullyReserved(day)"
+          [class.selected-day]="isDaySelected(day)"
+          (click)="handleDayClick(day)">
             <div class="date-number">{{ day.date | date:'d' }}</div>
             <div class="session-indicator" *ngIf="day.sessions.length > 0">
               <div class="session-dot" 
