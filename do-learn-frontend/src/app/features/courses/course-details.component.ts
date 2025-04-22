@@ -186,18 +186,30 @@ export class CourseDetailsComponent implements OnInit {
     this.generateCalendar();
     this.selectedDay = undefined;
   }
-
+  isDayFullyBooked(day: CalendarDay): boolean {
+    return day.sessions.length > 0 && 
+           day.sessions.every(s => 
+             !this.isSessionAvailable(s) || 
+             s.isCanceled
+           );
+  }
+  
+  hasMixedAvailability(day: CalendarDay): boolean {
+    return day.sessions.some(s => this.isSessionAvailable(s)) &&
+           day.sessions.some(s => !this.isSessionAvailable(s));
+  }
   enroll(): void {
-    console.log(this.selectedSessions,'this.selectedSessions');
-    if (this.selectedSessions.size !== this.REQUIRED_SESSIONS) return;
+    console.log(Array.from(this.selectedSessions),'this.selectedSessions');
+    if (this.selectedSessions.size > this.REQUIRED_SESSIONS) return;
     alert("go on")
     const confirm = window.confirm(`You're enrolling in ${this.REQUIRED_SESSIONS} sessions. Confirm?`);
     if (!confirm) return;
 
     this.isEnrollmentLoading = true;
-    this.coursesService.enrollWithSessions(
+    this.coursesService.enrollInCourse(
       this.course.id,
-      Array.from(this.selectedSessions)
+      Array.from(this.selectedSessions) // ✅ Sends the array directly
+
     ).pipe(
       finalize(() => this.isEnrollmentLoading = false)
     ).subscribe({

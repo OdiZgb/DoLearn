@@ -37,6 +37,8 @@ public class EnrollInCourseCommandHandler : IRequestHandler<EnrollInCourseComman
             .Where(s => request.SessionIds.Contains(s.Id))
             .ToListAsync();
 
+            
+
         // Validate sessions
         foreach (var session in sessions)
         {

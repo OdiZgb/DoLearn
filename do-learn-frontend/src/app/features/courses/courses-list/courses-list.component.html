@@ -30,19 +30,7 @@
         <mat-icon>visibility</mat-icon> View
       </button>
 
-      <button mat-raised-button 
-              color="accent" 
-              class="action-button"
-              (click)="onEnroll(course)"
-              [disabled]="!canEnroll() || course.enrollmentStatus !== 'not-enrolled' || course.isEnrollmentLoading">
-        <span *ngIf="course.isEnrollmentLoading">
-          <mat-spinner diameter="20"></mat-spinner>
-        </span>
-        <span *ngIf="!course.isEnrollmentLoading">
-          <mat-icon>how_to_reg</mat-icon> 
-          {{ course.enrollmentStatus === 'pending' ? 'Pending Approval' : 'Enroll' }}
-        </span>
-      </button>
+ 
     </mat-card-actions>
   </mat-card>
 </div>

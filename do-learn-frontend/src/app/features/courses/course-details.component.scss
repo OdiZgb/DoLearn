@@ -382,4 +382,47 @@
     border-color: #3498db !important;
     background: #e3f2fd !important;
   }
+}.calendar-day {
+  &.no-availability {
+    background: #ffebee !important;
+    border-color: #ff1744 !important;
+    pointer-events: none;
+    position: relative;
+    opacity: 0.8;
+
+    &::after {
+      content: " ";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #d32f2f;
+      font-size: 0.7rem;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .date-number {
+      color: #d32f2f !important;
+    }
+
+    .session-indicator .session-dot {
+      background: #d32f2f !important;
+    }
+  }
+
+  &.partial-availability {
+    background: #fff3e0 !important;
+    border-color: #ffa726 !important;
+    
+    .session-indicator .session-dot {
+      &.unavailable {
+        background: #d32f2f !important;
+      }
+      &.available {
+        background: #2ecc71 !important;
+      }
+    }
+  }
 }

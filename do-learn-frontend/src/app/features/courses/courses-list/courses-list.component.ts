@@ -74,23 +74,7 @@ export class CoursesListComponent implements OnInit {
     });
   }
 
-  onEnroll(course: CourseWithStatus) {
-    if (!this.currentUserId) return;
   
-    course.isEnrollmentLoading = true;
-  
-    this.coursesService.enrollInCourse(course.id).pipe(
-      finalize(() => course.isEnrollmentLoading = false)
-    ).subscribe({
-      next: () => {
-        course.enrollmentStatus = 'pending';
-        this.snackBar.open('Enrollment request sent for approval', 'Dismiss', { duration: 3000 });
-      },
-      error: (err) => {
-        this.snackBar.open(err.error || 'Enrollment failed', 'Dismiss');
-      }
-    });
-  }
   canEnroll(): boolean {
     return this.userRole === 'Student';
   }

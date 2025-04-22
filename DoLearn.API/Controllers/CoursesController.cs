@@ -146,7 +146,6 @@ public async Task<IActionResult> GetEnrollmentStatus(int courseId)
 }
     
 [HttpPost("{courseId}/enroll")]
-[Authorize(Roles = "Student")]
 public async Task<IActionResult> EnrollInCourse(
     int courseId, 
     [FromBody] List<int> sessionIds) // Add session IDs from request body
@@ -175,7 +174,7 @@ public async Task<IActionResult> EnrollInCourse(
     [HttpGet("{courseId}/sessions")]
 public async Task<IActionResult> GetCourseSessions(int courseId)
 {
-    var sessions = await _context.CourseSessions.Include(x=>x.ReservedByUserID).Include(x=>x.Reservations)
+    var sessions = await _context.CourseSessions.Include(x=>x.Reservations)
         .Where(s => s.CourseSchedule.CourseId == courseId)
         .ToListAsync();
 

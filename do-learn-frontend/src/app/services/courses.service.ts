@@ -33,10 +33,9 @@ export class CoursesService {
     });
   }
   // Enroll in a course
-  enrollInCourse(courseId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${courseId}/enroll`, {});
+  enrollInCourse(courseId: number, sessionIds: number[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${courseId}/enroll`, sessionIds);
   }
-
   // Withdraw from a course
   withdrawFromCourse(courseId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${courseId}/withdraw`, {});

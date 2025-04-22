@@ -13,7 +13,7 @@
         <button mat-raised-button 
                 class="enroll-button"
                 (click)="enroll()"
-                [disabled]="canEnroll()">
+                [disabled]="!canEnroll()">
           <mat-icon>rocket_launch</mat-icon>
           <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
           <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
@@ -97,6 +97,7 @@
 
       <!-- Day Sessions Panel -->
       <div class="day-sessions-panel" *ngIf="selectedDay">
+        
         <h3 class="panel-title">{{ selectedDay.date | date:'fullDate' }}</h3>
         <div class="time-slots">
           <div *ngFor="let session of selectedDay.sessions" 
