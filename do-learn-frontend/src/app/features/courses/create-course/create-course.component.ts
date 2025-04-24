@@ -80,40 +80,66 @@ export class CreateCourseComponent implements OnInit {
   }
 
   generateSessions(): void {
-    const startDate = new Date(this.courseForm.value.startDate);
-    const endDate = new Date(this.courseForm.value.endDate);
-    const repeatWeeks = this.courseForm.value.repeatWeeks;
-    const sessionStart = this.courseForm.value.sessionStart;
-    const sessionEnd = this.courseForm.value.sessionEnd;
+  const startDate = new Date(this.courseForm.value.startDate);
+  const endDate = new Date(this.courseForm.value.endDate);
+  const repeatInterval = this.courseForm.value.repeatInterval;
+  const sessionStart = this.courseForm.value.sessionStart;
+  const sessionEnd = this.courseForm.value.sessionEnd;
+  const repeatWeeks = this.courseForm.value.repeatWeeks;
 
+  // Create a temporary array to hold sessions for preview
+  const allSessions: FormGroup[] = [];
 
-    for (let week = 0; week < repeatWeeks; week++) {
-      const weekStart = addWeeks(startDate, week * this.courseForm.value.repeatInterval);
-      const weekEnd = addWeeks(endDate, week * this.courseForm.value.repeatInterval);
-
-      eachDayOfInterval({ start: weekStart, end: weekEnd }).forEach(date => {
-        const dayName = this.daysOfWeek[date.getDay()];
-        if (this.selectedDays.includes(dayName)) {
-          const startTime = this.setTime(date, sessionStart);
-          const endTime = this.setTime(date, sessionEnd);
-
-          if (isBefore(startTime, endTime)) {
-            this.sessions.push(this.fb.group({
-              startTime: [startTime.toISOString(), Validators.required],
-              endTime: [endTime.toISOString(), Validators.required],
-              active: [true]
-            }));
-          }
-        }
-      });
+  // Generate sessions for each selected day within the date range
+  this.selectedDays.forEach(day => {
+    const dayIndex = this.daysOfWeek.indexOf(day);
+    
+    let currentDate = new Date(startDate);
+    // Find first occurrence of the selected day
+    while (currentDate.getDay() !== (dayIndex + 1) % 7) {
+      currentDate.setDate(currentDate.getDate() + 1);
     }
-  }
 
+    let weekCount = 0;
+    while (currentDate <= endDate && weekCount < repeatWeeks) {
+      const sessionDate = new Date(currentDate);
+      const startTime = this.setTime(sessionDate, sessionStart);
+      const endTime = this.setTime(sessionDate, sessionEnd);
+
+      if (isBefore(startTime, endTime)) {
+        allSessions.push(this.fb.group({
+          startTime: [startTime.toISOString(), Validators.required],
+          endTime: [endTime.toISOString(), Validators.required],
+          active: [true]
+        }));
+      }
+
+      // Move to next interval
+      currentDate.setDate(currentDate.getDate() + (7 * repeatInterval));
+      weekCount += repeatInterval;
+    }
+  });
+
+  // Sort sessions by date and add to form array
+  allSessions.sort((a, b) => 
+    new Date(a.value.startTime).getTime() - new Date(b.value.startTime).getTime()
+  ).forEach(session => this.sessions.push(session));
+}
   private setTime(date: Date, timeString: string): Date {
     const [hours, minutes] = timeString.split(':').map(Number);
     return setMinutes(setHours(date, hours), minutes);
   }
-
+  validateDateRange(): boolean {
+    const start = new Date(this.courseForm.value.startDate);
+    const end = new Date(this.courseForm.value.endDate);
+    return start < end;
+  }
+  
+  validateSessionTimes(): boolean {
+    const start = this.courseForm.value.sessionStart;
+    const end = this.courseForm.value.sessionEnd;
+    return start && end && start < end;
+  }
   removeSession(index: number): void {
     this.sessions.removeAt(index);
   }
