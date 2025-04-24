@@ -35,7 +35,9 @@ namespace DoLearn.API.Features.Courses.GetCourse
                 schedule?.StartDate ?? DateTime.MinValue,
                 schedule?.EndDate   ?? DateTime.MinValue,
                 schedule.Sessions,
-                ImgURL:"http://localhost:5055/"+ course.ImgURL           // ← pass the stored image URL here
+                ImgURL:"http://localhost:5055/"+ course.ImgURL, 
+                course.Description
+
             );
             
         }

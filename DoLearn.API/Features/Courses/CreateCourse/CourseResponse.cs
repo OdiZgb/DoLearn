@@ -6,5 +6,7 @@ public record CourseResponse(
     DateTime StartDate,
     DateTime EndDate,
     List<CourseSession> SessionStartTimes,
-    string? ImgURL                   // ← include here too
+    string? ImgURL,
+    string Description
+    
 );
