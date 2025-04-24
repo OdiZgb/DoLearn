@@ -19,14 +19,15 @@ public class GetEnrolledCoursesHandler : IRequestHandler<GetEnrolledCoursesQuery
             .Include(e => e.Course)
             .ThenInclude(c => c.CreatedBy) // Include if needed
             .ToListAsync(cancellationToken);
-
+        
         var courses = enrollments.Select(e => e.Course).ToList();
 
         // Update image URLs (consider moving this to a DTO or service)
         foreach (var course in courses)
         {
-            course.ImgURL = $"http://localhost:5055{course.ImgURL}";
+            course.ImgURL = "http://localhost:5055/"+ course.ImgURL;
         }
+         courses = courses.Distinct().ToList();
 
         return courses;
     }
