@@ -9,6 +9,7 @@ namespace DoLearn.API.Data
         
         public DbSet<User> Users { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<CourseSchedule> CourseSchedules { get; set; }
         public DbSet<CourseSession> CourseSessions { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
