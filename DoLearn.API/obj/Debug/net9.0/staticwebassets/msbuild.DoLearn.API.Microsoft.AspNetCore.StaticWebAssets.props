@@ -18,6 +18,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\1567c11f-14b5-40a9-904d-6df08d0dbcc9.avif'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\16445145-0dce-4aaa-8e11-c235fbd333c5.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>DoLearn.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/DoLearn.API</BasePath>
+      <RelativePath>images/16445145-0dce-4aaa-8e11-c235fbd333c5.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>gherk9z97x</Fingerprint>
+      <Integrity>7LVhg3Yad/nl4/UJ1kju1s4QQGJNYBJIMMVCTRC3Fgo=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\16445145-0dce-4aaa-8e11-c235fbd333c5.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\2ec27a97-8810-451c-a9fc-31548882a189.webp'))">
       <SourceType>Package</SourceType>
       <SourceId>DoLearn.API</SourceId>
@@ -162,6 +180,42 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\9574ae05-9c48-4e71-bdfb-c7310216e0ef.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\a63661c2-7079-4221-b839-0ca77e0d2aa1.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>DoLearn.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/DoLearn.API</BasePath>
+      <RelativePath>images/a63661c2-7079-4221-b839-0ca77e0d2aa1.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>npoc7kf8d1</Fingerprint>
+      <Integrity>Gy/mQdDiWp88RyYC5ziQsxj3lRup9FMIRRIaJNWVQxs=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\a63661c2-7079-4221-b839-0ca77e0d2aa1.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\c6196fcf-6a7a-49c8-8bf2-05af266fddb6.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>DoLearn.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/DoLearn.API</BasePath>
+      <RelativePath>images/c6196fcf-6a7a-49c8-8bf2-05af266fddb6.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>hmocnv2975</Fingerprint>
+      <Integrity>V0Vm5NXNQZWxX/DTc+xFV2oF3ABDjwbuog9f0JDf5Pw=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\c6196fcf-6a7a-49c8-8bf2-05af266fddb6.png'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\c7855f57-14d2-4ed5-a31d-839e3d78e178.jpg'))">
       <SourceType>Package</SourceType>
       <SourceId>DoLearn.API</SourceId>
@@ -197,6 +251,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\cc36e284-c58b-4b66-899c-2460d4d55832.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\cfdb8d94-cbad-4348-ad4c-5fbe5e23724e.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>DoLearn.API</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/DoLearn.API</BasePath>
+      <RelativePath>images/cfdb8d94-cbad-4348-ad4c-5fbe5e23724e.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>jqdc2wbs3u</Fingerprint>
+      <Integrity>db0fUOwGRpL0VtDNZKgXqWgu4zbmtydPztPxOT1IgCM=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\cfdb8d94-cbad-4348-ad4c-5fbe5e23724e.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\dasdas.png'))">
       <SourceType>Package</SourceType>
