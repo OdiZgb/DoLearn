@@ -28,8 +28,12 @@ public class CreateCourseCommandHandler
             CreatedById = req.CreatedById,
             ImgURL      = req.ImgURL,
             CreatedAt   = DateTime.UtcNow,
-            LastUpdated = DateTime.UtcNow
+            LastUpdated = DateTime.UtcNow,
+            CategoryId = req.CategoryId,
+
         };
+        var category = _context.Categories.Where(x=>x.Id==req.CategoryId).First();
+        course.Category = category;
         _context.Courses.Add(course);
         await _context.SaveChangesAsync(ct);
 

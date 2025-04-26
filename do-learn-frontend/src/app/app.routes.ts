@@ -6,6 +6,8 @@ import { CreateCourseComponent } from './features/courses/create-course/create-c
 import { ProfileComponent } from './features/profile/profile.component';
 import { CourseDetailsComponent } from './features/courses/course-details.component';
 import { DashboardComponent } from './features/dashboard/dashboard/dashboard.component';
+import { CategoriesComponent } from './features/categories/categories.component';
+import { CategoryFormComponent } from './features/categories/category-form/category-form.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'courses', pathMatch: 'full' },
@@ -15,6 +17,14 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'profile', component: ProfileComponent }
+  { path: 'profile', component: ProfileComponent },
+  {
+    path: 'categories',
+    component: CategoriesComponent,
+    children: [
+      { path: 'new', component: CategoryFormComponent }, // /categories/new
+      { path: 'edit/:id', component: CategoryFormComponent } // /categories/edit/1
+    ]
+  },
 
 ];

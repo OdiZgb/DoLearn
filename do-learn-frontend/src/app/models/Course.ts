@@ -1,3 +1,5 @@
+import { Category } from "../services/category.service";
+
 export interface Course {
     id: number;
     title: string;
@@ -12,5 +14,6 @@ export interface Course {
     createdAt: string;       // Changed from createdById
     lastUpdated: string;     // Changed from lastUpdated
     imgURL: string | null;   // Corrected from imgIRL
+    category:Category;
   }
   

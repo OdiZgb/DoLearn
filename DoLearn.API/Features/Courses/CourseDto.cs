@@ -5,5 +5,7 @@ public class CourseDto
     public string Description { get; set; }
     public string ImgURL { get; set; }
     public UserDto CreatedBy { get; set; } // Simplified user data
+    public int CategoryId { get; set; }
+
 }
 

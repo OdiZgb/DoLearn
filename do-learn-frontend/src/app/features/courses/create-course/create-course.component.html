@@ -24,7 +24,12 @@
           <div *ngIf="courseForm.get('courseCode')?.errors?.['pattern']">3-10 uppercase letters/numbers</div>
         </div>
       </div>
-  
+      <div class="form-group">
+        <label>Category:</label>
+        <select formControlName="categoryId" class="modern-select" required>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+        </select>
+      </div>
       <!-- Description -->
       <div class="form-group">
         <label>Description:</label>
@@ -184,6 +189,7 @@
             </label>
           </div>
         </div>
+        
       </div>
     </div>
   

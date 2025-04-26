@@ -10,6 +10,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
+import { Category, CategoryService } from "../../../services/category.service";
 
 
 @Component({
@@ -34,15 +35,18 @@ export class CreateCourseComponent implements OnInit {
   selectedFile?: File;
   daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   selectedDays: string[] = [];
-
+  categories: Category[] = [];
   constructor(
     private fb: FormBuilder,
     private coursesService: CoursesService,
+    private CategoriesService: CategoryService,
     public router: Router
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+    this.CategoriesService.getCategories().subscribe(cats => this.categories = cats);
+
   }
 
   private initializeForm(): void {
@@ -50,6 +54,7 @@ export class CreateCourseComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(3)]],
       courseCode: ['', [Validators.required, Validators.pattern(/^[A-Z0-9]{3,10}$/)]],
       description: ['', [Validators.maxLength(500)]],
+      categoryId: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
@@ -58,7 +63,8 @@ export class CreateCourseComponent implements OnInit {
       sessionStart: [''],
       sessionEnd: [''],
       repeatWeeks: [1, [Validators.min(1), Validators.max(12)]],
-      sessions: this.fb.array([])
+      sessions: this.fb.array([]),
+
     });
   }
 
@@ -163,6 +169,7 @@ export class CreateCourseComponent implements OnInit {
     // Basic fields
     fd.append('title',       raw.title);
     fd.append('description', raw.description);
+    fd.append('CategoryId', raw.categoryId.toString());
     fd.append('courseCode',  raw.courseCode);
     fd.append('startDate',   raw.startDate);
     fd.append('endDate',     raw.endDate);

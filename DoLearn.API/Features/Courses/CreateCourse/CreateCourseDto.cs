@@ -19,4 +19,5 @@ public class CreateCourseDto
     public IFormFile? Image { get; set; }
     public int Capacity{set;get;} = 1;
     public string? ImgURL { get; set; }
+    public int CategoryId{get;set;}
 }

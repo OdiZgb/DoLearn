@@ -11,5 +11,6 @@ public record CreateCourseCommand(
     List<DateTime> SessionEndTimes,
     int CreatedById,
     int Capacity,
-    string? ImgURL
+    string? ImgURL,
+    int CategoryId
 ) : IRequest<CourseCreateResponse>;

@@ -12,10 +12,10 @@ namespace DoLearn.API.Controllers{
 
     [ApiController]
     [Route("api/[controller]")]
-    public class CategoryController : ControllerBase{
+    public class CategoriesController : ControllerBase{
         private readonly IMediator _mediator;
 
-        public CategoryController(IMediator mediator)
+        public CategoriesController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -37,7 +37,6 @@ namespace DoLearn.API.Controllers{
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateCategoryCommand command)
         {
             var category = await _mediator.Send(command);
@@ -45,7 +44,6 @@ namespace DoLearn.API.Controllers{
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateCategoryCommand command)
         {
             if (id != command.Id) return BadRequest("ID mismatch");
@@ -54,7 +52,6 @@ namespace DoLearn.API.Controllers{
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var command = new DeleteCategoryCommand(id);

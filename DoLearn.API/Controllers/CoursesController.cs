@@ -53,7 +53,8 @@ namespace DoLearn.API.Controllers
             dto.SessionEndTimes,
             userId,
             dto.Capacity,
-            dto.ImgURL
+            dto.ImgURL,
+            dto.CategoryId
         );
 
         var result = await _mediator.Send(cmd);
