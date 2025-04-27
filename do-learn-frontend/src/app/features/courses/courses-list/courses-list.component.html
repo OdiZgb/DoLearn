@@ -2,20 +2,21 @@
   <mat-form-field>
     <mat-label>Filter by Category</mat-label>
     <mat-select [(ngModel)]="selectedCategoryId" 
-    (selectionChange)="onCategoryChange($event.value)">
-<mat-option [value]="null">All Categories</mat-option>
+                (selectionChange)="onCategoryChange($event.value)">
+      <mat-option [value]="null">All Categories</mat-option>
       <mat-option *ngFor="let category of categories" [value]="category.id">
         {{ category.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 </div>
+
 <mat-spinner *ngIf="isLoading" diameter="50" class="loading-spinner"></mat-spinner>
-<mat-card *ngFor="let course of courses; trackBy: trackByCourseId">
 
 <div *ngIf="!isLoading">
   <div *ngIf="courses.length > 0" class="courses-grid">
-    <mat-card class="course-card" *ngFor="let course of courses">
+    <mat-card class="course-card" 
+              *ngFor="let course of courses; trackBy: trackByCourseId">
       <div class="image-container">
         <img [src]="course.imgURL" 
              alt="{{ course.title }} image"
@@ -34,7 +35,7 @@
           <p><mat-icon>update</mat-icon> Updated: {{ course.lastUpdated | date }}</p>
         </div>
       </mat-card-content>
- 
+
       <mat-card-actions class="actions">
         <button mat-raised-button 
                 color="primary" 
