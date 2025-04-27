@@ -162,4 +162,26 @@
       font-size: 1.4rem;
     }
   }
+
+}
+.filter-section {
+  padding: 20px;
+  max-width: 300px;
+  
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+  }
 }

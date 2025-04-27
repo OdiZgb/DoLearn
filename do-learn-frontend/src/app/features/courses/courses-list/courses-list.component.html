@@ -1,36 +1,53 @@
-<!-- courses-list.component.html -->
-<div *ngIf="courses.length > 0" class="courses-grid">
-  <mat-card class="course-card" *ngFor="let course of courses">
-    <div class="image-container">
-      <img [src]="course.imgURL" 
-           alt="{{ course.title }} image"
-           class="course-image"
-         >
-      <div class="image-overlay"></div>
-    </div>
-    
-    <mat-card-header>
-      <mat-card-title>{{ course.title }}</mat-card-title>
-      <mat-card-subtitle class="course-code">{{ course.category.name }}</mat-card-subtitle>
-    </mat-card-header>
+<div class="filter-container">
+  <mat-form-field>
+    <mat-label>Filter by Category</mat-label>
+    <mat-select [(ngModel)]="selectedCategoryId" 
+    (selectionChange)="onCategoryChange($event.value)">
+<mat-option [value]="null">All Categories</mat-option>
+      <mat-option *ngFor="let category of categories" [value]="category.id">
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<mat-spinner *ngIf="isLoading" diameter="50" class="loading-spinner"></mat-spinner>
+<mat-card *ngFor="let course of courses; trackBy: trackByCourseId">
 
-    <mat-card-content>
-      <p class="description">{{ course.description }}</p>
-      <div class="date-info">
-        <p><mat-icon>schedule</mat-icon> Created: {{ course.createdAt | date }}</p>
-        <p><mat-icon>update</mat-icon> Updated: {{ course.lastUpdated | date }}</p>
+<div *ngIf="!isLoading">
+  <div *ngIf="courses.length > 0" class="courses-grid">
+    <mat-card class="course-card" *ngFor="let course of courses">
+      <div class="image-container">
+        <img [src]="course.imgURL" 
+             alt="{{ course.title }} image"
+             class="course-image">
+        <div class="image-overlay"></div>
       </div>
-    </mat-card-content>
+      
+      <mat-card-header>
+        <mat-card-title>{{ course.title }}</mat-card-title>
+      </mat-card-header>
 
-    <mat-card-actions class="actions">
-      <button mat-raised-button 
-              color="primary" 
-              class="action-button"
-              [routerLink]="['/courses', course.id]">
-        <mat-icon>visibility</mat-icon> View
-      </button>
-
+      <mat-card-content>
+        <p class="description">{{ course.description }}</p>
+        <div class="date-info">
+          <p><mat-icon>schedule</mat-icon> Created: {{ course.createdAt | date }}</p>
+          <p><mat-icon>update</mat-icon> Updated: {{ course.lastUpdated | date }}</p>
+        </div>
+      </mat-card-content>
  
-    </mat-card-actions>
-  </mat-card>
+      <mat-card-actions class="actions">
+        <button mat-raised-button 
+                color="primary" 
+                class="action-button"
+                [routerLink]="['/courses', course.id]">
+          <mat-icon>visibility</mat-icon> View
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div *ngIf="courses.length === 0" class="no-results">
+    <mat-icon>search_off</mat-icon>
+    <p>No courses found in this category</p>
+  </div>
 </div>

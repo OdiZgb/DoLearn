@@ -58,5 +58,14 @@ namespace DoLearn.API.Controllers{
             await _mediator.Send(command);
             return NoContent();
         }
+        
+        [HttpGet("GetCoursesByCategoryId/{categoryId}")]
+        public async Task<IActionResult> GetCoursesByCategoryId( int categoryId)
+        {
+            var query = new GetCoursesByCategoryIdQuery(categoryId);
+            var courses = await _mediator.Send(query);
+            return Ok(courses);
+        }
+
     }
 }

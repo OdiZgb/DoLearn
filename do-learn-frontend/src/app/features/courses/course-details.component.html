@@ -6,7 +6,6 @@
       <h1 class="course-title">{{ course.title }}</h1>
       <div class="course-meta">
         <span class="course-code">{{ course.courseCode }}</span>
-        <span class="course-code">{{ course?.category?.name }}</span>
         <span class="course-duration">
           <mat-icon>calendar_today</mat-icon>
           {{ course.startDate | date: 'MMM d' }} - {{ course.endDate | date: 'MMM d' }}

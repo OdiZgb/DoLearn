@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Course } from '../models/Course';
 
 export interface Category {
   id: number;
@@ -10,7 +11,7 @@ export interface Category {
 
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
-  private apiUrl = 'http://localhost:5055/api/categories'; // Hell yeah we remember
+  private apiUrl = 'http://localhost:5055/api/categories/'; // Hell yeah we remember
 
   constructor(private http: HttpClient) {}
 
@@ -31,5 +32,8 @@ export class CategoryService {
   }
   getCategory(id: number): Observable<Category> {
     return this.http.get<Category>(`${this.apiUrl}/${id}`);
+  }
+  getCoursesByCategoryId(categoryId: number): Observable<Course[]> {
+    return this.http.get<Course[]>(`${this.apiUrl}GetCoursesByCategoryId/${categoryId}`);
   }
 }
