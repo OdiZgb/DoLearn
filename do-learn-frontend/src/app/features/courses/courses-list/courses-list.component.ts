@@ -130,7 +130,7 @@ export class CoursesListComponent implements OnInit {
     console.log('Making API call for category:', selectedId); // Add this
 
     // 3. Use correct service (coursesService instead of categoryService)
-    this.categoryService.getCoursesByCategoryId(selectedId).subscribe({
+    this.coursesService.getCoursesByCategoryId(selectedId).subscribe({
       next: (courses) => {
         
         this.courses = courses.map((c: any) => ({

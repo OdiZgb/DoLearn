@@ -68,7 +68,8 @@ export class CoursesService {
   getCourseSessions(courseId: number): Observable<SessionDto[]> {
     return this.http.get<any>(`${this.apiUrl}/${courseId}`+'/sessions');
 }
+
   getCoursesByCategoryId(categoryId: number): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.apiUrl}?categoryId=${categoryId}`);
+    return this.http.get<Course[]>(`${this.apiUrl}/GetCoursesByCategoryId/${categoryId}`);
   }
 }

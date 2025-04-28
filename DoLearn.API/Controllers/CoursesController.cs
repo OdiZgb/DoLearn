@@ -182,6 +182,13 @@ public async Task<IActionResult> GetCourseSessions(int courseId)
     return Ok(sessions);
 }
 
- 
+         [HttpGet("GetCoursesByCategoryId/{categoryId}")]
+        public async Task<IActionResult> GetCoursesByCategoryId( int categoryId)
+        {
+            var query = new GetCoursesByCategoryIdQuery(categoryId);
+            var courses = await _mediator.Send(query);
+            return Ok(courses);
+        }
+
     }
     }
