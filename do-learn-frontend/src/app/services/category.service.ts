@@ -7,6 +7,9 @@ export interface Category {
   id: number;
   name: string;
   description: string;
+  children:Category[];
+  parentId?: number;
+
 }
 
 @Injectable({ providedIn: 'root' })
@@ -33,7 +36,11 @@ export class CategoryService {
   getCategory(id: number): Observable<Category> {
     return this.http.get<Category>(`${this.apiUrl}/${id}`);
   }
+  getCategoriesWithHierarchy(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.apiUrl}/hierarchy`);
+  }
+
   getCoursesByCategoryId(categoryId: number): Observable<Course[]> {
-    return this.http.get<Course[]>(`${this.apiUrl}GetCoursesByCategoryId/${categoryId}`);
+    return this.http.get<Course[]>(`${this.apiUrl}/${categoryId}/courses`);
   }
 }

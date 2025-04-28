@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Category, CategoryService } from '../../../services/category.service';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   standalone: true,
@@ -16,7 +17,8 @@ import { Category, CategoryService } from '../../../services/category.service';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
-    RouterModule
+    RouterModule,
+    MatSelectModule,
   ],
   template: `
     <mat-card>
@@ -30,10 +32,16 @@ import { Category, CategoryService } from '../../../services/category.service';
             <input matInput formControlName="name">
           </mat-form-field>
 
-          <mat-form-field appearance="fill">
-            <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description"></textarea>
-          </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Parent Category</mat-label>
+    <mat-select formControlName="parentId">
+    <mat-select>
+      <mat-option [value]="null">None</mat-option>
+    </mat-select>      <mat-option *ngFor="let cat of categories" [value]="cat.id">
+        {{ cat.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
           <div class="button-row">
             <button mat-raised-button color="primary" type="submit">
@@ -69,6 +77,7 @@ export class CategoryFormComponent implements OnInit {
   isEditMode = false;
   title = 'New Category';
   categoryId?: number;
+  categories: Category[] = [];
 
   constructor(
     private fb: FormBuilder, // ← Use proper dependency injection
@@ -78,13 +87,16 @@ export class CategoryFormComponent implements OnInit {
   ) {
     this.categoryForm = this.fb.group({
       name: ['', Validators.required],
-      description: ['']
+      description: [''],
+      parentId: [null] 
     });
     this.isEditMode = !!this.route.snapshot.paramMap.get('id');
     this.title = this.isEditMode ? 'Edit Category' : 'New Category';
   }
 
   ngOnInit(): void {
+    this.loadCategories();
+
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.isEditMode = true;
@@ -104,7 +116,15 @@ export class CategoryFormComponent implements OnInit {
   onSubmit(): void {
     if (this.categoryForm.invalid) return;
 
-    const categoryData = this.categoryForm.value as Omit<Category, 'id'>;
+    const formData = this.categoryForm.value;
+    const categoryData: Omit<Category, 'id'> = {
+      name: formData.name,
+      description: formData.description,
+      parentId: formData.parentId
+      // children is auto-managed by backend, so we exclude it
+      ,
+      children: []
+    };
 
     if (this.isEditMode && this.categoryId) {
       this.categoryService.updateCategory(this.categoryId, categoryData)
@@ -113,5 +133,18 @@ export class CategoryFormComponent implements OnInit {
       this.categoryService.createCategory(categoryData)
         .subscribe(() => this.router.navigate(['/categories']));
     }
+
+  }
+  loadCategories(): void {
+    this.categoryService.getCategories().subscribe(categories => {
+      this.categories = categories;
+      
+      if (this.isEditMode) {
+        // Remove current category from parent options
+        this.categories = this.categories.filter(
+          c => c.id !== this.categoryId
+        );
+      }
+    });
   }
 }

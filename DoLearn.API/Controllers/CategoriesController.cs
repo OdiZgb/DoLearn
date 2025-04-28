@@ -13,12 +13,19 @@ namespace DoLearn.API.Controllers{
     [ApiController]
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase{
-        private readonly IMediator _mediator;
 
-        public CategoriesController(IMediator mediator)
+        private readonly IMediator _mediator;
+        private readonly IWebHostEnvironment _env;   // ← add this
+            private readonly AppDbContext _context;
+
+        public CategoriesController(IMediator mediator, IWebHostEnvironment env, AppDbContext context)
         {
             _mediator = mediator;
+             _env      = env;
+             _context = context;
         }
+        
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -62,10 +69,26 @@ namespace DoLearn.API.Controllers{
         [HttpGet("GetCoursesByCategoryId/{categoryId}")]
         public async Task<IActionResult> GetCoursesByCategoryId( int categoryId)
         {
-            var query = new GetCoursesByCategoryIdQuery(categoryId);
+            var query = new GetCoursesByCategoryQuery(categoryId, false);
             var courses = await _mediator.Send(query);
             return Ok(courses);
         }
+        [HttpGet("hierarchy")]
+        public async Task<IActionResult> GetHierarchy()
+        {
+            var categories = await _context.Categories
+                .Include(c => c.Children)
+                .Where(c => c.ParentId == null)
+                .ToListAsync();
+            return Ok(categories);
+        }
 
+        [HttpGet("{categoryId}/courses")]
+        public async Task<IActionResult> GetCategoryCourses(int categoryId)
+        {
+            var query = new GetCoursesByCategoryQuery(categoryId, true);
+            var courses = await _mediator.Send(query);
+            return Ok(courses);
+        }
     }
 }

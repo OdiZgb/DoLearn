@@ -15,6 +15,8 @@ public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, Li
     {
         return await _context.Categories
             .AsNoTracking()
+            .Include(c => c.Children)  // Load child categories
+            .Where(c => c.ParentId == null)  // Only get root categories
             .ToListAsync(cancellationToken);
     }
 }

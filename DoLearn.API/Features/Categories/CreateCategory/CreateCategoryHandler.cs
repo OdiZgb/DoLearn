@@ -12,10 +12,11 @@ public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Cate
 
     public async Task<Category> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var category = new Category
+   var category = new Category
         {
-            name = request.Name,
-            description = request.Description
+            Name = request.Name,
+            Description = request.Description,
+            ParentId = request.ParentId // Add this line
         };
 
         await _context.Categories.AddAsync(category, cancellationToken);
