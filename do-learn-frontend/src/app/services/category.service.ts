@@ -7,11 +7,10 @@ export interface Category {
   id: number;
   name: string;
   description: string;
-  children:Category[];
-  parentId?: number;
-
+  parentId: number | null;
+  parent: Category | null;
+  children: Category[];
 }
-
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
   private apiUrl = 'http://localhost:5055/api/categories/'; // Hell yeah we remember

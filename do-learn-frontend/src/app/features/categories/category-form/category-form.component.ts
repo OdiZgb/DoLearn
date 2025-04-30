@@ -56,17 +56,31 @@ import { MatSelectModule } from '@angular/material/select';
     </mat-card>
   `,
   styles: [`
-    mat-card {
-      margin: 20px;
+    /* Critical font fixes */
+    body {
+      font-family: 'Roboto', sans-serif !important;
     }
-    form {
-      display: flex;
-      flex-direction: column;
+    
+    .material-icons {
+      font-family: 'Material Icons' !important;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: #616161;
     }
-    .button-row {
-      margin-top: 20px;
-      display: flex;
-      gap: 10px;
+  
+    /* Force text rendering */
+    .node-text {
+      font-family: 'Roboto', sans-serif !important;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.25px;
+    }
+  
+    /* Remove any font transformations */
+    mat-tree, mat-card, mat-card-content {
+      font-family: inherit !important;
+      text-transform: none !important;
     }
   `]
 })
@@ -120,12 +134,10 @@ export class CategoryFormComponent implements OnInit {
     const categoryData: Omit<Category, 'id'> = {
       name: formData.name,
       description: formData.description,
-      parentId: formData.parentId
-      // children is auto-managed by backend, so we exclude it
-      ,
-      children: []
+      parentId: formData.parentId,
+      parent: null, // <== ADD THIS!!
+      children: []   // children are empty when creating new
     };
-
     if (this.isEditMode && this.categoryId) {
       this.categoryService.updateCategory(this.categoryId, categoryData)
         .subscribe(() => this.router.navigate(['/categories']));
@@ -133,6 +145,7 @@ export class CategoryFormComponent implements OnInit {
       this.categoryService.createCategory(categoryData)
         .subscribe(() => this.router.navigate(['/categories']));
     }
+    console.log(categoryData,'categoryDatacategoryDatacategoryData')
 
   }
   loadCategories(): void {
@@ -147,4 +160,8 @@ export class CategoryFormComponent implements OnInit {
       }
     });
   }
+}export interface CreateCategoryRequest {
+  name: string;
+  description: string;
+  parentId: number | null;
 }

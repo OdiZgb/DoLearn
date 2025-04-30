@@ -1,138 +1,111 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { MatTreeModule, MatTreeNestedDataSource } from '@angular/material/tree';
 import { Category, CategoryService } from '../../services/category.service';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { NestedTreeControl } from '@angular/cdk/tree';
 
 @Component({
   standalone: true,
   selector: 'app-categories',
   imports: [
     CommonModule,
-    MatTableModule,
     MatButtonModule,
     MatIconModule,
     RouterModule,
     MatCardModule,
-    MatIconModule,
-    MatTooltipModule
+    MatTreeModule
   ],
   template: `
     <mat-card>
       <mat-card-header>
         <mat-card-title>Categories</mat-card-title>
       </mat-card-header>
-      <mat-card-actions>
-        <button mat-raised-button color="primary" routerLink="/categories/new">
-          Add New Category
-        </button>
-      </mat-card-actions>
-<mat-card-content>
-  <table mat-table [dataSource]="categories">
-    <!-- Id Column -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let category">{{ category.id }}</td>
-    </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let category">{{ category.name }}</td>
-    </ng-container>
+      <mat-card-content>
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+          <!-- Leaf Node -->
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <div class="category-node">
+              <mat-icon>insert_drive_file</mat-icon>
+              {{ node.name }}
+              <button mat-icon-button (click)="deleteCategory(node.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-tree-node>
 
-    <!-- Children Column -->
-    <ng-container matColumnDef="children">
-      <th mat-header-cell *matHeaderCellDef>Children</th>
-      <td mat-cell *matCellDef="let category">
-        <mat-icon *ngIf="category.children?.length" matTooltip="{{category.children.length}} child categories">
-          folder
-        </mat-icon>
-        <span *ngIf="!category.children?.length">-</span>
-      </td>
-    </ng-container>
-
-    <!-- Description Column -->
-    <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef>Description</th>
-      <td mat-cell *matCellDef="let category">{{ category.description }}</td>
-    </ng-container>
-
-    <!-- Actions Column -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let category">
-        <button mat-icon-button [routerLink]="['edit', category.id]">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button (click)="deleteCategory(category.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
-</mat-card-content>
+          <!-- Parent Node -->
+          <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+            <div class="category-node mat-tree-node" matTreeNodeToggle>
+              <button mat-icon-button>
+                <mat-icon>
+                  {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                </mat-icon>
+              </button>
+              <mat-icon>folder</mat-icon>
+              {{ node.name }}
+              <button mat-icon-button (click)="deleteCategory(node.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            <div [class.tree-invisible]="!treeControl.isExpanded(node)">
+              <ng-container matTreeNodeOutlet></ng-container>
+            </div>
+          </mat-nested-tree-node>
+        </mat-tree>
+      </mat-card-content>
     </mat-card>
-    <ng-container matColumnDef="children">
-  <th mat-header-cell *matHeaderCellDef>Children</th>
-  <td mat-cell *matCellDef="let category">
-    <mat-icon *ngIf="category.children?.length" matTooltip="{{category.children.length}} child categories">
-      folder
-    </mat-icon>
-    <span *ngIf="!category.children?.length">-</span>
-  </td>
-</ng-container>
-    <router-outlet></router-outlet>
-
   `,
   styles: [`
     mat-card {
       margin: 20px;
     }
-    table {
-      width: 100%;
-    }
-    router-outlet {
-      margin: 20px;
-      display: block;
+    .category-node {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
     }
     mat-icon {
       color: #673ab7;
-      vertical-align: middle;
-      margin-right: 8px;
     }
-    td.mat-column-children {
-      width: 100px;
-      text-align: center;
+    .tree-invisible {
+      display: none;
     }
   `]
 })
 export class CategoriesComponent implements OnInit {
-  categories: Category[] = [];
-  displayedColumns = ['id', 'name', 'children', 'description', 'actions'];
+  treeControl = new NestedTreeControl<Category>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<Category>();
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadCategories();
   }
 
+  hasChild = (_: number, node: Category) => !!node.children && node.children.length > 0;
+
   loadCategories(): void {
-    this.categoryService.getCategories().subscribe(
-      categories => this.categories = categories
-    );
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => {
+        this.dataSource.data = categories;
+        this.cdRef.detectChanges();
+      },
+      error: (err) => console.error('Error loading categories:', err)
+    });
   }
 
   deleteCategory(id: number): void {
     this.categoryService.deleteCategory(id).subscribe(() => {
-      this.categories = this.categories.filter(c => c.id !== id);
+      this.loadCategories();
     });
   }
 }
