@@ -14,4 +14,3 @@ public record UpdateCategoryCommand(
 ) : IRequest<Unit>;
 
 // DeleteCategoryCommand.cs
-public record DeleteCategoryCommand(int Id) : IRequest<Unit>;

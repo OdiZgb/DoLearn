@@ -63,9 +63,8 @@ namespace DoLearn.API.Controllers{
         {
             var command = new DeleteCategoryCommand(id);
             await _mediator.Send(command);
-            return NoContent();
+            return NoContent(); // Proper 204 response for successful deletion
         }
-        
         [HttpGet("GetCoursesByCategoryId/{categoryId}")]
         public async Task<IActionResult> GetCoursesByCategoryId( int categoryId)
         {

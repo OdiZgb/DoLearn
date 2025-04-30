@@ -30,7 +30,7 @@ export class CategoryService {
   }
 
   deleteCategory(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}${id}`);
   }
   getCategory(id: number): Observable<Category> {
     return this.http.get<Category>(`${this.apiUrl}/${id}`);
