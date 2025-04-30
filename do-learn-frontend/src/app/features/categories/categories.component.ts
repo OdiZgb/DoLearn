@@ -2,11 +2,15 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatTreeModule, MatTreeNestedDataSource } from '@angular/material/tree';
 import { Category, CategoryService } from '../../services/category.service';
 import { NestedTreeControl } from '@angular/cdk/tree';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   standalone: true,
@@ -17,9 +21,71 @@ import { NestedTreeControl } from '@angular/cdk/tree';
     MatIconModule,
     RouterModule,
     MatCardModule,
-    MatTreeModule
+    MatTreeModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterModule,
+    MatCardModule,
+    MatTreeModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule
+
   ],
   template: `
+
+ <mat-card>
+      <mat-card-header>
+        <mat-card-title>Create New Category</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Parent Category</mat-label>
+            <mat-select formControlName="parentId">
+              <mat-option [value]="null">None</mat-option>
+              <mat-option *ngFor="let category of flatCategories" [value]="category.id">
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
+            Create Category
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Categories</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+          <!-- Node templates remain the same -->
+        </mat-tree>
+      </mat-card-content>
+    </mat-card>
     <mat-card>
       <mat-card-header>
         <mat-card-title>Categories</mat-card-title>
@@ -81,11 +147,21 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 export class CategoriesComponent implements OnInit {
   treeControl = new NestedTreeControl<Category>(node => node.children);
   dataSource = new MatTreeNestedDataSource<Category>();
+  form: FormGroup ;
+  flatCategories: Category[] = [];
 
   constructor(
     private categoryService: CategoryService,
-    private cdRef: ChangeDetectorRef
-  ) {}
+    private cdRef: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private router: Router
+
+   ) {   this.form = this.fb.group({
+    name: ['', Validators.required],
+    description: [''],
+    parentId: [null]
+  });
+}
 
   ngOnInit(): void {
     this.loadCategories();
@@ -97,15 +173,34 @@ export class CategoriesComponent implements OnInit {
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
         this.dataSource.data = categories;
+        this.flatCategories = this.flattenCategories(categories);
         this.cdRef.detectChanges();
       },
       error: (err) => console.error('Error loading categories:', err)
     });
   }
+  private flattenCategories(categories: Category[]): Category[] {
+    return categories.reduce((acc, category) => {
+      acc.push(category);
+      if (category.children && category.children.length > 0) {
+        acc.push(...this.flattenCategories(category.children));
+      }
+      return acc;
+    }, [] as Category[]);
+  }
+
 
   deleteCategory(id: number): void {
     this.categoryService.deleteCategory(id).subscribe(() => {
       this.loadCategories();
     });
+  }
+  onSubmit() {
+    if (this.form.valid) {
+      this.categoryService.createCategory(this.form.value).subscribe({
+        next: () => this.router.navigate(['/categories']),
+        error: (err) => console.error('Error creating category', err)
+      });
+    }
   }
 }
