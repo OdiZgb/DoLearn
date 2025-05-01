@@ -185,3 +185,26 @@
     margin-bottom: 16px;
   }
 }
+.nested-menu, .nested-submenu {
+  min-width: 200px;
+  max-height: 60vh;
+  overflow-y: auto;
+  
+  .mat-menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .submenu-indicator {
+      margin-left: 16px;
+      color: #666;
+    }
+  }
+}
+
+.menu-trigger {
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}

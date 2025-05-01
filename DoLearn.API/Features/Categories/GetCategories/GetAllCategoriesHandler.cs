@@ -6,17 +6,26 @@ public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, Li
 {
     private readonly AppDbContext _context;
 
-    public GetAllCategoriesHandler(AppDbContext context)
+    public GetAllCategoriesHandler(AppDbContext context) => _context = context;
+
+    public async Task<List<Category>> Handle(GetAllCategoriesQuery request, CancellationToken ct)
     {
-        _context = context;
+        var allCategories = await _context.Categories
+            .AsNoTracking()
+            .ToListAsync(ct);
+
+        return BuildHierarchy(allCategories);
     }
 
-    public async Task<List<Category>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+    private List<Category> BuildHierarchy(List<Category> categories)
     {
-        return await _context.Categories
-            .AsNoTracking()
-            .Include(c => c.Children)  // Load child categories
-            .Where(c => c.ParentId == null)  // Only get root categories
-            .ToListAsync(cancellationToken);
+        var dict = categories.ToLookup(c => c.ParentId);
+        
+        foreach (var category in categories)
+        {
+            category.Children = dict[category.Id].ToList();
+        }
+
+        return dict[null].ToList(); // Return root categories
     }
 }

@@ -1,14 +1,28 @@
 <div class="filter-container">
-  <mat-form-field>
-    <mat-label>Filter by Category</mat-label>
-    <mat-select [(ngModel)]="selectedCategoryId" 
-                (selectionChange)="onCategoryChange($event.value)">
-      <mat-option [value]="null">All Categories</mat-option>
-      <mat-option *ngFor="let category of categories" [value]="category.id">
+  <button mat-button [matMenuTriggerFor]="categoryMenu" class="menu-trigger">
+    {{ selectedCategoryName || 'Filter by Category' }}
+  </button>
+
+  <mat-menu #categoryMenu="matMenu" class="nested-menu">
+    <button mat-menu-item (click)="clearFilter()">
+      All Categories
+    </button>
+    <ng-container *ngFor="let category of categories">
+      <button mat-menu-item 
+              [matMenuTriggerFor]="subMenu"
+              (mouseenter)="openSubMenu(category, $event)"
+              (click)="$event.preventDefault()">
         {{ category.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+        <span class="submenu-indicator">›</span>
+      </button>
+      <mat-menu #subMenu="matMenu" class="nested-submenu">
+        <app-category-menu-item 
+          [category]="category"
+          (categorySelected)="onCategorySelect($event)">
+        </app-category-menu-item>
+      </mat-menu>
+    </ng-container>
+  </mat-menu>
 </div>
 
 <mat-spinner *ngIf="isLoading" diameter="50" class="loading-spinner"></mat-spinner>

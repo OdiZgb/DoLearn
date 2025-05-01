@@ -13,6 +13,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
+import { CategoryMenuItemComponent } from '../../categories/category-menu-item/category-menu-item.component';
 @Component({
   standalone: true,
   selector: 'app-courses-list',
@@ -22,6 +24,8 @@ import {MatSelectModule} from '@angular/material/select';
     CommonModule,
     RouterModule,
     MatCardModule,
+    MatMenuModule, // Add this
+    CategoryMenuItemComponent,
     MatButtonModule,
     MatIconModule,
     DatePipe,
@@ -55,6 +59,7 @@ export class CoursesListComponent implements OnInit {
   categories: Category[] = [];
   selectedCategoryId: number | null = null;
   isLoading = true;
+  selectedCategoryName?: string;
 
   constructor(
     private coursesService: CoursesService,
@@ -147,7 +152,32 @@ export class CoursesListComponent implements OnInit {
       }
     });
   }
-
+  clearFilter() {
+    this.selectedCategoryId = null;
+    this.selectedCategoryName = undefined;
+    this.loadAllCourses();
+  }
+  onCategorySelect(categoryId: number) {
+    const category = this.findCategory(this.categories, categoryId);
+    this.selectedCategoryId = categoryId;
+    this.selectedCategoryName = category?.name;
+    this.onCategoryChange(categoryId);
+  }
+  private findCategory(categories: Category[], id: number): Category | undefined {
+    for (const cat of categories) {
+      if (cat.id === id) return cat;
+      if (cat.children) {
+        const found = this.findCategory(cat.children, id);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  }
+  openSubMenu(category: Category, event: MouseEvent) {
+    // Prevent accidental clicks while hovering
+    event.preventDefault();
+  }
+  
 }
 
 export interface CourseWithStatus extends Course {
