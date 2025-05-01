@@ -8,9 +8,9 @@ public record GetCategoryByIdQuery(int Id) : IRequest<Category>;
 
 // UpdateCategoryCommand.cs
 public record UpdateCategoryCommand(
-    int Id,
-    string Name,
-    string Description
+    string name,
+    string description,
+    int parentId
 ) : IRequest<Unit>;
 
 // DeleteCategoryCommand.cs

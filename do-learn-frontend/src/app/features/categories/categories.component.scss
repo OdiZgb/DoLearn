@@ -1,0 +1,148 @@
+.container {
+    height: 100vh;
+    background: #f5f5f5;
+  }
+  
+  .sidenav {
+    width: 400px;
+    padding: 2rem;
+    background: #ffffff;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.05);
+  
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      
+      h2 {
+        margin: 0;
+        font-weight: 500;
+        color: #3f51b5;
+      }
+    }
+  }
+  
+  .header-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: #ffffff;
+    
+    h1 {
+      margin: 0;
+      font-weight: 500;
+      color: #3f51b5;
+    }
+  
+    .fab-button {
+      box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
+      transition: transform 0.2s ease;
+  
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+  
+  .content-wrapper {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .tree-card {
+    border-radius: 12px;
+    overflow: hidden;
+  
+    .search-bar {
+      padding: 1rem 2rem;
+      background: #f8f9fa;
+    }
+  }
+  
+  .luxury-tree {
+    .tree-node {
+      display: flex;
+      align-items: center;
+      padding: 1rem 2rem;
+      transition: all 0.2s ease;
+      border-radius: 8px;
+      margin: 4px 0;
+      background: #ffffff;
+  
+      &:hover {
+        background: #f8f9fa;
+        transform: translateX(4px);
+      }
+  
+      &.selected {
+        background: #e8f4ff;
+        border-left: 4px solid #3f51b5;
+      }
+  
+      .node-content {
+        flex: 1;
+        margin-left: 1rem;
+        cursor: pointer;
+  
+        .node-icon {
+          color: #3f51b5;
+          margin-right: 1rem;
+        }
+  
+        .node-name {
+          font-weight: 500;
+          margin-right: 1rem;
+        }
+  
+        .node-description {
+          color: #666;
+          font-size: 0.9em;
+        }
+      }
+  
+      .node-actions {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+  
+        button {
+          margin-left: 0.5rem;
+        }
+      }
+  
+      &:hover .node-actions {
+        opacity: 1;
+      }
+    }
+  
+    .parent-node {
+      background: #f8f9fa;
+      font-weight: 500;
+    }
+  
+    .tree-children {
+      margin-left: 2rem;
+      border-left: 2px solid #eee;
+    }
+  }
+  
+  .category-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+  }
+  
+  .parent-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }

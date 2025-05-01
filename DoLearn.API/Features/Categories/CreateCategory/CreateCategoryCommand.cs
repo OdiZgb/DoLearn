@@ -7,3 +7,10 @@ public sealed record CreateCategoryCommand(
     [property: JsonPropertyName("description")] string Description,
     [property: JsonPropertyName("parentId")] int? ParentId
 ) : IRequest<Category>;
+
+public record UpdateCategoryWithIdCommand(
+    int id,
+    string name,
+    string description,
+    int parentId
+) : IRequest<Unit>;

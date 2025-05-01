@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,10 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDeleteDialogComponent } from './shared/confirm-delete-dialog/confirm-delete-dialog.component';
 
 @Component({
   standalone: true,
@@ -23,145 +27,40 @@ import { MatSelectModule } from '@angular/material/select';
     MatCardModule,
     MatTreeModule,
     ReactiveFormsModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    RouterModule,
-    MatCardModule,
-    MatTreeModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule
-
+    MatSelectModule,
+    MatProgressBarModule,
+    MatSidenavModule,
+    MatDialogModule
   ],
-  template: `
-
- <mat-card>
-      <mat-card-header>
-        <mat-card-title>Create New Category</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
-          <mat-form-field>
-            <mat-label>Name</mat-label>
-            <input matInput formControlName="name" required>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description"></textarea>
-          </mat-form-field>
-
-          <mat-form-field>
-            <mat-label>Parent Category</mat-label>
-            <mat-select formControlName="parentId">
-              <mat-option [value]="null">None</mat-option>
-              <mat-option *ngFor="let category of flatCategories" [value]="category.id">
-                {{ category.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
-            Create Category
-          </button>
-        </form>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Categories</mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
-        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-          <!-- Node templates remain the same -->
-        </mat-tree>
-      </mat-card-content>
-    </mat-card>
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Categories</mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
-        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-          <!-- Leaf Node -->
-          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-            <div class="category-node">
-              <mat-icon>insert_drive_file</mat-icon>
-              {{ node.name }}
-              <button mat-icon-button (click)="deleteCategory(node.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-          </mat-tree-node>
-
-          <!-- Parent Node -->
-          <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-            <div class="category-node mat-tree-node" matTreeNodeToggle>
-              <button mat-icon-button>
-                <mat-icon>
-                  {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-                </mat-icon>
-              </button>
-              <mat-icon>folder</mat-icon>
-              {{ node.name }}
-              <button mat-icon-button (click)="deleteCategory(node.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-            <div [class.tree-invisible]="!treeControl.isExpanded(node)">
-              <ng-container matTreeNodeOutlet></ng-container>
-            </div>
-          </mat-nested-tree-node>
-        </mat-tree>
-      </mat-card-content>
-    </mat-card>
-  `,
-  styles: [`
-    mat-card {
-      margin: 20px;
-    }
-    .category-node {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 0;
-    }
-    mat-icon {
-      color: #673ab7;
-    }
-    .tree-invisible {
-      display: none;
-    }
-  `]
+  templateUrl: './categories.component.html',
+  styleUrls: ['./categories.component.scss']
 })
 export class CategoriesComponent implements OnInit {
   treeControl = new NestedTreeControl<Category>(node => node.children);
   dataSource = new MatTreeNestedDataSource<Category>();
-  form: FormGroup ;
+  form: FormGroup;
   flatCategories: Category[] = [];
+  loading = false;
+  selectedNode: number | null = null;
+  editingCategory: Category | null = null;
+
+  @ViewChild('sidenav') sidenav!: MatSidenav;
 
   constructor(
     private categoryService: CategoryService,
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
-    private router: Router
-
-   ) {   this.form = this.fb.group({
-    name: ['', Validators.required],
-    description: [''],
-    parentId: [null]
-  });
-}
+    private router: Router,
+    private dialog: MatDialog
+  ) {
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      description: [''],
+      parentId: [null]
+    });
+  }
 
   ngOnInit(): void {
     this.loadCategories();
@@ -170,15 +69,21 @@ export class CategoriesComponent implements OnInit {
   hasChild = (_: number, node: Category) => !!node.children && node.children.length > 0;
 
   loadCategories(): void {
+    this.loading = true;
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
         this.dataSource.data = categories;
         this.flatCategories = this.flattenCategories(categories);
+        this.loading = false;
         this.cdRef.detectChanges();
       },
-      error: (err) => console.error('Error loading categories:', err)
+      error: (err) => {
+        this.loading = false;
+        console.error('Error loading categories:', err);
+      }
     });
   }
+
   private flattenCategories(categories: Category[]): Category[] {
     return categories.reduce((acc, category) => {
       acc.push(category);
@@ -189,7 +94,6 @@ export class CategoriesComponent implements OnInit {
     }, [] as Category[]);
   }
 
-
   deleteCategory(id: number): void {
     this.categoryService.deleteCategory(id).subscribe(() => {
       this.loadCategories();
@@ -197,10 +101,70 @@ export class CategoriesComponent implements OnInit {
   }
   onSubmit() {
     if (this.form.valid) {
-      this.categoryService.createCategory(this.form.value).subscribe({
-        next: () => this.router.navigate(['/categories']),
-        error: (err) => console.error('Error creating category', err)
-      });
+      const formData = this.form.value;
+      
+      if (this.editingCategory) {
+        // Update existing category
+        this.categoryService.updateCategory(this.editingCategory.id, formData)
+          .subscribe({
+            next: () => {
+              this.sidenav.close();
+              this.loadCategories();
+              this.editingCategory = null;
+            },
+            error: (err) => console.error('Error updating category', err)
+          });
+      } else {
+        // Create new category
+        this.categoryService.createCategory(formData)
+          .subscribe({
+            next: () => {
+              this.sidenav.close();
+              this.loadCategories();
+            },
+            error: (err) => console.error('Error creating category', err)
+          });
+      }
     }
+  }
+  openEditForm(category: Category): void {
+    this.editingCategory = category;
+    this.form.patchValue({
+      name: category.name,
+      description: category.description,
+      parentId: category.parentId
+    });
+    this.sidenav.open();
+  }
+  openCreateForm(): void {
+    this.editingCategory = null;
+    this.form.reset();
+    this.sidenav.open();
+  }
+
+
+  confirmDelete(id: number): void {
+    const dialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
+      width: '400px',
+      data: { 
+        title: 'Delete Category',
+        message: 'Are you sure you want to delete this category and all its subcategories?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.deleteCategory(id);
+      }
+    });
+  }
+
+  applyFilter(event: Event): void {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    // Implement your filter logic here
+  }
+
+  selectNode(node: Category): void {
+    this.selectedNode = node.id;
   }
 }

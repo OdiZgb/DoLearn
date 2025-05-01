@@ -53,11 +53,17 @@ namespace DoLearn.API.Controllers{
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateCategoryCommand command)
         {
-            if (id != command.Id) return BadRequest("ID mismatch");
-            await _mediator.Send(command);
+            // Create a new command with the route id
+            var updatedCommand = new UpdateCategoryWithIdCommand(
+                id,
+                command.name,
+                command.description,
+                command.parentId
+            );
+            
+            await _mediator.Send(updatedCommand);
             return NoContent();
         }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
