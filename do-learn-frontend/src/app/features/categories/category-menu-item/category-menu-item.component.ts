@@ -16,16 +16,15 @@ import { Category } from '../../../services/category.service';
       {{ category.name }}
     </button>
 
-    <button mat-menu-item  
-            *ngIf="category?.children?.length"
-            [matMenuTriggerFor]="subMenu"
-            (mouseenter)="openSubMenu()"
-            (mouseleave)="scheduleClose()"
-            (click)="$event.preventDefault()">
-      {{ category.name }}
-      <span class="submenu-indicator">›</span>
-    </button>
-
+<button mat-menu-item  
+        *ngIf="category?.children?.length"
+        [matMenuTriggerFor]="subMenu"
+        (mouseenter)="openSubMenu()"
+        (mouseleave)="scheduleClose()"
+        (click)="selectCategory(category.id)"> <!-- Changed this line -->
+  {{ category.name }}
+  <span class="submenu-indicator">›</span>
+</button>
     <mat-menu #subMenu="matMenu" class="nested-submenu" [overlapTrigger]="false">
       <ng-container *ngFor="let child of category.children">
         <app-category-menu-item  
@@ -35,7 +34,9 @@ import { Category } from '../../../services/category.service';
         </app-category-menu-item>
       </ng-container>
     </mat-menu>
-  `
+  `,
+  styleUrls: ['./category-menu-item.component.scss'],
+
 })
 export class CategoryMenuItemComponent {
   @ViewChild(MatMenuTrigger) menuTrigger?: MatMenuTrigger;
@@ -46,9 +47,7 @@ export class CategoryMenuItemComponent {
   private closeTimeout: any;
   static activeComponent: CategoryMenuItemComponent | null = null;
 
-  selectCategory(id: number) {
-    this.categorySelected.emit(id);
-  }
+
 
   openSubMenu() {
     clearTimeout(this.closeTimeout);
@@ -75,7 +74,16 @@ export class CategoryMenuItemComponent {
       CategoryMenuItemComponent.activeComponent = this;
     }
   }
-
+  selectCategory(id: number) {
+    this.categorySelected.emit(id);
+    
+    // Close all parent menus
+    let currentParent = this.parentMenu;
+    while (currentParent) {
+      currentParent.menuTrigger?.closeMenu();
+      currentParent = currentParent.parentMenu;
+    }
+  }
   scheduleClose() {
     this.closeTimeout = setTimeout(() => {
       if (this.menuTrigger?.menuOpen) {
