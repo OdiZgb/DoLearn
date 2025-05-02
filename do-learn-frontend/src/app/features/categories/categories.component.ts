@@ -61,20 +61,7 @@ export class CategoriesComponent implements OnInit {
       parentId: [null]
     });
   }
-  toggleExclusive(node: Category): void {
-    this.treeControl.dataNodes?.forEach(n => {
-      if (n !== node) {
-        this.treeControl.collapse(n);
-      }
-    });
-  
-    // Toggle the clicked node
-    if (this.treeControl.isExpanded(node)) {
-      this.treeControl.collapse(node);
-    } else {
-      this.treeControl.expand(node);
-    }
-  }
+
   ngOnInit(): void {
     this.loadCategories();
   }
@@ -174,34 +161,9 @@ export class CategoriesComponent implements OnInit {
 
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
-  
-    this.loading = true;
-    this.categoryService.getCategories().subscribe({
-      next: (categories) => {
-        const filtered = this.filterTree(categories, filterValue);
-        this.dataSource.data = filtered;
-        this.loading = false;
-        this.cdRef.detectChanges();
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Error filtering categories:', err);
-      }
-    });
+    // Implement your filter logic here
   }
-  private filterTree(categories: Category[], filterValue: string): Category[] {
-    return categories
-      .map(category => {
-        const children = category.children ? this.filterTree(category.children, filterValue) : [];
-        const matches = category.name.toLowerCase().includes(filterValue) || 
-                        category.description?.toLowerCase().includes(filterValue);
-        if (matches || children.length > 0) {
-          return { ...category, children };
-        }
-        return null;
-      })
-      .filter(Boolean) as Category[];
-  }
+
   selectNode(node: Category): void {
     this.selectedNode = node.id;
   }

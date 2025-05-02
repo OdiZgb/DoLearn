@@ -1,126 +1,126 @@
 
-<mat-sidenav-container class="container">
+<mat-sidenav-container class="container" fullscreen>
   <mat-sidenav #sidenav mode="side" position="end" class="sidenav" [fixedInViewport]="true">
-      <div class="form-header">
-        <h2>{{ editingCategory ? 'Edit Category' : 'New Category' }}</h2>
-        <button mat-icon-button (click)="sidenav.toggle()">
-          <mat-icon>close</mat-icon>
+    <div class="form-header">
+      <h2>{{ editingCategory ? 'Edit Category' : 'New Category' }}</h2>
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="category-form">
+      <mat-form-field appearance="fill" floatLabel="always">
+        <mat-label>Category Name</mat-label>
+        <input matInput formControlName="name" required>
+        <mat-icon matSuffix>category</mat-icon>
+        <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" floatLabel="always">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="3"></textarea>
+        <mat-icon matSuffix>description</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" floatLabel="always">
+        <mat-label>Parent Category</mat-label>
+        <mat-select formControlName="parentId">
+          <mat-option [value]="null">
+            <div class="parent-option">
+              <mat-icon>layers_clear</mat-icon>
+              <span>Root Category</span>
+            </div>
+          </mat-option>
+          <mat-option *ngFor="let category of flatCategories" [value]="category.id">
+            <div class="parent-option">
+              <mat-icon>{{ category.children ? 'folder' : 'insert_drive_file' }}</mat-icon>
+              <span>{{ category.name }}</span>
+            </div>
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_tree</mat-icon>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-raised-button color="warn" type="button" (click)="sidenav.toggle()">
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
+          {{ editingCategory ? 'Update' : 'Create' }}
         </button>
       </div>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="category-form">
-        <mat-form-field appearance="fill" floatLabel="always">
-          <mat-label>Category Name</mat-label>
-          <input matInput formControlName="name" required>
-          <mat-icon matSuffix>category</mat-icon>
-          <mat-error *ngIf="form.get('name')?.hasError('required')">Name is required</mat-error>
-        </mat-form-field>
-  
-        <mat-form-field appearance="fill" floatLabel="always">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" rows="3"></textarea>
-          <mat-icon matSuffix>description</mat-icon>
-        </mat-form-field>
-  
-        <mat-form-field appearance="fill" floatLabel="always">
-          <mat-label>Parent Category</mat-label>
-          <mat-select formControlName="parentId">
-            <mat-option [value]="null">
-              <div class="parent-option">
-                <mat-icon>layers_clear</mat-icon>
-                <span>Root Category</span>
-              </div>
-            </mat-option>
-            <mat-option *ngFor="let category of flatCategories" [value]="category.id">
-              <div class="parent-option">
-                <mat-icon>{{ category.children ? 'folder' : 'insert_drive_file' }}</mat-icon>
-                <span>{{ category.name }}</span>
-              </div>
-            </mat-option>
-          </mat-select>
-          <mat-icon matSuffix>account_tree</mat-icon>
-        </mat-form-field>
-  
-        <div class="form-actions">
-          <button mat-raised-button color="warn" type="button" (click)="sidenav.toggle()">
-            Cancel
-          </button>
-          <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
-            {{ editingCategory ? 'Update' : 'Create' }}
-          </button>
+    </form>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="header-toolbar mat-elevation-z4">
+      <h1>Category Manager</h1>
+      <button mat-fab color="primary" (click)="openCreateForm()" class="fab-button">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+
+    <div class="content-wrapper">
+      <mat-card class="tree-card mat-elevation-z4">
+        <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+        
+        <div class="search-bar">
+          <mat-form-field appearance="outline"  >
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Search categories..." (keyup)="applyFilter($event)">
+          </mat-form-field>
         </div>
-      </form>
-    </mat-sidenav>
-  
-    <mat-sidenav-content>
-      <div class="header-toolbar mat-elevation-z4">
-        <h1>Category Manager</h1>
-        <button mat-fab color="primary" (click)="openCreateForm()" class="fab-button">
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
-  
-      <div class="content-wrapper">
-        <mat-card class="tree-card mat-elevation-z4">
-          <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
-          
-          <div class="search-bar">
-            <mat-form-field appearance="outline"  >
-              <mat-icon matPrefix>search</mat-icon>
-              <input matInput placeholder="Search categories..." (keyup)="applyFilter($event)">
-            </mat-form-field>
-          </div>
-  
-          <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="luxury-tree">
-            <!-- Leaf Node -->
-            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-              <div class="tree-node" [class.selected]="selectedNode === node.id">
-                <button mat-icon-button (click)="toggleExclusive(node)">
-                  <mat-icon *ngIf="node.children">chevron_right</mat-icon>
+
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="luxury-tree">
+          <!-- Leaf Node -->
+          <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <div class="tree-node" [class.selected]="selectedNode === node.id">
+              <button mat-icon-button (click)="treeControl.toggle(node)">
+                <mat-icon *ngIf="node.children">chevron_right</mat-icon>
+              </button>
+              <div class="node-content" (click)="selectNode(node)">
+                <mat-icon class="node-icon">description</mat-icon>
+                <span class="node-name">{{ node.name }}</span>
+                <span class="node-description">{{ node.description }}</span>
+              </div>
+              <div class="node-actions">
+                <button mat-icon-button (click)="openEditForm(node)">
+                  <mat-icon>edit</mat-icon>
                 </button>
-                <div class="node-content" (click)="selectNode(node)">
-                  <mat-icon class="node-icon">description</mat-icon>
-                  <span class="node-name">{{ node.name }}</span>
-                  <span class="node-description">{{ node.description }}</span>
-                </div>
-                <div class="node-actions">
-                  <button mat-icon-button (click)="openEditForm(node)">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button mat-icon-button (click)="confirmDelete(node.id)">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              </div>
-            </mat-tree-node>
-  
-            <!-- Parent Node -->
-            <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-              <div class="tree-node parent-node" [class.selected]="selectedNode === node.id">
-                <button mat-icon-button (click)="toggleExclusive(node)">
-                  <mat-icon>
-                    {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-                  </mat-icon>
+                <button mat-icon-button (click)="confirmDelete(node.id)">
+                  <mat-icon>delete</mat-icon>
                 </button>
-                <div class="node-content" (click)="selectNode(node)">
-                  <mat-icon class="node-icon">folder_open</mat-icon>
-                  <span class="node-name">{{ node.name }}</span>
-                  <span class="node-description">{{ node.description }}</span>
-                </div>
-                <div class="node-actions">
-                  <button mat-icon-button (click)="openEditForm(node)">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button mat-icon-button (click)="confirmDelete(node.id)">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
               </div>
-              <div [class.tree-children]="treeControl.isExpanded(node)">
-                <ng-container matTreeNodeOutlet></ng-container>
+            </div>
+          </mat-tree-node>
+
+          <!-- Parent Node -->
+          <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+            <div class="tree-node parent-node" [class.selected]="selectedNode === node.id">
+              <button mat-icon-button (click)="treeControl.toggle(node)">
+                <mat-icon>
+                  {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+                </mat-icon>
+              </button>
+              <div class="node-content" (click)="selectNode(node)">
+                <mat-icon class="node-icon">folder_open</mat-icon>
+                <span class="node-name">{{ node.name }}</span>
+                <span class="node-description">{{ node.description }}</span>
               </div>
-            </mat-nested-tree-node>
-          </mat-tree>
-        </mat-card>
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+              <div class="node-actions">
+                <button mat-icon-button (click)="openEditForm(node)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="confirmDelete(node.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+            <div [class.tree-children]="treeControl.isExpanded(node)">
+              <ng-container matTreeNodeOutlet></ng-container>
+            </div>
+          </mat-nested-tree-node>
+        </mat-tree>
+      </mat-card>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
