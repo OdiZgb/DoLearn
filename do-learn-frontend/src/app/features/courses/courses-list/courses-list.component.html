@@ -16,9 +16,9 @@
 <mat-spinner *ngIf="isLoading" diameter="50" class="loading-spinner"></mat-spinner>
 
 <div *ngIf="!isLoading">
-  <div *ngIf="courses.length > 0" class="courses-grid">
+  <div *ngIf="paginatedCourses.length > 0" class="courses-grid">
     <mat-card class="course-card" 
-              *ngFor="let course of courses; trackBy: trackByCourseId">
+              *ngFor="let course of paginatedCourses; trackBy: trackByCourseId">
       <div class="image-container">
         <img [src]="course.imgURL" 
              alt="{{ course.title }} image"
@@ -49,8 +49,18 @@
     </mat-card>
   </div>
 
-  <div *ngIf="courses.length === 0" class="no-results">
+  <div *ngIf="filteredCourses.length === 0" class="no-results">
     <mat-icon>search_off</mat-icon>
     <p>No courses found in this category</p>
+  </div>
+
+  <div *ngIf="filteredCourses.length > 0" class="paginator-container">
+    <mat-paginator [length]="filteredCourses.length"
+                  [pageSize]="pageSize"
+                  [pageIndex]="currentPage - 1"
+                  (page)="handlePageChange($event)"
+                  [pageSizeOptions]="[5, 10, 20]"
+                  aria-label="Select page">
+    </mat-paginator>
   </div>
 </div>

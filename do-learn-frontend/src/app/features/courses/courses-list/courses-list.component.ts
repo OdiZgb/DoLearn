@@ -2,7 +2,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CoursesService } from '../../../services/courses.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Course } from '../../../models/Course';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,10 +10,10 @@ import { AuthService } from '../../../auth/auth.service';
 import { Category, CategoryService } from '../../../services/category.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import {MatSelectModule} from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { CategoryMenuItemComponent } from '../../categories/category-menu-item/category-menu-item.component';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+
 @Component({
   standalone: true,
   selector: 'app-courses-list',
@@ -24,145 +23,117 @@ import { CategoryMenuItemComponent } from '../../categories/category-menu-item/c
     CommonModule,
     RouterModule,
     MatCardModule,
-    MatMenuModule, // Add this
+    MatMenuModule,
     CategoryMenuItemComponent,
     MatButtonModule,
     MatIconModule,
     DatePipe,
     MatProgressSpinnerModule,
-    FormsModule,
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    DatePipe,
-    MatProgressSpinnerModule,
-    FormsModule,
-    CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    DatePipe,
-    MatProgressSpinnerModule,
-    FormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatIconModule,
-    FormsModule,
-    MatSelectModule
+    MatPaginatorModule
   ]
 })
 export class CoursesListComponent implements OnInit {
-  courses: CourseWithStatus[] = [];
+  allCourses: CourseWithStatus[] = [];
+  filteredCourses: CourseWithStatus[] = [];
+  paginatedCourses: CourseWithStatus[] = [];
+  categories: Category[] = [];
   currentUserId?: number;
   userRole?: string;
-  categories: Category[] = [];
   selectedCategoryId: number | null = null;
-  isLoading = true;
   selectedCategoryName?: string;
+  isLoading = true;
+  currentPage = 1;
+  pageSize = 5;
 
   constructor(
     private coursesService: CoursesService,
     private categoryService: CategoryService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef,
-
-  ) { }
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.loadCategories();
-    this.loadAllCourses();
-
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUserId = user?.id;
-      this.userRole = user?.role;
-    });
+    this.loadInitialData();
+    this.setupUserSubscription();
   }
 
-  private loadAllCourses() {
-    this.isLoading = true;
-    this.coursesService.getCourses().subscribe({
-      next: (courses) => {
-        this.courses = courses.map((c:any) => ({
-          ...c,
-          enrollmentStatus: 'not-enrolled',
-          isEnrollmentLoading: false
-        }));
-        this.checkEnrollments();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching courses', err);
-        this.isLoading = false;
-      }
-    });
-  }
-
-  private loadCategories() {
+  private loadInitialData(): void {
     this.categoryService.getCategories().subscribe({
-      next: (categories) => this.categories = categories,
+      next: (categories) => {
+        this.categories = categories;
+        this.loadAllCourses();
+      },
       error: (err) => console.error('Error loading categories', err)
     });
   }
 
- 
-  
-  private checkEnrollments() {
-    if (!this.currentUserId) return;
-
-    this.courses.forEach(course => {
-      this.coursesService.getEnrollmentStatus(course.id).subscribe({
-        next: (status) => {
-          course.enrollmentStatus = status;
-        }
-      });
-    });
-  }
-  trackByCourseId(index: number, course: Course): number {
-    return course.id;
-  }
-  canEnroll(): boolean {
-    return this.userRole === 'Student';
-  }
-  onCategoryChange(selectedId: number | null) {
+  private loadAllCourses(): void {
     this.isLoading = true;
-    this.courses = [];
-  
-    if (selectedId === null) {
-      this.loadAllCourses();
-      return;
-    }
-    console.log('Making API call for category:', selectedId); // Add this
-
-    // 3. Use correct service (coursesService instead of categoryService)
-    this.coursesService.getCoursesByCategoryId(selectedId).subscribe({
+    this.coursesService.getCourses().subscribe({
       next: (courses) => {
-        
-        this.courses = courses.map((c: any) => ({
+        this.allCourses = courses.map((c:any) => ({
           ...c,
           enrollmentStatus: 'not-enrolled',
           isEnrollmentLoading: false
         }));
+        this.applyFilters();
         this.checkEnrollments();
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error fetching courses', err);
+        console.error('Error loading courses', err);
         this.isLoading = false;
       }
     });
   }
-  clearFilter() {
-    this.selectedCategoryId = null;
-    this.selectedCategoryName = undefined;
-    this.loadAllCourses();
+
+  private applyFilters(): void {
+    // Filter courses by category
+    this.filteredCourses = this.selectedCategoryId
+      ? this.allCourses.filter(course => course.category?.id === this.selectedCategoryId)
+      : this.allCourses;
+
+    // Apply pagination
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedCourses = this.filteredCourses.slice(startIndex, endIndex);
   }
-  onCategorySelect(categoryId: number) {
+
+  private checkEnrollments(): void {
+    if (!this.currentUserId) return;
+
+    this.allCourses.forEach(course => {
+      this.coursesService.getEnrollmentStatus(course.id).subscribe({
+        next: (status) => {
+          course.enrollmentStatus = status;
+          this.cdr.detectChanges();
+        }
+      });
+    });
+  }
+
+  private setupUserSubscription(): void {
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUserId = user?.id;
+      this.userRole = user?.role;
+      if (this.allCourses.length > 0) this.checkEnrollments();
+    });
+  }
+
+  onCategorySelect(categoryId: number): void {
     const category = this.findCategory(this.categories, categoryId);
     this.selectedCategoryId = categoryId;
     this.selectedCategoryName = category?.name;
-    this.onCategoryChange(categoryId);
+    this.currentPage = 1;
+    this.applyFilters();
   }
+
+  handlePageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    this.applyFilters();
+  }
+
   private findCategory(categories: Category[], id: number): Category | undefined {
     for (const cat of categories) {
       if (cat.id === id) return cat;
@@ -173,11 +144,10 @@ export class CoursesListComponent implements OnInit {
     }
     return undefined;
   }
-  openSubMenu(category: Category, event: MouseEvent) {
-    // Prevent accidental clicks while hovering
-    event.preventDefault();
-  }
 
+  trackByCourseId(index: number, course: Course): number {
+    return course.id;
+  }
 }
 
 export interface CourseWithStatus extends Course {
