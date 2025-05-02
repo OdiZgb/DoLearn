@@ -36,6 +36,8 @@ export class CreateCourseComponent implements OnInit {
   daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   selectedDays: string[] = [];
   categories: Category[] = [];
+  flattenedCategories: Array<{id: number, nameWithHierarchy: string}> = [];
+
   constructor(
     private fb: FormBuilder,
     private coursesService: CoursesService,
@@ -45,8 +47,26 @@ export class CreateCourseComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.CategoriesService.getCategories().subscribe(cats => this.categories = cats);
+    this.CategoriesService.getCategories().subscribe(cats => {
+      this.categories = cats;
+      this.flattenedCategories = this.flattenCategories(cats);
+    });
 
+  }
+  private flattenCategories(categories: Category[], parentName: string = '', depth: number = 0): 
+    Array<{id: number, nameWithHierarchy: string}> {
+    return categories.reduce((acc, category) => {
+      const prefix = parentName ? `${parentName} > ` : '';
+      acc.push({
+        id: category.id,
+        nameWithHierarchy: `${' '.repeat(depth * 2)}${prefix}${category.name}`
+      });
+      
+      if (category.children && category.children.length > 0) {
+        acc.push(...this.flattenCategories(category.children, category.name, depth + 1));
+      }
+      return acc;
+    }, [] as Array<{id: number, nameWithHierarchy: string}>);
   }
 
   private initializeForm(): void {
