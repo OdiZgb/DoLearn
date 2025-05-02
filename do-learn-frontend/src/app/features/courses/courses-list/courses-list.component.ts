@@ -177,7 +177,7 @@ export class CoursesListComponent implements OnInit {
     // Prevent accidental clicks while hovering
     event.preventDefault();
   }
-  
+
 }
 
 export interface CourseWithStatus extends Course {

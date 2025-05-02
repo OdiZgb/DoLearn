@@ -1,7 +1,7 @@
 // category-menu-item.component.ts
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { Category } from '../../../services/category.service';
 
@@ -11,24 +11,26 @@ import { Category } from '../../../services/category.service';
   imports: [CommonModule, MatMenuModule, MatButtonModule],
   template: `
     <button mat-menu-item 
-            *ngIf="!category.children?.length"
+            *ngIf="!category?.children?.length"
             (click)="selectCategory(category.id)">
       {{ category.name }}
     </button>
 
-    <button mat-menu-item 
-            *ngIf="category.children?.length"
+    <button mat-menu-item  
+            *ngIf="category?.children?.length"
             [matMenuTriggerFor]="subMenu"
-            (mouseenter)="openSubMenu($event)"
+            (mouseenter)="openSubMenu()"
+            (mouseleave)="scheduleClose()"
             (click)="$event.preventDefault()">
       {{ category.name }}
       <span class="submenu-indicator">›</span>
     </button>
 
-    <mat-menu #subMenu="matMenu" class="nested-submenu">
+    <mat-menu #subMenu="matMenu" class="nested-submenu" [overlapTrigger]="false">
       <ng-container *ngFor="let child of category.children">
-        <app-category-menu-item 
+        <app-category-menu-item  
           [category]="child"
+          [parentMenu]="this"
           (categorySelected)="selectCategory($event)">
         </app-category-menu-item>
       </ng-container>
@@ -36,15 +38,51 @@ import { Category } from '../../../services/category.service';
   `
 })
 export class CategoryMenuItemComponent {
+  @ViewChild(MatMenuTrigger) menuTrigger?: MatMenuTrigger;
   @Input() category!: Category;
+  @Input() parentMenu?: CategoryMenuItemComponent;
   @Output() categorySelected = new EventEmitter<number>();
+  
+  private closeTimeout: any;
+  static activeComponent: CategoryMenuItemComponent | null = null;
 
   selectCategory(id: number) {
     this.categorySelected.emit(id);
   }
 
-  openSubMenu(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    target?.closest('button')?.click();
+  openSubMenu() {
+    clearTimeout(this.closeTimeout);
+
+    // Check if we're in the same hierarchy
+    let currentParent = this.parentMenu;
+    let isInHierarchy = false;
+    
+    while (currentParent) {
+      if (currentParent === CategoryMenuItemComponent.activeComponent) {
+        isInHierarchy = true;
+        break;
+      }
+      currentParent = currentParent.parentMenu;
+    }
+
+    // Close only if not in the same hierarchy
+    if (!isInHierarchy && CategoryMenuItemComponent.activeComponent) {
+      CategoryMenuItemComponent.activeComponent.menuTrigger?.closeMenu();
+    }
+
+    if (this.menuTrigger) {
+      this.menuTrigger.openMenu();
+      CategoryMenuItemComponent.activeComponent = this;
+    }
+  }
+
+  scheduleClose() {
+    this.closeTimeout = setTimeout(() => {
+      if (this.menuTrigger?.menuOpen) {
+        if (CategoryMenuItemComponent.activeComponent === this) {
+          CategoryMenuItemComponent.activeComponent = null;
+        }
+      }
+    }, 300);
   }
 }

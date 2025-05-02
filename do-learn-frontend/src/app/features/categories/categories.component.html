@@ -1,6 +1,6 @@
 
-<mat-sidenav-container class="container" fullscreen>
-    <mat-sidenav #sidenav mode="side" position="end" class="sidenav" [fixedInViewport]="true">
+<mat-sidenav-container class="container">
+  <mat-sidenav #sidenav mode="side" position="end" class="sidenav" [fixedInViewport]="true">
       <div class="form-header">
         <h2>{{ editingCategory ? 'Edit Category' : 'New Category' }}</h2>
         <button mat-icon-button (click)="sidenav.toggle()">
@@ -74,7 +74,7 @@
             <!-- Leaf Node -->
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
               <div class="tree-node" [class.selected]="selectedNode === node.id">
-                <button mat-icon-button (click)="treeControl.toggle(node)">
+                <button mat-icon-button (click)="toggleExclusive(node)">
                   <mat-icon *ngIf="node.children">chevron_right</mat-icon>
                 </button>
                 <div class="node-content" (click)="selectNode(node)">
@@ -96,7 +96,7 @@
             <!-- Parent Node -->
             <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
               <div class="tree-node parent-node" [class.selected]="selectedNode === node.id">
-                <button mat-icon-button (click)="treeControl.toggle(node)">
+                <button mat-icon-button (click)="toggleExclusive(node)">
                   <mat-icon>
                     {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
                   </mat-icon>

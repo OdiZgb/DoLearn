@@ -1,27 +1,15 @@
+<!-- courses-list.component.html -->
 <div class="filter-container">
-  <button mat-button [matMenuTriggerFor]="categoryMenu" class="menu-trigger">
-    {{ selectedCategoryName || 'Filter by Category' }}
+  <button mat-button [matMenuTriggerFor]="categoryMenu">
+    {{ selectedCategoryName || 'Categories' }}
   </button>
 
-  <mat-menu #categoryMenu="matMenu" class="nested-menu">
-    <button mat-menu-item (click)="clearFilter()">
-      All Categories
-    </button>
-    <ng-container *ngFor="let category of categories">
-      <button mat-menu-item 
-              [matMenuTriggerFor]="subMenu"
-              (mouseenter)="openSubMenu(category, $event)"
-              (click)="$event.preventDefault()">
-        {{ category.name }}
-        <span class="submenu-indicator">›</span>
-      </button>
-      <mat-menu #subMenu="matMenu" class="nested-submenu">
-        <app-category-menu-item 
-          [category]="category"
-          (categorySelected)="onCategorySelect($event)">
-        </app-category-menu-item>
-      </mat-menu>
-    </ng-container>
+  <mat-menu #categoryMenu="matMenu">
+    <app-category-menu-item 
+      *ngFor="let category of categories"
+      [category]="category"
+      (categorySelected)="onCategorySelect($event)">
+    </app-category-menu-item>
   </mat-menu>
 </div>
 

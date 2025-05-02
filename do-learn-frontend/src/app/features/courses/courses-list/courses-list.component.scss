@@ -185,26 +185,31 @@
     margin-bottom: 16px;
   }
 }
-.nested-menu, .nested-submenu {
-  min-width: 200px;
-  max-height: 60vh;
-  overflow-y: auto;
+.nested-submenu {
+  z-index: 1000;
+  margin-left: 8px;
+  margin-top: -8px;
+  transform: translateY(-4px);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
   
   .mat-menu-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: relative;
+    background: white;
+    min-width: 200px;
+    transition: background-color 0.2s ease;
     
-    .submenu-indicator {
-      margin-left: 16px;
-      color: #666;
+    &:hover {
+      background-color: #f5f5f5;
+      z-index: 1001;
     }
   }
 }
 
-.menu-trigger {
-  border: 1px solid #ccc;
-  padding: 8px 16px;
-  border-radius: 4px;
-  margin-bottom: 16px;
+.mat-menu-panel {
+  overflow: visible !important;
+}
+
+.tree-node {
+  position: relative;
+  z-index: 1;
 }
