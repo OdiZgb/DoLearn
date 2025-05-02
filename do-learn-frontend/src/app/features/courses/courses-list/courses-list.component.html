@@ -1,7 +1,7 @@
-<!-- courses-list.component.html -->
 <div class="filter-container">
-  <button mat-button [matMenuTriggerFor]="categoryMenu">
-    {{ selectedCategoryName || 'Categories' }}
+  <button mat-stroked-button color="primary" [matMenuTriggerFor]="categoryMenu">
+    <mat-icon>category</mat-icon>
+    {{ selectedCategoryName || 'All Categories' }}
   </button>
 
   <mat-menu #categoryMenu="matMenu">
@@ -13,39 +13,37 @@
   </mat-menu>
 </div>
 
-<mat-spinner *ngIf="isLoading" diameter="50" class="loading-spinner"></mat-spinner>
+<div *ngIf="isLoading" class="loading-container">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
 
 <div *ngIf="!isLoading">
   <div *ngIf="paginatedCourses.length > 0" class="courses-grid">
-    <mat-card class="course-card" 
-              *ngFor="let course of paginatedCourses; trackBy: trackByCourseId">
+    <mat-card class="course-card" *ngFor="let course of paginatedCourses; trackBy: trackByCourseId">
       <div class="image-container">
-        <img [src]="course.imgURL" 
-             alt="{{ course.title }} image"
-             class="course-image">
+        <img [src]="course.imgURL" alt="{{ course.title }} image" class="course-image" />
         <div class="image-overlay"></div>
       </div>
-      
-      <mat-card-header>
-        <mat-card-title>{{ course.title }}</mat-card-title>
-      </mat-card-header>
 
-      <mat-card-content>
-        <p class="description">{{ course.description }}</p>
-        <div class="date-info">
-          <p><mat-icon>schedule</mat-icon> Created: {{ course.createdAt | date }}</p>
-          <p><mat-icon>update</mat-icon> Updated: {{ course.lastUpdated | date }}</p>
+      <div class="card-body">
+        <div class="title-row">
+          <h2 class="course-title">{{ course.title }}</h2>
         </div>
-      </mat-card-content>
 
-      <mat-card-actions class="actions">
-        <button mat-raised-button 
-                color="primary" 
-                class="action-button"
-                [routerLink]="['/courses', course.id]">
-          <mat-icon>visibility</mat-icon> View
-        </button>
-      </mat-card-actions>
+        <p class="description">{{ course.description }}</p>
+
+        <div class="date-info">
+          <span><mat-icon>schedule</mat-icon> {{ course.createdAt | date }}</span>
+          <span><mat-icon>update</mat-icon> {{ course.lastUpdated | date }}</span>
+        </div>
+
+        <div class="actions">
+          <button mat-flat-button color="accent" [routerLink]="['/courses', course.id]">
+            <mat-icon>visibility</mat-icon>
+            View
+          </button>
+        </div>
+      </div>
     </mat-card>
   </div>
 
@@ -56,11 +54,10 @@
 
   <div *ngIf="filteredCourses.length > 0" class="paginator-container">
     <mat-paginator [length]="filteredCourses.length"
-                  [pageSize]="pageSize"
-                  [pageIndex]="currentPage - 1"
-                  (page)="handlePageChange($event)"
-                  [pageSizeOptions]="[5, 10, 20]"
-                  aria-label="Select page">
+                   [pageSize]="pageSize"
+                   [pageIndex]="currentPage - 1"
+                   (page)="handlePageChange($event)"
+                   [pageSizeOptions]="[5, 10, 20]">
     </mat-paginator>
   </div>
 </div>
