@@ -1,6 +1,5 @@
-// app.component.ts
 import { Component, OnDestroy } from "@angular/core";
-import { Router, RouterModule } from "@angular/router";
+import { Router, NavigationEnd, RouterModule } from "@angular/router";
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -29,25 +28,42 @@ export class AppComponent implements OnDestroy {
   title = 'DoLearn';
   isSideNavOpen = true;
   isLoggedIn = false;
+  currentRoute: string = '';
   private authSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {
-    let a:boolean =false ;
-    this.authService.isLoggedIn$.subscribe(x=>a=x);
-    // Initialize immediately from service state
-    this.isLoggedIn = a;
-    
-    this.authSubscription = this.authService.isLoggedIn$.subscribe(
-      loggedIn => this.isLoggedIn = loggedIn
-    );
+    this.authSubscription = this.authService.isLoggedIn$.subscribe(loggedIn => {
+      this.isLoggedIn = loggedIn;
+      this.checkLoginRedirect();
+    });
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute = event.urlAfterRedirects.split('?')[0]; // Ignore query params
+        this.checkLoginRedirect();
+      }
+    });
   }
+
+ 
 
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+  private checkLoginRedirect(): void {
+    const protectedRoutes = ['/login', '/register'];
+    if (this.isLoggedIn && protectedRoutes.includes(this.currentRoute)) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  get showLayout(): boolean {
+    const authPages = ['/login', '/register'];
+    return !(authPages.includes(this.currentRoute) && !this.isLoggedIn);
   }
 
   ngOnDestroy() {
