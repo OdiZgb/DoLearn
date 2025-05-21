@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../auth/auth.service';
 import { Course } from '../../models/Course';
@@ -52,14 +52,25 @@ export class CourseDetailsComponent implements OnInit {
   sessionDetails :any= new Map<number, SessionDto>();
   allSessions:any = [];
   selectedDay?: CalendarDay;
+  isLoggedIn = false;
+  private authSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private coursesService: CoursesService,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private router: Router
-  ) {}
+    private router: Router,
+    
+  ) {
+       this.authSubscription = this.authService.isLoggedIn$.subscribe(loggedIn => {
+      this.isLoggedIn = loggedIn;
+    });
+
+  }
+    redirectToRegisterPage(): void {
+      this.router.navigate(['/register']);
+   }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -79,8 +90,9 @@ export class CourseDetailsComponent implements OnInit {
     this.authService.currentUser$.subscribe(user => {
       this.userRole = user?.role;
       this.userId = user?.id;
+ 
     });
-
+ 
     this.coursesService.getCourse(id).subscribe({
       next: (course: any) => {
         this.course = course;

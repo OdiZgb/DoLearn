@@ -1,44 +1,106 @@
 <ng-container *ngIf="showLayout; else noLayout">
-  <mat-toolbar color="primary">
-    <button mat-icon-button (click)="isSideNavOpen = !isSideNavOpen">
-      <mat-icon>menu</mat-icon>
+  <mat-toolbar color="primary" class="main-toolbar">
+    <button mat-button routerLink="/" routerLinkActive="active">
+      <mat-icon fontIcon="home"></mat-icon>{{ title }}
     </button>
-    <span>{{title}}</span>
+
+    <div class="center-nav">
+      <button mat-button routerLink="/" routerLinkActive="active">
+        <mat-icon>school</mat-icon> Courses
+      </button>
+      <button mat-button routerLink="/dashboard" routerLinkActive="active">
+        <mat-icon>dashboard</mat-icon> Dashboard
+      </button>
+      <button mat-button routerLink="/profile" routerLinkActive="active">
+        <mat-icon>person</mat-icon> Profile
+      </button>
+      <button mat-button [matMenuTriggerFor]="categoryMenu">
+        <mat-icon>category</mat-icon> Categories
+      </button>
+    </div>
+
+    <mat-menu #categoryMenu="matMenu">
+      <app-category-menu-item
+        *ngFor="let category of categories"
+        [category]="category"
+        (categorySelected)="onCategorySelect($event)">
+      </app-category-menu-item>
+    </mat-menu>
+
     <span class="spacer"></span>
-  
-    <!-- Updated login/logout button -->
     <button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
     <button *ngIf="isLoggedIn" mat-button (click)="logout()">Logout</button>
   </mat-toolbar>
 
-  <mat-sidenav-container>
-    <mat-sidenav [(opened)]="isSideNavOpen" mode="side">
-      <mat-nav-list>
-        <a mat-list-item routerLink="/courses" routerLinkActive="active">
-          <mat-icon>school</mat-icon>
-          <span>Courses</span>
-        </a>
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
-          <mat-icon>dashboard</mat-icon>
-          <span>Dashboard</span>
-        </a>
-        <a mat-list-item routerLink="/profile" routerLinkActive="active">
-          <mat-icon>person</mat-icon>
-          <span>Profile</span>
-        </a>
-        <a mat-list-item routerLink="/categories" routerLinkActive="active">
-          <mat-icon>category</mat-icon>
-          <span>Categories</span>
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-      <div class="content-container">
-        <router-outlet></router-outlet>
+  <div class="main-container">
+    
+    <!-- 🔽 Only show this part on the home route -->
+    <div *ngIf="isHomeRoute()">
+      <div class="top-bar">
+        <div class="top-bar-right">
+          <div class="category-filter">
+            <button mat-button [matMenuTriggerFor]="categoryMenu">
+              <mat-icon>category</mat-icon>
+              {{ selectedCategoryName || 'All Categories' }}
+            </button>
+          </div>
+        </div>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <div *ngIf="!isLoading">
+        <div *ngIf="paginatedCourses.length > 0" class="courses-grid">
+          <mat-card class="course-card" *ngFor="let course of paginatedCourses; trackBy: trackByCourseId">
+            <div class="image-container">
+              <img [src]="course.imgURL" alt="{{ course.title }} image" class="course-image" />
+              <div class="image-overlay"></div>
+            </div>
+
+            <div class="card-body">
+              <div class="title-row">
+                <h2 class="course-title">{{ course.title }}</h2>
+              </div>
+              <p class="description">{{ course.description }}</p>
+
+              <div class="date-info">
+                <span><mat-icon>schedule</mat-icon> {{ course.createdAt | date }}</span>
+                <span><mat-icon>update</mat-icon> {{ course.lastUpdated | date }}</span>
+              </div>
+
+              <div class="actions">
+                <button mat-flat-button color="accent" [routerLink]="['/courses', course.id]">
+                  <mat-icon>visibility</mat-icon> View
+                </button>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+
+        <div *ngIf="filteredCourses.length === 0" class="no-results">
+          <mat-icon>search_off</mat-icon>
+          <p>No courses found in this category</p>
+        </div>
+
+        <div *ngIf="filteredCourses.length > 0" class="paginator-container">
+          <mat-paginator
+            [length]="filteredCourses.length"
+            [pageSize]="pageSize"
+            [pageIndex]="currentPage - 1"
+            (page)="handlePageChange($event)"
+            [pageSizeOptions]="[5, 10, 20]">
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔽 This will show content from other routes -->
+    <div *ngIf="!isHomeRoute()" class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </ng-container>
 
 <ng-template #noLayout>

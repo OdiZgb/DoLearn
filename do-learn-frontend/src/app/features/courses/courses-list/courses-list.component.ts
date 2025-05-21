@@ -24,11 +24,8 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     RouterModule,
     MatCardModule,
     MatMenuModule,
-    CategoryMenuItemComponent,
     MatButtonModule,
     MatIconModule,
-    DatePipe,
-    MatProgressSpinnerModule,
     MatPaginatorModule
   ]
 })

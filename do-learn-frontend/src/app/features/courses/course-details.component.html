@@ -112,9 +112,16 @@
         </div>
       </div>
 
-      <button mat-raised-button 
+      <button  *ngIf="isLoggedIn"  mat-raised-button  
               class="enroll-button"
               (click)="enroll()">
+        <mat-icon>rocket_launch</mat-icon>
+        <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
+        <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
+      </button>
+            <button  *ngIf="!isLoggedIn"  mat-raised-button  
+              class="enroll-button"
+              (click)="redirectToRegisterPage()">
         <mat-icon>rocket_launch</mat-icon>
         <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
         <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>

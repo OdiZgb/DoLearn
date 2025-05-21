@@ -8,9 +8,11 @@ import { CourseDetailsComponent } from './features/courses/course-details.compon
 import { DashboardComponent } from './features/dashboard/dashboard/dashboard.component';
 import { CategoriesComponent } from './features/categories/categories.component';
 import { CategoryFormComponent } from './features/categories/category-form/category-form.component';
+import { AppComponent } from './app.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'courses', pathMatch: 'full' },
+  { path: '', component: AppComponent},
+  { path: 'home', redirectTo: '/', },    
   { path: 'courses', component: CoursesListComponent },
   { path: 'courses/create', component: CreateCourseComponent },
   { path: 'courses/:id', component: CourseDetailsComponent },
