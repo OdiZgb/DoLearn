@@ -1,0 +1,39 @@
+/* Main container */
+.category-menu-container {
+  height: 100px; /* Fixed height for all menus */
+  position: relative;
+}
+
+/* Menu items */
+.menu-item {
+  width: 200px;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+}
+
+/* Menu panel styling */
+.mat-menu-panel.nested-submenu {
+  min-height: 500px !important;
+  margin-top: 0 !important;
+  position: fixed !important;
+}
+
+/* First-level submenu */
+.cdk-overlay-pane:not(.cdk-overlay-pane .cdk-overlay-pane) {
+  left: 400px !important;
+  top: 0 !important;
+}
+
+/* Nested submenus */
+.cdk-overlay-pane .cdk-overlay-pane {
+  margin-top: 400px;
+  top: 0 !important;
+}
+
+.submenu-wrapper {
+  height: 400px;
+  overflow-y: auto;
+}

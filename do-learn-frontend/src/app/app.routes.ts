@@ -12,7 +12,6 @@ import { AppComponent } from './app.component';
 
 export const routes: Routes = [
   { path: '', component: AppComponent},
-  { path: 'home', redirectTo: '/', },    
   { path: 'courses', component: CoursesListComponent },
   { path: 'courses/create', component: CreateCourseComponent },
   { path: 'courses/:id', component: CourseDetailsComponent },

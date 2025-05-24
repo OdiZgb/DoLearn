@@ -1,1 +1,34 @@
-<p>category-menu-item works!</p>
+<div class="category-menu-container">
+  <button mat-menu-item
+          class="menu-item"
+          *ngIf="!category.children?.length"
+          (click)="selectCategory(category.id)">
+    {{ category.name }}
+  </button>
+
+  <button mat-menu-item
+          class="menu-item has-children"
+          *ngIf="category.children?.length"
+          [matMenuTriggerFor]="subMenu"
+          (mouseenter)="handleHover()"
+          (click)="selectCategory(category.id)">
+    <span>{{ category.name }}</span>
+    <span class="submenu-arrow">›</span>
+  </button>
+
+  <mat-menu #subMenu="matMenu"
+            class="nested-submenu"
+            [overlapTrigger]="false"
+            yPosition="below"
+            xPosition="after">
+    <div class="submenu-wrapper">
+      <ng-container *ngFor="let child of category.children">
+        <app-category-menu-item
+          [category]="child"
+          [path]="updatedPath"
+          (categorySelected)="selectCategory($event)">
+        </app-category-menu-item>
+      </ng-container>
+    </div>
+  </mat-menu>
+</div>

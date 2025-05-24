@@ -61,7 +61,6 @@ namespace DoLearn.API.Controllers
         return CreatedAtAction(nameof(GetCourse), new { id = result.Id }, result);
     }
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<IActionResult> GetCourse(int id)
         {
             var query = new GetCourseQuery(id);
@@ -104,7 +103,6 @@ namespace DoLearn.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAllCourses()
         {
             var query = new GetAllCoursesQuery();

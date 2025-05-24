@@ -86,6 +86,9 @@ export class AppComponent implements OnDestroy {
       },
       error: (err) => console.error('Error loading categories', err)
     });
+        this.authService.currentUser$.subscribe(user => {
+      this.userRole = user?.role || '';
+    });
   }
 
 
@@ -95,9 +98,7 @@ export class AppComponent implements OnDestroy {
   }
   private checkLoginRedirect(): void {
     const protectedRoutes = ['/login', '/register'];
-    if (this.isLoggedIn && protectedRoutes.includes(this.currentRoute)) {
-      this.router.navigate(['/dashboard']);
-    }
+
   }
   isHomeRoute(): boolean {
     return this.router.url === '/';

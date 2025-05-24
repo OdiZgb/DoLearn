@@ -3,18 +3,26 @@
     <button mat-button routerLink="/" routerLinkActive="active">
       <mat-icon fontIcon="home"></mat-icon>{{ title }}
     </button>
+      <div class="top-bar">
+        <div class="top-bar-right">
+          <div class="category-filter">
+            <button mat-button [matMenuTriggerFor]="categoryMenu">
+              <mat-icon> list_alt</mat-icon>
+              {{  'Explore' }}
+            </button>
+          </div>
+        </div>
+      </div>
 
     <div class="center-nav">
-      <button mat-button routerLink="/" routerLinkActive="active">
-        <mat-icon>school</mat-icon> Courses
-      </button>
-      <button mat-button routerLink="/dashboard" routerLinkActive="active">
+
+      <button *ngIf="isLoggedIn"  mat-button routerLink="/dashboard" routerLinkActive="active">
         <mat-icon>dashboard</mat-icon> Dashboard
       </button>
-      <button mat-button routerLink="/profile" routerLinkActive="active">
+      <button  *ngIf="isLoggedIn" mat-button routerLink="/profile" routerLinkActive="active">
         <mat-icon>person</mat-icon> Profile
       </button>
-      <button mat-button [matMenuTriggerFor]="categoryMenu">
+      <button *ngIf="userRole=='Admin'" mat-button  routerLink="/categories" >
         <mat-icon>category</mat-icon> Categories
       </button>
     </div>
@@ -36,16 +44,6 @@
     
     <!-- 🔽 Only show this part on the home route -->
     <div *ngIf="isHomeRoute()">
-      <div class="top-bar">
-        <div class="top-bar-right">
-          <div class="category-filter">
-            <button mat-button [matMenuTriggerFor]="categoryMenu">
-              <mat-icon>category</mat-icon>
-              {{ selectedCategoryName || 'All Categories' }}
-            </button>
-          </div>
-        </div>
-      </div>
 
       <div *ngIf="isLoading" class="loading-container">
         <mat-spinner diameter="50"></mat-spinner>
