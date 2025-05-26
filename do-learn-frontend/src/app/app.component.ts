@@ -61,7 +61,7 @@ export class AppComponent implements OnDestroy {
   userRole?: string;
    isLoading = true;
    pageSize = 5;
-
+ username?: string;
   constructor(
     private authService: AuthService,
      public router: Router,
@@ -175,7 +175,9 @@ export class AppComponent implements OnDestroy {
     this.authService.currentUser$.subscribe(user => {
       this.currentUserId = user?.id;
       this.userRole = user?.role;
+      this.username = user?.username; 
       if (this.allCourses.length > 0) this.checkEnrollments();
+      
     });
   }
 

@@ -1,45 +1,72 @@
 import {
   Component,
-  EventEmitter,
+  OnInit,
+  AfterViewInit,
+  HostListener,
+  ViewChild,
   Input,
   Output,
-  ViewChild,
-  AfterViewInit,
+  EventEmitter,
   ElementRef
 } from '@angular/core';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { Category } from '../../../services/category.service';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { RouterModule } from '@angular/router';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule, MatDrawer } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { Category } from '../../../services/category.service';
 
 @Component({
+  standalone: true,
   selector: 'app-category-menu-item',
-  templateUrl: './category-menu-item.component.html',
-  styleUrls: ['./category-menu-item.component.scss'],
-  imports:[    MatMenuModule,
+  imports: [
     CommonModule,
-    RouterModule,
-    MatCardModule,
     MatMenuModule,
     MatButtonModule,
+    MatSidenavModule,
     MatIconModule,
-    MatPaginatorModule
-  ]
+    MatExpansionModule
+  ],
+  templateUrl: './category-menu-item.component.html',
+  styleUrls: ['./category-menu-item.component.scss']
 })
-export class CategoryMenuItemComponent implements AfterViewInit {
-  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger | undefined ;
+export class CategoryMenuItemComponent implements OnInit, AfterViewInit {
   @Input() category!: Category;
   @Input() path: CategoryMenuItemComponent[] = [];
   @Output() categorySelected = new EventEmitter<number>();
 
-  static openPath: CategoryMenuItemComponent[] = [];
-  static rootY: number = 100; // Fixed Y position for all menus
-  readonly offsetX = 300; // per level
+  @ViewChild(MatMenuTrigger) menuTrigger?: MatMenuTrigger;
+  @ViewChild('drawer') drawer?: MatDrawer;
 
+  // static state to sync across all instances:
+  static openPath: CategoryMenuItemComponent[] = [];
+  static rootY = 100;      // fixed Y for all menus
+  readonly offsetX = 200;  // px per level
+
+  isMobile = false;
+
+  ngOnInit() {
+    this.checkViewport();
+  }
+
+  ngAfterViewInit() {
+    // Desktop: whenever a menu opens, lock its overlay position
+    this.menuTrigger?.menuOpened.subscribe(() => {
+      this.closeUnrelatedMenus();
+      CategoryMenuItemComponent.openPath.push(this);
+      // give CDK a tick to render the overlay pane
+      setTimeout(() => this.lockOverlayPosition(), 0);
+    });
+  }
+
+  // recompute isMobile on resize
+  @HostListener('window:resize')
+  checkViewport() {
+    this.isMobile = window.innerWidth <= 600;
+  }
+
+  // depth = how many ancestors; root is level 0
   get level(): number {
     return this.path.length;
   }
@@ -48,46 +75,40 @@ export class CategoryMenuItemComponent implements AfterViewInit {
     return [...this.path, this];
   }
 
-  ngAfterViewInit(): void {
-    this.menuTrigger?.menuOpened.subscribe(() => {
-      this.closeUnrelatedMenus();
-      CategoryMenuItemComponent.openPath.push(this);
-      setTimeout(() => this.lockPosition(), 0); // ensure DOM is ready
-    });
-  }
-
-  handleHover(): void {
-    if(this.menuTrigger)
+  // Desktop hover behavior
+  handleHover() {
     if (!this.menuTrigger?.menuOpen) {
-      this.menuTrigger.openMenu();
+      this.menuTrigger?.openMenu();
     }
   }
 
-  closeUnrelatedMenus(): void {
+  // Close any branch not on our new path
+  closeUnrelatedMenus() {
     const newPath = this.updatedPath;
-    const oldPath = CategoryMenuItemComponent.openPath;
-    for (const c of oldPath) {
-      if (!newPath.includes(c)) {
-        c.menuTrigger?.closeMenu();
+    for (const comp of CategoryMenuItemComponent.openPath) {
+      if (!newPath.includes(comp)) {
+        comp.menuTrigger?.closeMenu();
       }
     }
     CategoryMenuItemComponent.openPath = newPath;
   }
 
-  lockPosition(): void {
+  // Apply fixed top + cascading left
+  lockOverlayPosition() {
     const overlayEl = (this.menuTrigger as any)?._overlayRef?.overlayElement as HTMLElement;
-    if (overlayEl) {
-      overlayEl.style.top = `${CategoryMenuItemComponent.rootY}px`;
-      overlayEl.style.left = `${(this.level + 1) * this.offsetX}px`;
-      overlayEl.style.position = 'fixed';
-    }
+    if (!overlayEl) return;
+    overlayEl.style.position = 'fixed';
+    overlayEl.style.top      = `${CategoryMenuItemComponent.rootY}px`;
+    overlayEl.style.left     = `${(this.level + 1) * this.offsetX}px`;
   }
 
-  selectCategory(id: number): void {
+  // Leaf click: emit and close everything
+  selectCategory(id: number) {
     this.categorySelected.emit(id);
-    for (const c of CategoryMenuItemComponent.openPath) {
-      c.menuTrigger?.closeMenu();
+    for (const comp of CategoryMenuItemComponent.openPath) {
+      comp.menuTrigger?.closeMenu();
     }
     CategoryMenuItemComponent.openPath = [];
+    this.drawer?.close();
   }
 }

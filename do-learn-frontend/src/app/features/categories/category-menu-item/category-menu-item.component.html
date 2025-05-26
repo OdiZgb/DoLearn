@@ -1,37 +1,93 @@
-<div class="category-menu-container">
-  <button
-    mat-menu-item
-    class="menu-item"
-    *ngIf="!category.children?.length"
-    (click)="selectCategory(category.id)">
-    {{ category.name }}
+<!-- DESKTOP: fly-out overlays -->
+<ng-container *ngIf="!isMobile">
+  <div class="category-menu-container">
+    <!-- leaf node -->
+    <button
+      mat-menu-item
+      class="menu-item"
+      *ngIf="!category.children?.length"
+      (click)="selectCategory(category.id)">
+      {{ category.name }}
+    </button>
+
+    <!-- parent node -->
+    <button
+      mat-menu-item
+      class="menu-item has-children"
+      *ngIf="category.children?.length"
+      [matMenuTriggerFor]="subMenu"
+      (mouseenter)="handleHover()"
+      (click)="selectCategory(category.id)">
+      <span>{{ category.name }}</span>
+      <span class="submenu-arrow">›</span>
+    </button>
+
+    <mat-menu
+      #subMenu="matMenu"
+      class="nested-submenu"
+      [overlapTrigger]="false"
+      yPosition="below"
+      xPosition="after">
+      <div class="submenu-wrapper">
+        <ng-container *ngFor="let child of category.children">
+          <app-category-menu-item
+            [category]="child"
+            [path]="updatedPath"
+            (categorySelected)="selectCategory($event)">
+          </app-category-menu-item>
+        </ng-container>
+      </div>
+    </mat-menu>
+  </div>
+</ng-container>
+
+<!-- MOBILE: full-screen drawer + accordion -->
+<ng-container *ngIf="isMobile">
+  <button mat-icon-button (click)="drawer?.toggle()">
+    <mat-icon>menu</mat-icon>
   </button>
 
-  <button
-    mat-menu-item
-    class="menu-item has-children"
-    *ngIf="category.children?.length"
-    [matMenuTriggerFor]="subMenu"
-    (mouseenter)="handleHover()"
-    (click)="selectCategory(category.id)">
-    <span>{{ category.name }}</span>
-    <span class="submenu-arrow">›</span>
-  </button>
+  <mat-drawer-container autosize>
+    <mat-drawer #drawer mode="over" class="mobile-drawer">
+      <mat-accordion>
+        <!-- recursive panels -->
+        <ng-template #panels let-cats let-level="level">
+          <ng-container *ngFor="let cat of cats">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ cat.name }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
 
-  <mat-menu
-    #subMenu="matMenu"
-    class="nested-submenu"
-    [overlapTrigger]="false"
-    yPosition="below"
-    xPosition="after">
-    <div class="submenu-wrapper">
-      <ng-container *ngFor="let child of category.children">
-        <app-category-menu-item
-          [category]="child"
-          [path]="updatedPath"
-          (categorySelected)="selectCategory($event)">
-        </app-category-menu-item>
-      </ng-container>
+              <!-- if has children, recurse -->
+              <ng-container *ngIf="cat.children?.length; else leaf">
+                <ng-container
+                  *ngTemplateOutlet="panels;
+                                    context:{ $implicit: cat.children, level: level+1 }">
+                </ng-container>
+              </ng-container>
+
+              <ng-template #leaf>
+                <button mat-button (click)="selectCategory(cat.id)">
+                  Select
+                </button>
+              </ng-template>
+
+            </mat-expansion-panel>
+          </ng-container>
+        </ng-template>
+
+        <!-- start recursion at the root category -->
+        <ng-container
+          *ngTemplateOutlet="panels;
+                            context:{ $implicit: [category], level: 0 }">
+        </ng-container>
+      </mat-accordion>
+    </mat-drawer>
+
+    <div class="main-content">
+      <!-- page content goes here -->
     </div>
-  </mat-menu>
-</div>
+  </mat-drawer-container>
+</ng-container>

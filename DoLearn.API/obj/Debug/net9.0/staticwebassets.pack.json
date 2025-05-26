@@ -33,8 +33,16 @@
       "PackagePath": "staticwebassets\\images\\69f16b6e-9f89-49d3-9372-75d0d47eb23f.jpg"
     },
     {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\72201f36-6306-4f4d-b3a6-66921c592fb3.jpg",
+      "PackagePath": "staticwebassets\\images\\72201f36-6306-4f4d-b3a6-66921c592fb3.jpg"
+    },
+    {
       "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\817cab84-f398-4f9b-85b1-5c32c6d6c30a.png",
       "PackagePath": "staticwebassets\\images\\817cab84-f398-4f9b-85b1-5c32c6d6c30a.png"
+    },
+    {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\82be27a2-a2c2-416c-94ab-bd586cac3cf6.jpg",
+      "PackagePath": "staticwebassets\\images\\82be27a2-a2c2-416c-94ab-bd586cac3cf6.jpg"
     },
     {
       "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\92118683-b626-42fb-a922-3c00c2d7ae2a.avif",
@@ -45,12 +53,20 @@
       "PackagePath": "staticwebassets\\images\\9574ae05-9c48-4e71-bdfb-c7310216e0ef.jpg"
     },
     {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\a0f0dae3-454c-4941-b808-2c5a248f6bf2.jpg",
+      "PackagePath": "staticwebassets\\images\\a0f0dae3-454c-4941-b808-2c5a248f6bf2.jpg"
+    },
+    {
       "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\a63661c2-7079-4221-b839-0ca77e0d2aa1.jpg",
       "PackagePath": "staticwebassets\\images\\a63661c2-7079-4221-b839-0ca77e0d2aa1.jpg"
     },
     {
       "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\a7b64bae-66e8-4bb2-9f8c-c7499eba0a81.jpg",
       "PackagePath": "staticwebassets\\images\\a7b64bae-66e8-4bb2-9f8c-c7499eba0a81.jpg"
+    },
+    {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\aace7841-3ee4-470b-81ff-741ce36db6f6.jpg",
+      "PackagePath": "staticwebassets\\images\\aace7841-3ee4-470b-81ff-741ce36db6f6.jpg"
     },
     {
       "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\c6196fcf-6a7a-49c8-8bf2-05af266fddb6.png",
@@ -71,6 +87,10 @@
     {
       "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\dasdas.png",
       "PackagePath": "staticwebassets\\images\\dasdas.png"
+    },
+    {
+      "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\f239ee8e-b00e-49e3-90a6-25eb6fd0a160.webp",
+      "PackagePath": "staticwebassets\\images\\f239ee8e-b00e-49e3-90a6-25eb6fd0a160.webp"
     },
     {
       "Id": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\image123.png",

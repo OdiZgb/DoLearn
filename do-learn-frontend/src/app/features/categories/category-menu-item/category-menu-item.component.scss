@@ -1,21 +1,42 @@
+/* Container for desktop menus */
 .category-menu-container {
   position: relative;
 }
 
+/* Desktop menu items */
 .menu-item {
   width: 200px;
   height: 100px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 0 15px;
 }
 
+/* overflow scroll for very long desktop submenus */
 .submenu-wrapper {
   max-height: 400px;
   overflow-y: auto;
 }
 
+/* ensure a minimum width */
 .nested-submenu {
   min-width: 200px;
+}
+
+/* MOBILE: full-screen drawer styling */
+.mobile-drawer {
+  width: 100%;
+  max-width: 300px;
+  padding: 0;
+}
+
+/* ensure the drawer container fills viewport */
+mat-drawer-container {
+  height: 100%;
+}
+
+/* full-width panels */
+mat-expansion-panel {
+  width: 100%;
 }

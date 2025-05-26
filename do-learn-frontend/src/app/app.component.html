@@ -19,9 +19,7 @@
       <button *ngIf="isLoggedIn"  mat-button routerLink="/dashboard" routerLinkActive="active">
         <mat-icon>dashboard</mat-icon> Dashboard
       </button>
-      <button  *ngIf="isLoggedIn" mat-button routerLink="/profile" routerLinkActive="active">
-        <mat-icon>person</mat-icon> Profile
-      </button>
+
       <button *ngIf="userRole=='Admin'" mat-button  routerLink="/categories" >
         <mat-icon>category</mat-icon> Categories
       </button>
@@ -36,8 +34,23 @@
     </mat-menu>
 
     <span class="spacer"></span>
-    <button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
-    <button *ngIf="isLoggedIn" mat-button (click)="logout()">Logout</button>
+<button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
+    <div *ngIf="isLoggedIn" class="user-menu">
+      <button mat-button [matMenuTriggerFor]="userMenu">
+        <mat-icon>person_outline</mat-icon>
+         <mat-icon>expand_more</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item routerLink="/profile">
+          <mat-icon class="menu-icon">account_circle</mat-icon>
+          Profile
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon class="menu-icon">power_settings_new</mat-icon>
+          Logout
+        </button>
+      </mat-menu>
+    </div>
   </mat-toolbar>
 
   <div class="main-container">

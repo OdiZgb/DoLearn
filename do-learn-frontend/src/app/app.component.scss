@@ -180,3 +180,17 @@
 .mat-toolbar{
   background-color: #f4f6f9;
 }
+.user-menu {
+  display: flex;
+  align-items: center;
+  
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.menu-icon {
+  margin-right: 8px;
+}
