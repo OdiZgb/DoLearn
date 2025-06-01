@@ -1,3 +1,5 @@
+using DoLearn.API.Models;
+
 public record CourseResponse(
     int    Id,
     string Title,
@@ -7,6 +9,7 @@ public record CourseResponse(
     DateTime EndDate,
     List<CourseSession> SessionStartTimes,
     string? ImgURL,
-    string Description
+    string Description,
+    User Teacher
     
 );

@@ -5,7 +5,7 @@
 namespace DoLearn.API.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCategory007 : Migration
+    public partial class migMessages001 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

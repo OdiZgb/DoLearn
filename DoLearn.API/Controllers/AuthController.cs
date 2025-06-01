@@ -35,8 +35,9 @@ namespace DoLearn.API.Controllers
         [HttpGet("users/{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            // We'll implement this later
-            return Ok();
+            var query = new GetUser.Query(id);
+            var result = await _mediator.Send(query);
+            return Ok(result);           
         }
 
         [HttpPost("login")]

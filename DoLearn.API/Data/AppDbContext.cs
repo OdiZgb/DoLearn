@@ -14,6 +14,7 @@ namespace DoLearn.API.Data
         public DbSet<CourseSession> CourseSessions { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<CoursePricing> CoursePricings { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -71,7 +72,17 @@ namespace DoLearn.API.Data
                 entity.HasKey(e => e.Id);
 
             });
+   modelBuilder.Entity<Message>()
+        .HasOne(m => m.Sender)
+        .WithMany()
+        .HasForeignKey(m => m.SenderId)
+        .OnDelete(DeleteBehavior.Restrict); // Changed from Cascade
 
+    modelBuilder.Entity<Message>()
+        .HasOne(m => m.Receiver)
+        .WithMany()
+        .HasForeignKey(m => m.ReceiverId)
+        .OnDelete(DeleteBehavior.Restrict); // Changed from Cascade
             // CoursePricing Configuration
             modelBuilder.Entity<CoursePricing>(entity =>
             {

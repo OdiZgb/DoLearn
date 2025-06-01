@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DoLearn.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250421195146_mig012")]
-    partial class mig012
+    [Migration("20250601140209_migMessages001")]
+    partial class migMessages001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,32 @@ namespace DoLearn.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("Course", b =>
                 {
                     b.Property<int>("Id")
@@ -34,6 +60,9 @@ namespace DoLearn.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("CourseCode")
@@ -60,6 +89,8 @@ namespace DoLearn.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("CreatedById");
 
@@ -143,6 +174,10 @@ namespace DoLearn.API.Migrations
                     b.Property<bool>("IsCanceled")
                         .HasColumnType("bit");
 
+                    b.PrimitiveCollection<string>("ReservedByUserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Start")
                         .HasColumnType("datetime2");
 
@@ -186,9 +221,6 @@ namespace DoLearn.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("CourseId1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CourseSessionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -238,8 +270,6 @@ namespace DoLearn.API.Migrations
 
                     b.HasIndex("CourseId1");
 
-                    b.HasIndex("CourseSessionId");
-
                     b.HasIndex("Email")
                         .IsUnique();
 
@@ -281,13 +311,63 @@ namespace DoLearn.API.Migrations
                     b.ToTable("Enrollments");
                 });
 
+            modelBuilder.Entity("Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Category", b =>
+                {
+                    b.HasOne("Category", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("Course", b =>
                 {
+                    b.HasOne("Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DoLearn.API.Models.User", "CreatedBy")
                         .WithMany("CreatedCourses")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("CreatedBy");
                 });
@@ -349,10 +429,6 @@ namespace DoLearn.API.Migrations
                     b.HasOne("Course", null)
                         .WithMany("Teachers")
                         .HasForeignKey("CourseId1");
-
-                    b.HasOne("CourseSession", null)
-                        .WithMany("ReservedByUserID")
-                        .HasForeignKey("CourseSessionId");
                 });
 
             modelBuilder.Entity("Enrollment", b =>
@@ -374,6 +450,30 @@ namespace DoLearn.API.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("Message", b =>
+                {
+                    b.HasOne("DoLearn.API.Models.User", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DoLearn.API.Models.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("Category", b =>
+                {
+                    b.Navigation("Children");
+                });
+
             modelBuilder.Entity("Course", b =>
                 {
                     b.Navigation("Pricing");
@@ -389,11 +489,6 @@ namespace DoLearn.API.Migrations
             modelBuilder.Entity("CourseSchedule", b =>
                 {
                     b.Navigation("Sessions");
-                });
-
-            modelBuilder.Entity("CourseSession", b =>
-                {
-                    b.Navigation("ReservedByUserID");
                 });
 
             modelBuilder.Entity("DoLearn.API.Models.User", b =>

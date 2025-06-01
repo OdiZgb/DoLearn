@@ -9,6 +9,7 @@ import { DashboardComponent } from './features/dashboard/dashboard/dashboard.com
 import { CategoriesComponent } from './features/categories/categories.component';
 import { CategoryFormComponent } from './features/categories/category-form/category-form.component';
 import { AppComponent } from './app.component';
+import { ChatComponent } from './features/messages/chat/chat.component';
 
 export const routes: Routes = [
   { path: '', component: AppComponent},
@@ -19,6 +20,11 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
+    { path: 'profile/:id', component: ProfileComponent },
+      { 
+    path: 'messages/:id', 
+    component: ChatComponent 
+  },
   {
     path: 'categories',
     component: CategoriesComponent,

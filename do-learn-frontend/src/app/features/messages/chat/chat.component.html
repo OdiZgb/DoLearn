@@ -1,0 +1,50 @@
+<div class="chat-container">
+  <mat-card class="chat-card">
+    <mat-card-header>
+      <div mat-card-avatar class="chat-header-avatar">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <mat-card-title>Chat with User {{recipientId}}</mat-card-title>
+      <mat-card-subtitle>
+        <span *ngIf="hubConnection?.state === connectionState.Connected" class="online-status">
+          <mat-icon class="online-icon">circle</mat-icon> Online
+        </span>
+        <span *ngIf="hubConnection?.state !== connectionState.Connected" class="offline-status">
+          <mat-icon class="offline-icon">circle</mat-icon> Offline
+        </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="messages-container" #messagesContainer>
+      <div *ngFor="let message of messages" 
+           class="message" 
+           [class.sent]="message.senderId === currentUserId"
+           [class.received]="message.senderId !== currentUserId">
+        <div class="message-content">
+          <div class="message-sender">{{message.senderId === currentUserId ? 'You' : 'User ' + message.senderId}}</div>
+          <div class="message-text">{{message.content}}</div>
+          <div class="message-time">
+            {{message.createdDate | date:'shortTime'}}
+            <mat-icon *ngIf="message.senderId === currentUserId && message.isRead" class="read-icon">done_all</mat-icon>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions class="message-input-container">
+      <mat-form-field appearance="outline" class="message-input">
+<input matInput 
+       [(ngModel)]="messageText" 
+       placeholder="Type your message..." 
+       (keyup.enter)="sendMessage()"
+       [disabled]="!isConnected">
+      </mat-form-field>
+<button mat-icon-button 
+        color="primary" 
+        type="button"
+        (click)="sendMessage()" >
+  <mat-icon>send</mat-icon>
+</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

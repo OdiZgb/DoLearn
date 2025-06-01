@@ -70,7 +70,14 @@
             </div>
           </div>
         </div>
-
+<div class="teacher-link" *ngIf="course.teacher">
+  <a [routerLink]="['/profile', course.teacher.id]" class="teacher-badge" >
+    <div class="teacher-avatar" [style.background]="getTeacherGradient(course.teacher.id)">
+      {{ getInitials(course.teacher.username) }}
+    </div>
+    <span>Teacher : {{ course.teacher.username }}</span>
+  </a>
+</div>
         <!-- Day Sessions Panel -->
         <div class="day-sessions-panel" *ngIf="selectedDay">
           <h3 class="panel-title">{{ selectedDay.date | date:'fullDate' }}</h3>

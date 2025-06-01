@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "uRKWh/cHgU+QGMVLd5KSo5xpe9hLIwc8BpsckbIA3ls=",
+  "Hash": "05nikISSzA/So/6axKuM+frLMii28rBe621EGKSlrhg=",
   "Source": "DoLearn.API",
   "BasePath": "_content/DoLearn.API",
   "Mode": "Default",
@@ -162,6 +162,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\4acb8818-a74e-4f93-bacd-25131a76f8d5.png"
+    },
+    {
+      "Identity": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\62e5e46c-f42d-4256-b527-170e35cd6feb.webp",
+      "SourceId": "DoLearn.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\",
+      "BasePath": "_content/DoLearn.API",
+      "RelativePath": "images/62e5e46c-f42d-4256-b527-170e35cd6feb#[.{fingerprint}]?.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ygbl1uzo73",
+      "Integrity": "UjaAHw27n3lIsVKIyi+SFoZnA/CVBfk3Cz/7h1vO54I=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\62e5e46c-f42d-4256-b527-170e35cd6feb.webp"
     },
     {
       "Identity": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\69f16b6e-9f89-49d3-9372-75d0d47eb23f.jpg",
@@ -1093,6 +1114,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-jaRV1a3fzM+AZsKwUi+7WQRi25A9SE93aZ9j53W2SFo="
+        }
+      ]
+    },
+    {
+      "Route": "images/62e5e46c-f42d-4256-b527-170e35cd6feb.webp",
+      "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\62e5e46c-f42d-4256-b527-170e35cd6feb.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "79616"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"UjaAHw27n3lIsVKIyi+SFoZnA/CVBfk3Cz/7h1vO54I=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 01 Jun 2025 14:19:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-UjaAHw27n3lIsVKIyi+SFoZnA/CVBfk3Cz/7h1vO54I="
+        }
+      ]
+    },
+    {
+      "Route": "images/62e5e46c-f42d-4256-b527-170e35cd6feb.ygbl1uzo73.webp",
+      "AssetFile": "C:\\Users\\odizg\\OneDrive\\Desktop\\Projects\\DoLearn\\DoLearn.API\\wwwroot\\images\\62e5e46c-f42d-4256-b527-170e35cd6feb.webp",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "79616"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/webp"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"UjaAHw27n3lIsVKIyi+SFoZnA/CVBfk3Cz/7h1vO54I=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 01 Jun 2025 14:19:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ygbl1uzo73"
+        },
+        {
+          "Name": "label",
+          "Value": "images/62e5e46c-f42d-4256-b527-170e35cd6feb.webp"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-UjaAHw27n3lIsVKIyi+SFoZnA/CVBfk3Cz/7h1vO54I="
         }
       ]
     },

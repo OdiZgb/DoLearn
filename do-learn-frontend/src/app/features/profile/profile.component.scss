@@ -104,4 +104,26 @@
         }
       }
     }
+  }// Add these styles to profile.component.scss
+.username-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  .message-button {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+    
+    mat-icon {
+      font-size: 1.5rem;
+      width: 24px;
+      height: 24px;
+    }
   }
+}

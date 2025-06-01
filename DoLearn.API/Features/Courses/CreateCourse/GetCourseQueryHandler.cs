@@ -17,6 +17,7 @@ namespace DoLearn.API.Features.Courses.GetCourse
         public async Task<CourseResponse> Handle(GetCourseQuery request, CancellationToken cancellationToken)
         {
             var course = await _context.Courses
+            .Include(c=>c.CreatedBy)
                 .Include(c => c.Schedule)
                 .ThenInclude(s => s.Sessions)
                 .FirstOrDefaultAsync(c => c.Id == request.CourseId, cancellationToken);
@@ -25,18 +26,25 @@ namespace DoLearn.API.Features.Courses.GetCourse
 
             var schedule = course.Schedule;
 
- 
 
+            course.CreatedBy.EmailVerificationToken = null;
+            course.CreatedBy.EmailVerified = false;
+            course.CreatedBy.PasswordHash = "";
+            course.CreatedBy.ResetTokenExpires = null;
+            course.CreatedBy.PasswordResetToken= null;
+            
             return new CourseResponse(
                 course.Id,
                 course.Title,
                 course.CourseCode,
                 course.CreatedAt,
                 schedule?.StartDate ?? DateTime.MinValue,
-                schedule?.EndDate   ?? DateTime.MinValue,
+                schedule?.EndDate ?? DateTime.MinValue,
                 schedule.Sessions,
-                ImgURL:"http://localhost:5055/"+ course.ImgURL, 
-                course.Description
+                ImgURL: "http://localhost:5055/" + course.ImgURL,
+                course.Description,
+                course.CreatedBy
+
 
             );
             

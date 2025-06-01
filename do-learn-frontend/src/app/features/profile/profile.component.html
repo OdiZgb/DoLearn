@@ -10,6 +10,9 @@
         </div>
         <div class="profile-info">
           <h1 class="username">{{ user?.username }}</h1>
+           <button mat-icon-button class="message-button" (click)="navigateToMessages()" matTooltip="Send message">
+              <mat-icon>message</mat-icon>
+            </button>
           <div class="role-badge" [class]="user?.role.toLowerCase()">
             {{ user?.role }}
           </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,7 +33,8 @@ interface CalendarDay {
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatButtonToggleModule,
-    DatePipe
+    DatePipe,
+    RouterModule,
   ]
 })
 export class CourseDetailsComponent implements OnInit {
@@ -71,7 +72,18 @@ export class CourseDetailsComponent implements OnInit {
     redirectToRegisterPage(): void {
       this.router.navigate(['/register']);
    }
+getTeacherGradient(id: number): string {
+  const hue = id % 360;
+  return `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${(hue + 30) % 360}, 70%, 50%))`;
+}
 
+getInitials(username: string): string {
+  return username.split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .substring(0, 2);
+}
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     

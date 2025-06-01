@@ -4,100 +4,28 @@
         <name>DoLearn.API</name>
     </assembly>
     <members>
-        <member name="T:DoLearn.API.Migrations.mig011">
+        <member name="T:DoLearn.API.Migrations.InitialMigrationsMessages4">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.mig011.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:DoLearn.API.Migrations.InitialMigrationsMessages4.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.mig011.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:DoLearn.API.Migrations.InitialMigrationsMessages4.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.mig011.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:DoLearn.API.Migrations.InitialMigrationsMessages4.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
-        <member name="T:DoLearn.API.Migrations.mig012">
+        <member name="T:DoLearn.API.Migrations.migMessages001">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.mig012.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:DoLearn.API.Migrations.migMessages001.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.mig012.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:DoLearn.API.Migrations.migMessages001.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:DoLearn.API.Migrations.mig012.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.mig013">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig013.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig013.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.mig013.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.AddCategory006">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory006.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory006.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory006.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.removeRedFromNameCat">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.removeRedFromNameCat.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.removeRedFromNameCat.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.removeRedFromNameCat.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.AddCategory007">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory007.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory007.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory007.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.AddCategory008">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory008.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory008.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.AddCategory008.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:DoLearn.API.Migrations.categoriesChildrens001">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.categoriesChildrens001.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.categoriesChildrens001.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:DoLearn.API.Migrations.categoriesChildrens001.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:DoLearn.API.Migrations.migMessages001.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

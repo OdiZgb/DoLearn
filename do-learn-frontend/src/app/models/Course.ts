@@ -15,5 +15,6 @@ export interface Course {
     lastUpdated: string;     // Changed from lastUpdated
     imgURL: string | null;   // Corrected from imgIRL
     category:Category;
+    teacher	:any
   }
   

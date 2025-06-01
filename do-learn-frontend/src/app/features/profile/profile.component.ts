@@ -4,6 +4,7 @@ import { AuthService } from '../../auth/auth.service';
 import {MatIconModule} from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -14,21 +15,31 @@ export class ProfileComponent implements OnInit {
   user: any;
   avatarGradient: string = '';
   userInitials: string = '';
-
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,    private route: ActivatedRoute,  private router: Router) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe(user => {
-      this.user = user;
-      if (user) {
-        this.userInitials = this.getInitials(user.username);
-        this.avatarGradient = this.generateGradient(user.id);
+    this.route.params.subscribe(params => {
+      const userId = params['id'];
+      
+      if (userId) {
+        // Load the requested user's profile
+        this.authService.getUser(userId).subscribe(user => {
+          this.setupUserProfile(user);
+        });
+      } else {
+
+        // Load the current user's profile
+        this.authService.currentUser$.subscribe(user => {
+          if (user) {
+            this.setupUserProfile(user);
+          }
+        });
+        
+        if (this.authService.isAuthenticated()) {
+          this.authService.fetchUserProfile().subscribe();
+        }
       }
     });
-    
-    if (this.authService.isAuthenticated()) {
-      this.authService.fetchUserProfile().subscribe();
-    }
   }
 
   private getInitials(username: string): string {
@@ -38,6 +49,11 @@ export class ProfileComponent implements OnInit {
       .toUpperCase()
       .substring(0, 2);
   }
+  private setupUserProfile(user: any): void {
+    this.user = user;
+    this.userInitials = this.getInitials(user.username);
+    this.avatarGradient = this.generateGradient(user.id);
+  }
 
   private generateGradient(id: number): string {
     const hue = id % 360; // Generate hue based on user ID
@@ -45,4 +61,9 @@ export class ProfileComponent implements OnInit {
       hsl(${hue}, 70%, 50%),
       hsl(${(hue + 30) % 360}, 70%, 50%))`;
   }
+  navigateToMessages(): void {
+  if (this.user?.id) {
+    this.router.navigate(['/messages', this.user.id]);
+  }
+}
 }

@@ -55,6 +55,9 @@ export class AuthService {
       tap(user => this.currentUser.next(user))
     );
   }
+    getUser(id:number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/users/`+id);
+  }
     
   saveToken(token: string) {
     localStorage.setItem('token', token);
