@@ -82,18 +82,18 @@ ngOnInit(): void {
     );
   });
 
-  this.route.paramMap.subscribe(params => {
-    const id = params.get('id');
-    if (!id) {
-      this.router.navigate(['/']);
-      return;
-    }
-
-    this.recipientId = +id;
-    this.loadConversation();
-    this.setupSignalRListeners();
-  });
-}
+this.route.paramMap.subscribe(params => {
+  const id = params.get('id');
+  if (!id) {
+    this.router.navigate(['/']);
+    return;
+  }
+  this.recipientId = +id;
+  if (this.currentUserId && this.recipientId) {
+    this.loadConversation(); // Load if user ID already ready
+  }
+  this.setupSignalRListeners();
+});}
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
