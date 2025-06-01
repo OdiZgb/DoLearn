@@ -67,6 +67,9 @@ ngOnInit(): void {
   this.subscriptions.add(
     this.authService.currentUser$.subscribe(user => {
       this.currentUserId = user?.id || null;
+          if (this.currentUserId && this.recipientId) {
+      this.loadConversation(); // Load after user ID is known
+    }
     })
   );
 
