@@ -91,32 +91,37 @@ namespace DoLearn.API.Controllers
             return Ok(messages);
         }
 
-        [HttpGet("contacts")]
-        public async Task<IActionResult> GetChatContacts()
+[HttpGet("contacts")]
+public async Task<IActionResult> GetChatContacts()
+{
+    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+    var messages = await _context.Messages
+        .Include(m => m.Sender)
+        .Include(m => m.Receiver)
+        .Where(m => m.SenderId == userId || m.ReceiverId == userId)
+        .ToListAsync(); // Materialize first to avoid EF Core translation issues
+
+    var contacts = messages
+        .Select(m => new
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Contact = m.SenderId == userId ? m.Receiver : m.Sender,
+            Message = m
+        })
+        .GroupBy(x => x.Contact.Id)
+        .Select(g => new
+        {
+            Id = g.Key,
+            Username = g.First().Contact.Username,
+            Email = g.First().Contact.Email,
+            LastMessage = g.OrderByDescending(x => x.Message.CreatedDate).First().Message.Content,
+            LastMessageDate = g.OrderByDescending(x => x.Message.CreatedDate).First().Message.CreatedDate
+        })
+        .OrderByDescending(x => x.LastMessageDate)
+        .ToList();
 
-            var contacts = await _context.Messages
-                .Include(m => m.Sender)
-                .Include(m => m.Receiver)
-                .Where(m => m.SenderId == userId || m.ReceiverId == userId)
-                .Select(m => m.SenderId == userId ? m.Receiver : m.Sender)
-                .Distinct()
-                .Select(u => new
-                {
-                    u.Id,
-                    u.Username,
-                    u.Email,
-                    LastMessage = _context.Messages
-                        .Where(m => (m.SenderId == userId && m.ReceiverId == u.Id) ||
-                                    (m.SenderId == u.Id && m.ReceiverId == userId))
-                        .OrderByDescending(m => m.CreatedDate)
-                        .FirstOrDefault()
-                })
-                .ToListAsync();
-
-            return Ok(contacts);
-        }
+    return Ok(contacts);
+}
 
         [HttpPost("mark-as-read/{messageId}")]
         public async Task<IActionResult> MarkAsRead(int messageId)

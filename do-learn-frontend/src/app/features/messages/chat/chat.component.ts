@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,79 +25,74 @@ import * as signalR from '@microsoft/signalr';
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
-    FormsModule,
-    
-    
+    FormsModule
   ],
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild('messagesContainer') messagesContainer!: ElementRef;
+
   recipientId: number | null = null;
   messageText: string = '';
   messages: Message[] = [];
-  public subscriptions = new Subscription();
   currentUserId: number | null = null;
-  public signalRHubConnectionState = signalR.HubConnectionState;
-public isConnected: boolean = false;
+  isConnected: boolean = false;
+public readonly HubConnectionState = signalR.HubConnectionState;
+  private subscriptions = new Subscription();
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public signalrService: SignalRService, 
+    public signalrService: SignalRService,
     private messagesService: MessagesService,
     private authService: AuthService,
   ) {}
- public get hubConnection() {
+
+  get hubConnection() {
     return this.signalrService.hubConnection;
   }
-  
-  public get connectionState() {
-    return signalR.HubConnectionState;
-  }
- 
-ngOnInit(): void {
-  this.authService.fetchUserProfile().subscribe({
-  next: (user) => {
-    console.log('Fetched user profile:', user);
-  },
-  error: (err) => {
-    console.error('Failed to fetch user profile:', err);
-  }
-});
-  this.subscriptions.add(
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUserId = user?.id || null;
-          if (this.currentUserId && this.recipientId) {
-      this.loadConversation(); // Load after user ID is known
-    }
-    })
-  );
 
-  this.signalrService.startConnection().then(() => {
-    this.subscriptions.add(
-      this.signalrService.connectionState$.subscribe(state => {
-        this.isConnected = state === signalR.HubConnectionState.Connected;
-            console.log('isConnected:', this.isConnected);
-      })
-    );
-  });
+  ngOnInit(): void {
+    this.authService.fetchUserProfile().subscribe({
+      next: (user) => {
+        this.currentUserId = user.id;
+        this.route.paramMap.subscribe(params => {
+          const id = params.get('id');
+          if (!id) {
+            this.router.navigate(['/']);
+            return;
+          }
+          this.recipientId = +id;
+          this.loadConversation();
+          this.setupSignalRListeners();
+        });
+      },
+      error: (err) => console.error('Failed to fetch user profile:', err)
+    });
 
-this.route.paramMap.subscribe(params => {
-  const id = params.get('id');
-  if (!id) {
-    this.router.navigate(['/']);
-    return;
+    this.signalrService.startConnection().then(() => {
+      this.subscriptions.add(
+        this.signalrService.connectionState$.subscribe(state => {
+          this.isConnected = state === signalR.HubConnectionState.Connected;
+        })
+      );
+    });
   }
-  this.recipientId = +id;
-  if (this.currentUserId && this.recipientId) {
-    this.loadConversation(); // Load if user ID already ready
-  }
-  this.setupSignalRListeners();
-});}
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
     this.signalrService.stopConnection();
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  private scrollToBottom(): void {
+    try {
+      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+    } catch (err) {}
   }
 
   private loadConversation(): void {
@@ -106,88 +101,85 @@ this.route.paramMap.subscribe(params => {
     this.messagesService.getConversation(this.recipientId).subscribe({
       next: (messages) => {
         this.messages = messages;
-        this.markMessagesAsRead(); // Mark messages as read when loading conversation
+        this.markMessagesAsRead();
       },
       error: (err) => console.error('Error loading conversation:', err)
     });
   }
 
   private setupSignalRListeners(): void {
-    // Listen for new messages
     this.subscriptions.add(
       this.signalrService.messages$.subscribe(message => {
         if (!this.recipientId || !this.currentUserId) return;
 
-        if ((message.senderId === this.recipientId && message.receiverId === this.currentUserId) ||
-            (message.senderId === this.currentUserId && message.receiverId === this.recipientId)) {
-          // Replace temporary message if exists
-          const existingIndex = this.messages.findIndex(m => 
-            (m as any).tempId && message.content === m.content);
-          if (existingIndex >= 0) {
-            this.messages[existingIndex] = message;
-          } else {
-            this.messages.push(message);
-          }
+        const isRelevant =
+          (message.senderId === this.recipientId && message.receiverId === this.currentUserId) ||
+          (message.senderId === this.currentUserId && message.receiverId === this.recipientId);
+
+        if (!isRelevant) return;
+
+        // Match by content + receiver to avoid duplicates
+        const index = this.messages.findIndex(
+          (m: any) => (m as any).tempId && m.content === message.content && m.receiverId === message.receiverId
+        );
+
+        if (index >= 0) {
+          this.messages[index] = message;
+        } else {
+          this.messages.push(message);
         }
       })
     );
 
-    // Listen for read receipts
     this.subscriptions.add(
       this.signalrService.messageRead$.subscribe(messageId => {
-        const message = this.messages.find(m => m.id === messageId);
-        if (message) {
-          message.isRead = true;
-        }
+        const msg = this.messages.find(m => m.id === messageId);
+        if (msg) msg.isRead = true;
       })
     );
   }
 
 sendMessage(): void {
-  console.log('DEBUG: messageText =', this.messageText);
-  console.log('DEBUG: recipientId =', this.recipientId);
-  console.log('DEBUG: currentUserId =', this.currentUserId);
+  const content = this.messageText.trim();
+  if (!content || !this.recipientId || !this.currentUserId) return;
 
-  if (!this.messageText.trim() || !this.recipientId || !this.currentUserId) {
-    console.log('Validation failed - not sending');
-    return;
-  }
-  const tempId = Date.now(); // Temporary ID for optimistic UI update
-  const contentToSend = this.messageText; // Capture message before clearing
+  const tempId = Date.now();
+  this.messageText = '';
 
   const tempMessage: Message = {
     id: -1,
     senderId: this.currentUserId,
     receiverId: this.recipientId,
-    content: contentToSend,
+    content,
     createdDate: new Date(),
     isRead: false,
     senderName: 'You',
-    ...({ tempId } as any)
+    ...( { tempId } as any )
   };
 
   this.messages.push(tempMessage);
-  this.messageText = ''; // Clear AFTER capturing
 
-  this.signalrService.sendMessage(this.recipientId, contentToSend)
+  if (this.signalrService.hubConnection?.state !== signalR.HubConnectionState.Connected) {
+    console.warn('SignalR not connected, retry logic could go here.');
+    return;
+  }
+
+  this.signalrService.sendMessage(this.recipientId, content)
     .catch(err => {
       console.error('Error sending message:', err);
+      // Optionally retry or notify user
       this.messages = this.messages.filter(m => (m as any).tempId !== tempId);
     });
-
-  console.log('✅ Message sent attempt:', contentToSend);
 }
-
-
   markMessagesAsRead(): void {
     if (!this.currentUserId) return;
 
     const unreadMessages = this.messages.filter(
-      m => m.receiverId === this.currentUserId && !m.isRead && m.id > 0 // Only mark real messages as read
+      m => m.receiverId === this.currentUserId && !m.isRead && m.id > 0
     );
 
-    unreadMessages.forEach(message => {
-      this.signalrService.markAsRead(message.id).catch(err => {
+    unreadMessages.forEach(msg => {
+      this.signalrService.markAsRead(msg.id).catch(err => {
         console.error('Error marking message as read:', err);
       });
     });

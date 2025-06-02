@@ -1,0 +1,18 @@
+<mat-card *ngIf="loading">
+  Loading contacts...
+</mat-card>
+
+<mat-card *ngIf="!loading && contacts.length === 0">
+  No conversations yet.
+</mat-card>
+
+<div *ngIf="!loading && contacts.length > 0">
+  <mat-card *ngFor="let contact of contacts" (click)="openChat(contact.id)" class="contact-card">
+    <mat-card-title>{{ contact.username }}</mat-card-title>
+    <mat-card-subtitle>{{ contact.email }}</mat-card-subtitle>
+    <div *ngIf="contact.lastMessage">
+      <div class="last-message">{{ contact.lastMessage.content }}</div>
+      <div class="last-date">{{ contact.lastMessage.createdDate | date:'short' }}</div>
+    </div>
+  </mat-card>
+</div>

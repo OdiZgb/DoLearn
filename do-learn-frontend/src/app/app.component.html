@@ -35,7 +35,11 @@
 
     <span class="spacer"></span>
 <button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
+<button *ngIf="isLoggedIn" mat-icon-button routerLink="/contacts" matTooltip="Messages">
+  <mat-icon>chat</mat-icon>
+</button>
     <div *ngIf="isLoggedIn" class="user-menu">
+      
       <button mat-button [matMenuTriggerFor]="userMenu">
         <mat-icon>person_outline</mat-icon>
          <mat-icon>expand_more</mat-icon>

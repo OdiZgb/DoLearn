@@ -1,0 +1,9 @@
+.contact-card {
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.contact-card:hover {
+  background-color: #f2f2f2;
+}

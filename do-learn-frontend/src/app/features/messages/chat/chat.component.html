@@ -6,12 +6,12 @@
       </div>
       <mat-card-title>Chat with User {{recipientId}}</mat-card-title>
       <mat-card-subtitle>
-        <span *ngIf="hubConnection?.state === connectionState.Connected" class="online-status">
-          <mat-icon class="online-icon">circle</mat-icon> Online
-        </span>
-        <span *ngIf="hubConnection?.state !== connectionState.Connected" class="offline-status">
-          <mat-icon class="offline-icon">circle</mat-icon> Offline
-        </span>
+       <span *ngIf="hubConnection?.state === HubConnectionState.Connected" class="online-status">
+  <mat-icon class="online-icon">circle</mat-icon> Online
+</span>
+<span *ngIf="hubConnection?.state !== HubConnectionState.Connected" class="offline-status">
+  <mat-icon class="offline-icon">circle</mat-icon> Offline
+</span>
       </mat-card-subtitle>
     </mat-card-header>
 
@@ -37,7 +37,7 @@
        [(ngModel)]="messageText" 
        placeholder="Type your message..." 
        (keyup.enter)="sendMessage()"
-       [disabled]="!isConnected">
+       [disabled]="!recipientId || !currentUserId">
       </mat-form-field>
 <button mat-icon-button 
         color="primary" 
