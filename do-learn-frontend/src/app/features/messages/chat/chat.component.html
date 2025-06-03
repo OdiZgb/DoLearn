@@ -5,7 +5,7 @@
         <mat-icon>account_circle</mat-icon>
       </div>
       <div class="user-details">
-        <h3>User {{recipientId}}</h3>
+        <h3>{{this.user.username}}</h3>
         <div class="status">
           <span *ngIf="hubConnection?.state === HubConnectionState.Connected" class="online">
             <mat-icon>circle</mat-icon> Online

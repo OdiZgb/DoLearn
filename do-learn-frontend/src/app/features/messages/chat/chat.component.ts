@@ -40,6 +40,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   isConnected: boolean = false;
 public readonly HubConnectionState = signalR.HubConnectionState;
   private subscriptions = new Subscription();
+  public user: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -63,6 +64,8 @@ public readonly HubConnectionState = signalR.HubConnectionState;
             this.router.navigate(['/']);
             return;
           }
+          this.user = user;
+          this.recipientId = +id;
           this.recipientId = +id;
           this.loadConversation();
           this.setupSignalRListeners();
