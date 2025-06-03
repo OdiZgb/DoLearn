@@ -1,18 +1,47 @@
-<mat-card *ngIf="loading">
-  Loading contacts...
-</mat-card>
+<div class="contacts-container">
+  <!-- Loading state -->
+  <div *ngIf="loading" class="loading-state">
+    <mat-spinner diameter="40" color="primary"></mat-spinner>
+    <p>Loading your conversations...</p>
+  </div>
 
-<mat-card *ngIf="!loading && contacts.length === 0">
-  No conversations yet.
-</mat-card>
+  <!-- Empty state -->
+  <div *ngIf="!loading && contacts.length === 0" class="empty-state">
+    <mat-icon class="empty-icon" color="primary">forum</mat-icon>
+    <h3>No conversations yet</h3>
+    <p>Start by messaging a friend or colleague</p>
+    <button mat-flat-button color="primary" class="new-chat-btn">
+      <mat-icon>add</mat-icon> New Chat
+    </button>
+  </div>
 
-<div *ngIf="!loading && contacts.length > 0">
-  <mat-card *ngFor="let contact of contacts" (click)="openChat(contact.id)" class="contact-card">
-    <mat-card-title>{{ contact.username }}</mat-card-title>
-    <mat-card-subtitle>{{ contact.email }}</mat-card-subtitle>
-    <div *ngIf="contact.lastMessage">
-      <div class="last-message">{{ contact.lastMessage.content }}</div>
-      <div class="last-date">{{ contact.lastMessage.createdDate | date:'short' }}</div>
+  <!-- Contacts list -->
+  <div *ngIf="!loading && contacts.length > 0" class="contacts-list">
+    <div *ngFor="let contact of contacts" 
+         (click)="openChat(contact.id)" 
+         class="contact-item"
+         [class.unread]="contact.unreadCount > 0">
+      
+      <div class="avatar-container">
+        <div class="avatar" [style.background]="getAvatarColor(contact.username)">
+          {{ contact.username.charAt(0).toUpperCase() }}
+        </div>
+        <span *ngIf="contact.unreadCount > 0" class="badge">{{ contact.unreadCount }}</span>
+      </div>
+      
+      <div class="contact-info">
+        <div class="name-time">
+          <h3>{{ contact.username }}</h3>
+          <span class="time">{{ contact.lastMessage?.createdDate | date:'shortTime' }}</span>
+        </div>
+        
+        <div class="message-preview">
+          <p *ngIf="contact.lastMessage" class="message-text">
+            {{ contact.lastMessage.content | truncate:30 }}
+          </p>
+          <mat-icon *ngIf="contact.unreadCount > 0" class="unread-icon">fiber_manual_record</mat-icon>
+        </div>
+      </div>
     </div>
-  </mat-card>
+  </div>
 </div>

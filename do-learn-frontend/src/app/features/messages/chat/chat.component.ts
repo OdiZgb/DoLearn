@@ -43,7 +43,7 @@ public readonly HubConnectionState = signalR.HubConnectionState;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    public router: Router,
     public signalrService: SignalRService,
     private messagesService: MessagesService,
     private authService: AuthService,

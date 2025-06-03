@@ -1,50 +1,55 @@
 <div class="chat-container">
-  <mat-card class="chat-card">
-    <mat-card-header>
-      <div mat-card-avatar class="chat-header-avatar">
+  <div class="chat-header">
+    <div class="user-info">
+      <div class="avatar">
         <mat-icon>account_circle</mat-icon>
       </div>
-      <mat-card-title>Chat with User {{recipientId}}</mat-card-title>
-      <mat-card-subtitle>
-       <span *ngIf="hubConnection?.state === HubConnectionState.Connected" class="online-status">
-  <mat-icon class="online-icon">circle</mat-icon> Online
-</span>
-<span *ngIf="hubConnection?.state !== HubConnectionState.Connected" class="offline-status">
-  <mat-icon class="offline-icon">circle</mat-icon> Offline
-</span>
-      </mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content class="messages-container" #messagesContainer>
-      <div *ngFor="let message of messages" 
-           class="message" 
-           [class.sent]="message.senderId === currentUserId"
-           [class.received]="message.senderId !== currentUserId">
-        <div class="message-content">
-          <div class="message-sender">{{message.senderId === currentUserId ? 'You' : 'User ' + message.senderId}}</div>
-          <div class="message-text">{{message.content}}</div>
-          <div class="message-time">
-            {{message.createdDate | date:'shortTime'}}
-            <mat-icon *ngIf="message.senderId === currentUserId && message.isRead" class="read-icon">done_all</mat-icon>
-          </div>
+      <div class="user-details">
+        <h3>User {{recipientId}}</h3>
+        <div class="status">
+          <span *ngIf="hubConnection?.state === HubConnectionState.Connected" class="online">
+            <mat-icon>circle</mat-icon> Online
+          </span>
+          <span *ngIf="hubConnection?.state !== HubConnectionState.Connected" class="offline">
+            <mat-icon>circle</mat-icon> Offline
+          </span>
         </div>
       </div>
-    </mat-card-content>
+    </div>
+    <button mat-icon-button class="back-button" (click)="router.navigate(['/messages'])">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
 
-    <mat-card-actions class="message-input-container">
-      <mat-form-field appearance="outline" class="message-input">
-<input matInput 
-       [(ngModel)]="messageText" 
-       placeholder="Type your message..." 
-       (keyup.enter)="sendMessage()"
-       [disabled]="!recipientId || !currentUserId">
-      </mat-form-field>
-<button mat-icon-button 
-        color="primary" 
-        type="button"
-        (click)="sendMessage()" >
-  <mat-icon>send</mat-icon>
-</button>
-    </mat-card-actions>
-  </mat-card>
+  <div class="messages-container" #messagesContainer>
+    <div *ngFor="let message of messages" 
+         class="message" 
+         [class.sent]="message.senderId === currentUserId"
+         [class.received]="message.senderId !== currentUserId">
+      <div class="message-content">
+        <div class="message-text">{{message.content}}</div>
+        <div class="message-footer">
+          <span class="time">{{message.createdDate | date:'shortTime'}}</span>
+          <mat-icon *ngIf="message.senderId === currentUserId" 
+                   class="read-status"
+                   [class.read]="message.isRead">
+            {{message.isRead ? 'done_all' : 'done'}}
+          </mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-container">
+    <mat-form-field appearance="outline" class="message-input">
+      <input matInput 
+             [(ngModel)]="messageText" 
+             placeholder="Type a message..."
+             (keyup.enter)="sendMessage()"
+             [disabled]="!recipientId || !currentUserId">
+      <button mat-icon-button matSuffix (click)="sendMessage()" [disabled]="!messageText.trim()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
 </div>
