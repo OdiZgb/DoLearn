@@ -231,11 +231,9 @@ nextMonth(): void {
   }
   enroll(): void {
     console.log(Array.from(this.selectedSessions),'this.selectedSessions');
-    if (this.selectedSessions.size > this.REQUIRED_SESSIONS) return;
-    alert("go on")
+    if (this.selectedSessions.size >= this.REQUIRED_SESSIONS) return;
     const confirm = window.confirm(`You're enrolling in ${this.REQUIRED_SESSIONS} sessions. Confirm?`);
     if (!confirm) return;
-
     this.isEnrollmentLoading = true;
     this.coursesService.enrollInCourse(
       this.course.id,
@@ -274,9 +272,7 @@ nextMonth(): void {
            day.sessions.every(session => !this.isSessionAvailable(session));
   }
   canEnroll(): boolean {
-    return this.userRole === 'Student' && 
-           this.enrollmentStatus === 'not-enrolled' &&
-           this.selectedSessions.size === this.REQUIRED_SESSIONS;
+    return this.selectedSessions.size === this.REQUIRED_SESSIONS;
   }
 
   // Date status helpers
