@@ -1,143 +1,217 @@
-<mat-card *ngIf="course" class="modern-course-card">
-  <!-- Hero Section -->
+<div class="course-detail-container">
+  <!-- Course Hero Section -->
   <div class="course-hero">
-    <img [src]="course.imgURL" alt="{{ course.title }}" class="hero-image">
-    <div class="hero-overlay">
+    <div class="hero-image-container">
+      <img [src]="course.imgURL || 'assets/default-course.jpg'" alt="{{ course.title }}" class="hero-image">
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="course-badge">{{ course.courseCode }}</div>
       <h1 class="course-title">{{ course.title }}</h1>
       <div class="course-meta">
-        <span class="course-code">{{ course.courseCode }}</span>
-        <span class="course-duration">
+        <div class="meta-item">
           <mat-icon>calendar_today</mat-icon>
-          {{ course.startDate | date: 'MMM d' }} - {{ course.endDate | date: 'MMM d' }}
-        </span>
+          <span>{{ course.startDate | date: 'MMM d' }} - {{ course.endDate | date: 'MMM d' }}</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon>schedule</mat-icon>
+          <span>{{ calculateTotalHours() }} hours total</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Course Details Grid -->
-  <div class="details-grid">
-    <!-- Main Content -->
-    <div class="course-content">
-      <mat-card-content>
-        <h2 class="section-title">About This Course</h2>
-        <p class="course-description">{{ course.description || 'No description available' }}</p>
-        
-        <div class="stats-container">
-          <!-- ... stats container content unchanged ... -->
-        </div>
-      </mat-card-content>
+  <!-- Main Content Grid -->
+  <div class="course-content-grid">
+    <!-- Left Column - Course Details -->
+    <div class="course-details">
+      <mat-card class="details-card">
+        <mat-card-header>
+          <mat-card-title>Course Description</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="course-description">{{ course.description || 'No description available' }}</p>
+          
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value">{{ allSessions.length }}</div>
+              <div class="stat-label">Sessions</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ REQUIRED_SESSIONS }}</div>
+              <div class="stat-label">Required</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ calculateTotalHours() }}</div>
+              <div class="stat-label">Total Hours</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Teacher Profile Card -->
+      <mat-card class="teacher-card" *ngIf="course.teacher">
+        <mat-card-header>
+          <div mat-card-avatar class="teacher-avatar" [style.background]="getTeacherGradient(course.teacher.id)">
+            {{ getInitials(course.teacher.username) }}
+          </div>
+          <mat-card-title>Instructor</mat-card-title>
+          <mat-card-subtitle>{{ course.teacher.username }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="teacher-meta">
+            <div class="meta-item">
+              <mat-icon>school</mat-icon>
+              <span>Expert Instructor</span>
+            </div>
+            <div class="meta-item">
+              <mat-icon>star</mat-icon>
+              <span>4.9/5 Rating</span>
+            </div>
+          </div>
+          <button mat-stroked-button color="primary" class="view-profile-btn" [routerLink]="['/profile', course.teacher.id]">
+            View Full Profile
+          </button>
+        </mat-card-content>
+      </mat-card>
     </div>
 
-    <!-- Schedule Sidebar -->
-    <div class="schedule-sidebar">
-      <h2 class="section-title">Available Sessions</h2>
-      
-      <div class="view-toggle">
-        <!-- ... view toggle content unchanged ... -->
-      </div>
-
-      <!-- Calendar View -->
-      <div class="calendar-view" *ngIf="viewMode === 'calendar'">
-        <div class="calendar-header">
-          <button mat-icon-button (click)="prevMonth()">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-          <div class="current-month">
-            {{ currentMonth | date:'MMMM y' }}
+    <!-- Right Column - Schedule -->
+    <div class="course-schedule">
+      <mat-card class="schedule-card">
+        <mat-card-header>
+          <mat-card-title>Course Schedule</mat-card-title>
+          <mat-card-subtitle>Select {{ REQUIRED_SESSIONS }} sessions to enroll</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <!-- View Toggle -->
+          <div class="view-toggle-container">
+            <mat-button-toggle-group [(ngModel)]="viewMode">
+              <mat-button-toggle value="calendar">
+                <mat-icon>calendar_view_month</mat-icon>
+                <span>Calendar</span>
+              </mat-button-toggle>
+              <mat-button-toggle value="list">
+                <mat-icon>list</mat-icon>
+                <span>List</span>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
           </div>
-          <button mat-icon-button (click)="nextMonth()">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        </div>
 
-        <div class="calendar-grid">
-          <div class="calendar-weekday" *ngFor="let day of weekDays">{{ day }}</div>
-          <div *ngFor="let day of calendarDays" 
-          class="calendar-day"
-          [class.current-month]="day.isCurrentMonth"
-          [class.has-sessions]="day.sessions.length > 0"
-          [class.fully-reserved]="isDayFullyReserved(day)"
-          [class.selected-day]="isDaySelected(day)"
-          (click)="handleDayClick(day)">
-            <div class="date-number">{{ day.date | date:'d' }}</div>
-            <div class="session-indicator" *ngIf="day.sessions.length > 0">
-              <div class="session-dot" 
-                   *ngFor="let session of day.sessions"
-                   [class.available]="isSessionAvailable(session)"
-                   [class.reserved]="session.reservations.length > 0"
-                   [class.selected]="selectedSessions.has(session.id)">
+          <!-- Calendar View -->
+          <div *ngIf="viewMode === 'calendar'" class="calendar-container">
+            <div class="calendar-header">
+              <button mat-icon-button (click)="prevMonth()">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              <h3 class="current-month">{{ currentMonth | date:'MMMM y' }}</h3>
+              <button mat-icon-button (click)="nextMonth()">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+
+            <div class="calendar-grid">
+              <div class="calendar-weekday" *ngFor="let day of weekDays">{{ day }}</div>
+                          
+            <div *ngFor="let day of calendarDays" 
+                class="calendar-day"
+                [class.current-month]="day.isCurrentMonth"
+                [class.today]="day.isToday"
+                [class.has-sessions]="day.sessions.length > 0"
+                [class.fully-booked]="isDayFullyReserved(day)"
+                [class.selected]="selectedDayDate && day.date.getTime() === selectedDayDate.getTime()"
+                (click)="handleDayClick(day)">
+                <div class="date-number">{{ day.date | date:'d' }}</div>
+                <div class="session-dots">
+                  <div *ngFor="let session of day.sessions" 
+                       class="session-dot"
+                       [class.available]="isSessionAvailable(session)"
+                       [class.reserved]="!isSessionAvailable(session)"
+                       [class.selected]="selectedSessions.has(session.id)">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selected Day Sessions -->
+            <div class="selected-day-sessions" *ngIf="selectedDay">
+              <h4 class="sessions-title">{{ selectedDay.date | date:'fullDate' }}</h4>
+              <div class="session-slots">
+                <div *ngFor="let session of selectedDay.sessions" 
+                     class="session-slot"
+                     [class.available]="isSessionAvailable(session)"
+                     [class.reserved]="!isSessionAvailable(session)"
+                     [class.selected]="selectedSessions.has(session.id)"
+                     (click)="toggleSession(session)">
+                  <div class="time-range">
+                    {{ session.start | date:'shortTime' }} - {{ session.finish | date:'shortTime' }}
+                  </div>
+                  <div class="availability-badge">
+                    <span>{{ session.reservations.length }}/1 spots</span>
+                    <mat-icon *ngIf="selectedSessions.has(session.id)">check_circle</mat-icon>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-<div class="teacher-link" *ngIf="course.teacher">
-  <a [routerLink]="['/profile', course.teacher.id]" class="teacher-badge" >
-    <div class="teacher-avatar" [style.background]="getTeacherGradient(course.teacher.id)">
-      {{ getInitials(course.teacher.username) }}
-    </div>
-    <span>Teacher : {{ course.teacher.username }}</span>
-  </a>
-</div>
-        <!-- Day Sessions Panel -->
-        <div class="day-sessions-panel" *ngIf="selectedDay">
-          <h3 class="panel-title">{{ selectedDay.date | date:'fullDate' }}</h3>
-          <div class="time-slots">
-            <div *ngFor="let session of selectedDay.sessions" 
-                 class="time-slot"
+
+          <!-- List View -->
+          <div *ngIf="viewMode === 'list'" class="list-view">
+            <div *ngFor="let session of allSessions" 
+                 class="list-item"
                  [class.available]="isSessionAvailable(session)"
                  [class.reserved]="!isSessionAvailable(session)"
                  [class.selected]="selectedSessions.has(session.id)"
                  (click)="toggleSession(session)">
-              <div class="time-range">
-                {{ session.start | date:'shortTime' }} - {{ session.finish | date:'shortTime' }}
+              <div class="session-date">
+                <div class="day">{{ session.start | date:'EEE' }}</div>
+                <div class="date">{{ session.start | date:'d' }}</div>
+                <div class="month">{{ session.start | date:'MMM' }}</div>
               </div>
-              <div class="session-availability">
-                {{ session.reservations.length }}/1 spots
+              <div class="session-info">
+                <div class="time-range">
+                  {{ session.start | date:'shortTime' }} - {{ session.finish | date:'shortTime' }}
+                </div>
+                <div class="availability">
+                  <mat-icon>person</mat-icon>
+                  <span>{{ session.reservations.length }}/1</span>
+                </div>
+              </div>
+              <div class="selection-indicator">
+                <mat-icon *ngIf="selectedSessions.has(session.id)">check_circle</mat-icon>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </mat-card-content>
 
-      <!-- List View -->
-      <div class="list-view" *ngIf="viewMode === 'list'">
-        <div *ngFor="let session of allSessions" 
-             class="session-item"
-             [class.reserved]="session.reservations.length > 0"
-             [class.selected]="selectedSessions.has(session.id)"
-             (click)="toggleSession(session)">
-          <div class="session-date">
-            {{ session.start | date:'EEE, MMM d' }}
+        <!-- Enrollment Button -->
+        <mat-card-actions class="enrollment-actions">
+          <div class="selection-counter" *ngIf="selectedSessions.size > 0">
+            {{ selectedSessions.size }}/{{ REQUIRED_SESSIONS }} sessions selected
           </div>
-          <div class="session-time">
-            {{ session.start | date:'shortTime' }} - {{ session.finish | date:'shortTime' }}
-          </div>
-          <div class="session-availability">
-            <mat-icon class="availability-icon">group</mat-icon>
-            {{ session.reservations.length }}/{{ session.capacity }}
-          </div>
-        </div>
-      </div>
+          
+          <button *ngIf="isLoggedIn" 
+                  mat-raised-button 
+                  color="primary" 
+                  class="enroll-btn"
+                  [disabled]="!canEnroll()"
+                  (click)="enroll()">
+            <mat-icon>rocket_launch</mat-icon>
+            <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
+            <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
+          </button>
 
-      <button  *ngIf="isLoggedIn"  mat-raised-button  
-              class="enroll-button"
-              (click)="enroll()">
-        <mat-icon>rocket_launch</mat-icon>
-        <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
-        <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
-      </button>
-            <button  *ngIf="!isLoggedIn"  mat-raised-button  
-              class="enroll-button"
-              (click)="redirectToRegisterPage()">
-        <mat-icon>rocket_launch</mat-icon>
-        <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
-        <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
-      </button>
+          <button *ngIf="!isLoggedIn" 
+                  mat-raised-button 
+                  color="primary" 
+                  class="enroll-btn"
+                  (click)="redirectToRegisterPage()">
+            <mat-icon>login</mat-icon>
+            <span>Sign Up to Enroll</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
     </div>
   </div>
-
-  <!-- Enrollment Status -->
-  <div class="enrollment-footer">
-    <!-- ... enrollment footer content unchanged ... -->
-  </div>
-</mat-card>
+</div>

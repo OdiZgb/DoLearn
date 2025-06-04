@@ -12,7 +12,7 @@ import { Course } from '../../models/Course';
 import { CoursesService } from '../../services/courses.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SessionDto } from './session.dto';
-
+import { FormsModule } from '@angular/forms';
 interface CalendarDay {
   date: Date;
   sessions: SessionDto[];
@@ -35,10 +35,11 @@ interface CalendarDay {
     MatButtonToggleModule,
     DatePipe,
     RouterModule,
+    FormsModule 
   ]
 })
 export class CourseDetailsComponent implements OnInit {
-  readonly REQUIRED_SESSIONS = 10;
+  readonly REQUIRED_SESSIONS = 3;
 
   course!: Course;
   enrollmentStatus: 'enrolled' | 'pending' | 'not-enrolled' = 'not-enrolled';
@@ -189,31 +190,33 @@ getInitials(username: string): string {
       this.selectedSessions.add(session.id);
     }
   }
+selectedDayDate?: Date; 
+handleDayClick(day: CalendarDay): void {
+  this.selectedDayDate = day.date;
+  this.selectedDay = day; // Keep this if you're using it for sessions display
+}
 
-  handleDayClick(day: CalendarDay): void {
-    this.selectedDay = day;
-  }
+prevMonth(): void {
+  this.currentMonth = new Date(
+    this.currentMonth.getFullYear(),
+    this.currentMonth.getMonth() - 1,
+    1
+  );
+  this.generateCalendar();
+  this.selectedDayDate = undefined;
+  this.selectedDay = undefined;
+}
 
-  prevMonth(): void {
-    this.currentMonth = new Date(
-      this.currentMonth.getFullYear(),
-      this.currentMonth.getMonth() - 1,
-      1
-    );
-    this.generateCalendar();
-    this.selectedDay = undefined;
-  }
-  
-  nextMonth(): void {
-    this.currentMonth = new Date(
-      this.currentMonth.getFullYear(),
-      this.currentMonth.getMonth() + 1,
-      1
-    );
-    this.generateCalendar();
-    this.selectedDay = undefined;
-  }
-  
+nextMonth(): void {
+  this.currentMonth = new Date(
+    this.currentMonth.getFullYear(),
+    this.currentMonth.getMonth() + 1,
+    1
+  );
+  this.generateCalendar();
+  this.selectedDayDate = undefined;
+  this.selectedDay = undefined;
+}
   isDayFullyBooked(day: CalendarDay): boolean {
     return day.sessions.length > 0 && 
            day.sessions.every(s => 
