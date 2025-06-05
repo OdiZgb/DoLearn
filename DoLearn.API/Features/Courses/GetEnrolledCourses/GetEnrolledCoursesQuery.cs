@@ -1,3 +1,3 @@
 using MediatR;
 
-public record GetEnrolledCoursesQuery(int UserId) : IRequest<List<Course>>;
+public record GetEnrolledCoursesQuery(int UserId) : IRequest<List<Enrollment>>;

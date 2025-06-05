@@ -70,6 +70,39 @@
           </button>
         </mat-card-content>
       </mat-card>
+           <mat-card class="session-overview-card" *ngIf="allSessions?.length > 0">
+  <mat-card-header>
+    <mat-card-title>Session Overview</mat-card-title>
+    <mat-card-subtitle>All sessions for this course</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="session-overview-list">
+      <div class="session-overview-item" *ngFor="let session of allSessions">
+        <div class="session-date-time">
+          <mat-icon>event</mat-icon>
+          <span>{{ session.start | date: 'fullDate' }}</span>
+          <span>{{ session.start | date: 'shortTime' }} - {{ session.finish | date: 'shortTime' }}</span>
+        </div>
+        <div class="session-meta">
+          <span [ngClass]="{
+            'available': isSessionAvailable(session),
+            'reserved': !isSessionAvailable(session),
+            'canceled': session.isCanceled
+          }">
+            <mat-icon *ngIf="session.isCanceled">cancel</mat-icon>
+            <mat-icon *ngIf="!session.isCanceled && isSessionAvailable(session)">check_circle</mat-icon>
+            <mat-icon *ngIf="!session.isCanceled && !isSessionAvailable(session)">block</mat-icon>
+            {{ session.isCanceled ? 'Canceled' : isSessionAvailable(session) ? 'Available' : 'Reserved' }}
+          </span>
+          <a *ngIf="session.meetingURL && !session.isCanceled" [href]="session.meetingURL" target="_blank">
+            <mat-icon>video_call</mat-icon> Join
+          </a>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
     </div>
 
     <!-- Right Column - Schedule -->
@@ -153,6 +186,8 @@
           </div>
 
           <!-- List View -->
+      
+
           <div *ngIf="viewMode === 'list'" class="list-view">
             <div *ngFor="let session of allSessions" 
                  class="list-item"

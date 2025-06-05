@@ -37,7 +37,7 @@ public class EnrollInCourseCommandHandler : IRequestHandler<EnrollInCourseComman
             .Where(s => request.SessionIds.Contains(s.Id))
             .ToListAsync();
 
-            
+
 
         // Validate sessions
         foreach (var session in sessions)
@@ -52,6 +52,10 @@ public class EnrollInCourseCommandHandler : IRequestHandler<EnrollInCourseComman
                 .Any(rs => rs.Start < session.Finish && rs.Finish > session.Start);
 
             if (hasConflict) return EnrollmentResult.Conflict;
+            Random rnd = new Random();
+            int randomNum = rnd.Next(10, 11);
+            double randomFloat = rnd.NextDouble();
+            session.MeetingURL = "https://meet.jit.si/" + randomNum + randomFloat;
         }
 
         // Create enrollment
@@ -60,7 +64,7 @@ public class EnrollInCourseCommandHandler : IRequestHandler<EnrollInCourseComman
             CourseId = course.Id,
             StudentId = user.Id,
             Status = EnrollmentStatus.Pending,
-            ReservedSessions = sessions
+            ReservedSessions = sessions,
         };
 
         try
