@@ -86,6 +86,16 @@ getInitials(username: string): string {
     .substring(0, 2);
 }
   ngOnInit(): void {
+
+        this.authService.fetchUserProfile().subscribe({
+      next: (user) => {
+        this.userId = user.id;
+      this.userRole = user?.role; 
+
+      },
+      error: (err) => console.error('Failed to fetch user profile:', err)
+    });
+
     const id = Number(this.route.snapshot.paramMap.get('id'));
     
     this.coursesService.getCourseSessions(id).subscribe(sessions => {
@@ -99,11 +109,6 @@ getInitials(username: string): string {
       this.sessionDetails = new Map(parsedSessions.map(s => [s.id, s]));
       this.allSessions = parsedSessions;
       this.generateCalendar();
-    });
-    this.authService.currentUser$.subscribe(user => {
-      this.userRole = user?.role;
-      this.userId = user?.id;
- 
     });
  
     this.coursesService.getCourse(id).subscribe({
@@ -274,7 +279,17 @@ nextMonth(): void {
   canEnroll(): boolean {
     return this.selectedSessions.size === this.REQUIRED_SESSIONS;
   }
-
+hasUserReservation(session: any): boolean {
+  if (!this.userId || !session.reservations) return false;
+  
+  // Check if any reservation has studentId matching current userId
+  return session.reservations.some((reservation: any) => 
+    reservation && reservation.studentId === this.userId
+  );
+}
+hasAnyReservations(): boolean {
+  return this.allSessions.some((session:any) => this.hasUserReservation(session));
+}
   // Date status helpers
   isPastSession(date: Date): boolean {
     return new Date(date) < new Date();
