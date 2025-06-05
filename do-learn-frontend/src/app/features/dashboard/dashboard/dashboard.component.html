@@ -1,95 +1,156 @@
 <div class="dashboard-container">
-    <mat-toolbar color="primary" class="dashboard-toolbar">
-      <span>My Dashboard</span>
+    <mat-toolbar class="dashboard-toolbar">
+      <h1>My Learning Dashboard</h1>
       <span class="spacer"></span>
       <button *ngIf="userRole === 'Teacher' || userRole === 'Admin'"
-              mat-raised-button
-              color="accent"
+              mat-stroked-button
               routerLink="/courses/create">
         <mat-icon>add</mat-icon> Create Course
       </button>
     </mat-toolbar>
   
     <div class="dashboard-content">
-  
+      <!-- Upcoming Sessions Section -->
+     <section class="upcoming-sessions">
+        <div class="section-header">
+          <mat-icon>event_upcoming</mat-icon>
+          <h2>Upcoming Learning Sessions</h2>
+        </div>
+        
+        <div *ngIf="isLoading" class="loading-sessions">
+          <mat-spinner diameter="40"></mat-spinner>
+          <span>Loading your sessions...</span>
+        </div>
+        
+        <div *ngIf="!isLoading && userReservedSessions.length > 0" class="sessions-list">
+<mat-card *ngFor="let session of upcomingSessions"
+          [ngClass]="{'fancy-card': true, 'next-session': session.isNext}">
+
+            <div class="session-time">
+              <div class="time-block">
+                <span class="time">{{ session.start | date:'HH:mm' }}</span>
+                <span class="date">{{ session.start | date:'MMM d' }}</span>
+              </div>
+              <div class="duration">
+                {{ calculateSessionDuration(session.start, session.finish) }} min
+              </div>
+            </div>
+            
+            <div class="session-details">
+              <h3>{{ session.courseTitle }}</h3>
+              <div class="session-meta">
+                <span><mat-icon>schedule</mat-icon> 
+                  {{ formatSessionTime(session.start, session.finish) }}
+                </span>
+                <span *ngIf="session.meetingURL">
+                  <mat-icon>videocam</mat-icon> Online
+                </span>
+                <span *ngIf="!session.meetingURL">
+                  <mat-icon>location_on</mat-icon> In-person
+                </span>
+              </div>
+            </div>
+            
+<div class="session-actions">
+  <button *ngIf="session.meetingURL" mat-stroked-button 
+          (click)="joinSession(session.meetingURL)">
+    <mat-icon>video_call</mat-icon> Join
+  </button>
+  <button mat-stroked-button 
+          [routerLink]="['/courses', session.courseId]">
+    <mat-icon>info</mat-icon> Details
+  </button>
+</div>
+          </mat-card>
+        </div>
+        
+        <div *ngIf="!isLoading && userReservedSessions.length === 0" class="empty-state">
+          <mat-icon>event_available</mat-icon>
+          <h3>No Upcoming Sessions</h3>
+          <p>You don't have any reserved sessions yet</p>
+          <button mat-raised-button color="primary" routerLink="/courses">
+            Browse Courses
+          </button>
+        </div>
+      </section>
       <!-- Enrolled Courses Section -->
       <section class="course-section">
-        <h2><mat-icon>book</mat-icon> My Enrolled Courses</h2>
+        <div class="section-header">
+          <mat-icon>menu_book</mat-icon>
+          <h2>My Enrolled Courses</h2>
+        </div>
   
         <div *ngIf="enrolledCourses.length > 0" class="courses-grid">
           <mat-card *ngFor="let course of enrolledCourses" class="course-card">
-            <div class="image-container" *ngIf="course.imgURL">
-              <img [src]="course.imgURL" alt="{{ course.title }}"
-                   class="course-image">
-              <div class="image-overlay"></div>
+            <div class="course-header">
+              <div class="course-image-container">
+                <img [src]="course.imgURL || 'assets/default-course.jpg'" 
+                     alt="{{ course.title }}"
+                     class="course-image">
+                <div class="progress-indicator" *ngIf="course.progress > 0">
+                  <div class="progress-bar" [style.width.%]="course.progress"></div>
+                </div>
+              </div>
+              <div class="course-badge" *ngIf="course.isNew">New</div>
             </div>
   
-            <mat-card-header>
-              <mat-card-title>{{ course.title }}</mat-card-title>
-              <mat-card-subtitle class="course-code">
-                {{ course.courseCode }}
-              </mat-card-subtitle>
-            </mat-card-header>
-  
             <mat-card-content>
-              <p class="description">{{ course.description }}</p>
+              <h3>{{ course.title }}</h3>
+              <p class="course-description">{{ course.description | truncate:100 }}</p>
+              
+              <div class="course-meta">
+                <span><mat-icon>schedule</mat-icon> {{ course.lastAccessed | timeAgo }}</span>
+                <span><mat-icon>bar_chart</mat-icon> {{ course.progress || 0 }}% complete</span>
+              </div>
             </mat-card-content>
   
-            <mat-card-actions class="actions">
-              <button mat-raised-button
-                      color="primary"
-                      [routerLink]="['/courses', course.id]">
-                <mat-icon>visibility</mat-icon> View
+            <mat-card-actions>
+              <button mat-stroked-button [routerLink]="['/courses', course.id]">
+                Continue Learning
               </button>
             </mat-card-actions>
           </mat-card>
         </div>
   
         <div *ngIf="enrolledCourses.length === 0" class="empty-state">
-          <mat-icon>book</mat-icon>
-          <h2>No Enrolled Courses Yet</h2>
-          <p>Browse available courses and enroll to get started.</p>
+          <mat-icon>auto_stories</mat-icon>
+          <h3>No Enrolled Courses</h3>
+          <p>Browse our catalog to find courses that interest you</p>
+          <button mat-raised-button routerLink="/courses">Explore Courses</button>
         </div>
       </section>
   
       <!-- Created Courses Section -->
       <section *ngIf="createdCourses.length > 0" class="course-section">
-        <h2><mat-icon>create</mat-icon> My Created Courses</h2>
+        <div class="section-header">
+          <mat-icon>create</mat-icon>
+          <h2>My Created Courses</h2>
+        </div>
   
         <div class="courses-grid">
           <mat-card *ngFor="let course of createdCourses" class="course-card">
-            <div class="image-container" *ngIf="course.imgURL">
-              <img [src]="course.imgURL" alt="{{ course.title }}"
+            <div class="course-header">
+              <img [src]="course.imgURL || 'assets/default-course.jpg'" 
+                   alt="{{ course.title }}"
                    class="course-image">
-              <div class="image-overlay"></div>
+              <div class="course-stats">
+                <span><mat-icon>group</mat-icon> {{ course.enrolledStudents || 0 }}</span>
+                <span><mat-icon>star</mat-icon> {{ course.rating || 'N/A' }}</span>
+              </div>
             </div>
   
-            <mat-card-header>
-              <mat-card-title>{{ course.title }}</mat-card-title>
-              <mat-card-subtitle class="course-code">
-                {{ course.courseCode }}
-              </mat-card-subtitle>
-            </mat-card-header>
-  
             <mat-card-content>
-              <p class="description">{{ course.description }}</p>
-              <p class="meta">
-                <mat-icon>group</mat-icon>
-                {{ course.enrolledStudents }} students
-              </p>
+              <h3>{{ course.title }}</h3>
+              <p class="course-description">{{ course.description | truncate:100 }}</p>
             </mat-card-content>
   
-            <mat-card-actions class="actions">
-              <button mat-raised-button
-                      color="primary"
-                      [routerLink]="['/courses', course.id]">
-                <mat-icon>manage_accounts</mat-icon> Manage
+            <mat-card-actions>
+              <button mat-stroked-button [routerLink]="['/courses', course.id, 'manage']">
+                <mat-icon>settings</mat-icon> Manage
               </button>
             </mat-card-actions>
           </mat-card>
         </div>
       </section>
-  
     </div>
   </div>
-  
