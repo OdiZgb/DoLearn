@@ -63,7 +63,7 @@ public class EnrollInCourseCommandHandler : IRequestHandler<EnrollInCourseComman
         {
             CourseId = course.Id,
             StudentId = user.Id,
-            Status = EnrollmentStatus.Pending,
+            Status = EnrollmentStatus.Active,
             ReservedSessions = sessions,
         };
 
