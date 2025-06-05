@@ -56,7 +56,7 @@ export class CourseDetailsComponent implements OnInit {
   selectedDay?: CalendarDay;
   isLoggedIn = false;
   private authSubscription: Subscription;
-
+userReservedSessions: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private coursesService: CoursesService,
@@ -87,14 +87,28 @@ getInitials(username: string): string {
 }
   ngOnInit(): void {
 
-        this.authService.fetchUserProfile().subscribe({
-      next: (user) => {
-        this.userId = user.id;
-      this.userRole = user?.role; 
-
-      },
-      error: (err) => console.error('Failed to fetch user profile:', err)
-    });
+ this.authService.fetchUserProfile().subscribe({
+    next: (user) => {
+      this.userId = user.id;
+      this.userRole = user?.role;
+      
+      this.coursesService.getCourseSessions(id).subscribe(sessions => {
+        const parsedSessions = sessions.map(s => ({
+          ...s,
+          start: new Date(s.start),
+          finish: new Date(s.finish)
+        }));
+        
+        this.allSessions = parsedSessions;
+        // Filter to only show user's reserved sessions
+        this.userReservedSessions = this.allSessions.filter((session:any) => 
+          this.hasUserReservation(session)
+        );
+        this.generateCalendar();
+      });
+    },
+    error: (err) => console.error('Failed to fetch user profile:', err)
+  });
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
     
@@ -281,8 +295,6 @@ nextMonth(): void {
   }
 hasUserReservation(session: any): boolean {
   if (!this.userId || !session.reservations) return false;
-  
-  // Check if any reservation has studentId matching current userId
   return session.reservations.some((reservation: any) => 
     reservation && reservation.studentId === this.userId
   );
