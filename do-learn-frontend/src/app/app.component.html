@@ -3,24 +3,24 @@
     <button mat-button routerLink="/" routerLinkActive="active">
       <mat-icon fontIcon="home"></mat-icon>{{ title }}
     </button>
-      <div class="top-bar">
-        <div class="top-bar-right">
-          <div class="category-filter">
-            <button mat-button [matMenuTriggerFor]="categoryMenu">
-              <mat-icon> list_alt</mat-icon>
-              {{  'Explore' }}
-            </button>
-          </div>
+
+    <div class="top-bar">
+      <div class="top-bar-right">
+        <div class="category-filter">
+          <button mat-button [matMenuTriggerFor]="categoryMenu">
+            <mat-icon>list_alt</mat-icon>
+            {{ 'Explore' }}
+          </button>
         </div>
       </div>
+    </div>
 
     <div class="center-nav">
-
-      <button *ngIf="isLoggedIn"  mat-button routerLink="/dashboard" routerLinkActive="active">
+      <button *ngIf="isLoggedIn" mat-button routerLink="/dashboard" routerLinkActive="active">
         <mat-icon>dashboard</mat-icon> Dashboard
       </button>
 
-      <button *ngIf="userRole=='Admin'" mat-button  routerLink="/categories" >
+      <button *ngIf="userRole === 'Admin'" mat-button routerLink="/categories">
         <mat-icon>category</mat-icon> Categories
       </button>
     </div>
@@ -34,88 +34,109 @@
     </mat-menu>
 
     <span class="spacer"></span>
-<button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
-<button *ngIf="isLoggedIn" mat-icon-button routerLink="/contacts" matTooltip="Messages">
-  <mat-icon>chat</mat-icon>
-</button>
+
+    <button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
+    <button *ngIf="isLoggedIn" mat-icon-button routerLink="/contacts" matTooltip="Messages">
+      <mat-icon>chat</mat-icon>
+    </button>
+
     <div *ngIf="isLoggedIn" class="user-menu">
-      
       <button mat-button [matMenuTriggerFor]="userMenu">
         <mat-icon>person_outline</mat-icon>
-         <mat-icon>expand_more</mat-icon>
+        <mat-icon>expand_more</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu">
         <button mat-menu-item routerLink="/profile">
-          <mat-icon class="menu-icon">account_circle</mat-icon>
-          Profile
+          <mat-icon class="menu-icon">account_circle</mat-icon> Profile
         </button>
         <button mat-menu-item (click)="logout()">
-          <mat-icon class="menu-icon">power_settings_new</mat-icon>
-          Logout
+          <mat-icon class="menu-icon">power_settings_new</mat-icon> Logout
         </button>
       </mat-menu>
     </div>
   </mat-toolbar>
 
   <div class="main-container">
-    
-    <!-- 🔽 Only show this part on the home route -->
+    <!-- 🔽 Homepage Content -->
     <div *ngIf="isHomeRoute()">
+ <div class="dashboard-hero">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1>Welcome Back 👋</h1>
+      <p>Your learning journey continues here. Explore sessions, track progress, or build something new.</p>
+      <button *ngIf="userRole === 'Teacher' || userRole === 'Admin'"
+              mat-raised-button color="primary"
+              routerLink="/courses/create">
+        <mat-icon>add</mat-icon> Create New Course
+      </button>
+    </div>
+
+    <div class="hero-visual">
+      <img src="https://ebi.gov.eg/wp-content/uploads/2023/10/Remote.png" alt="Learning Illustration">
+    </div>
+  </div>
+</div>
 
       <div *ngIf="isLoading" class="loading-container">
         <mat-spinner diameter="50"></mat-spinner>
       </div>
 
-      <div *ngIf="!isLoading">
-        <div *ngIf="paginatedCourses.length > 0" class="courses-grid">
-          <mat-card class="course-card" *ngFor="let course of paginatedCourses; trackBy: trackByCourseId">
-            <div class="image-container">
-              <img [src]="course.imgURL" alt="{{ course.title }} image" class="course-image" />
-              <div class="image-overlay"></div>
+      <section *ngIf="!isLoading && paginatedCourses.length > 0" class="courses-grid">
+        <mat-card class="course-card" *ngFor="let course of paginatedCourses; trackBy: trackByCourseId">
+          <div class="image-container">
+            <img [src]="course.imgURL" alt="{{ course.title }}" class="course-image" />
+            <div class="image-overlay"></div>
+          </div>
+          <div class="card-body">
+            <h2 class="course-title">{{ course.title }}</h2>
+            <p class="description">{{ course.description }}</p>
+            <div class="date-info">
+              <span><mat-icon>schedule</mat-icon> {{ course.createdAt | date }}</span>
+              <span><mat-icon>update</mat-icon> {{ course.lastUpdated | date }}</span>
             </div>
+            <button mat-flat-button color="accent" [routerLink]="['/courses', course.id]">
+              <mat-icon>visibility</mat-icon> View
+            </button>
+          </div>
+        </mat-card>
+      </section>
 
-            <div class="card-body">
-              <div class="title-row">
-                <h2 class="course-title">{{ course.title }}</h2>
-              </div>
-              <p class="description">{{ course.description }}</p>
+      <div *ngIf="filteredCourses.length === 0 && !isLoading" class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>No courses found in this category</p>
+      </div>
 
-              <div class="date-info">
-                <span><mat-icon>schedule</mat-icon> {{ course.createdAt | date }}</span>
-                <span><mat-icon>update</mat-icon> {{ course.lastUpdated | date }}</span>
-              </div>
-
-              <div class="actions">
-                <button mat-flat-button color="accent" [routerLink]="['/courses', course.id]">
-                  <mat-icon>visibility</mat-icon> View
-                </button>
-              </div>
-            </div>
-          </mat-card>
-        </div>
-
-        <div *ngIf="filteredCourses.length === 0" class="no-results">
-          <mat-icon>search_off</mat-icon>
-          <p>No courses found in this category</p>
-        </div>
-
-        <div *ngIf="filteredCourses.length > 0" class="paginator-container">
-          <mat-paginator
-            [length]="filteredCourses.length"
-            [pageSize]="pageSize"
-            [pageIndex]="currentPage - 1"
-            (page)="handlePageChange($event)"
-            [pageSizeOptions]="[5, 10, 20]">
-          </mat-paginator>
-        </div>
+      <div *ngIf="filteredCourses.length > 0" class="paginator-container">
+        <mat-paginator
+          [length]="filteredCourses.length"
+          [pageSize]="pageSize"
+          [pageIndex]="currentPage - 1"
+          (page)="handlePageChange($event)"
+          [pageSizeOptions]="[5, 10, 20]">
+        </mat-paginator>
       </div>
     </div>
 
-    <!-- 🔽 This will show content from other routes -->
+    <!-- 🔽 Routed Page Content -->
     <div *ngIf="!isHomeRoute()" class="content-container">
       <router-outlet></router-outlet>
     </div>
   </div>
+
+  <!-- ✅ Footer Section -->
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-left">
+      <p>&copy; {{ currentYear }} DoLearn. All rights reserved.</p>
+    </div>
+    <div class="footer-right">
+      <a href="mailto:odizgb@gmail.com" aria-label="Email"><mat-icon>mail</mat-icon></a>
+      <a href="https://x.com/odyzgb" target="_blank" rel="noopener" aria-label="Twitter"><mat-icon>public</mat-icon></a>
+      <a href="https://instagram.com/odizgb" target="_blank" rel="noopener" aria-label="Instagram"><mat-icon>photo_camera</mat-icon></a>
+      <a href="https://facebook.com/odizgb" target="_blank" rel="noopener" aria-label="Facebook"><mat-icon>facebook</mat-icon></a>
+    </div>
+  </div>
+</footer>
 </ng-container>
 
 <ng-template #noLayout>

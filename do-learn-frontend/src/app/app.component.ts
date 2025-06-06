@@ -62,6 +62,7 @@ export class AppComponent implements OnDestroy {
    isLoading = true;
    pageSize = 5;
  username?: string;
+ currentYear = new Date().getFullYear();
   constructor(
     private authService: AuthService,
      public router: Router,
