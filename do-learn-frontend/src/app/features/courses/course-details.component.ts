@@ -39,7 +39,7 @@ interface CalendarDay {
   ]
 })
 export class CourseDetailsComponent implements OnInit {
-  readonly REQUIRED_SESSIONS = 3;
+  readonly REQUIRED_SESSIONS = 1;
 
   course!: Course;
   enrollmentStatus: 'enrolled' | 'pending' | 'not-enrolled' = 'not-enrolled';
@@ -250,7 +250,7 @@ nextMonth(): void {
   }
   enroll(): void {
     console.log(Array.from(this.selectedSessions),'this.selectedSessions');
-    if (this.selectedSessions.size >= this.REQUIRED_SESSIONS) return;
+    if (this.selectedSessions.size == 0) return;
     const confirm = window.confirm(`You're enrolling in ${this.REQUIRED_SESSIONS} sessions. Confirm?`);
     if (!confirm) return;
     this.isEnrollmentLoading = true;
