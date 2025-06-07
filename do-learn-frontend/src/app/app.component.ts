@@ -63,6 +63,9 @@ export class AppComponent implements OnDestroy {
    pageSize = 5;
  username?: string;
  currentYear = new Date().getFullYear();
+   featuredCourses: CourseWithStatus[] = [];
+  newCourses: CourseWithStatus[] = [];
+  popularCategories: Category[] = [];
   constructor(
     private authService: AuthService,
      public router: Router,
@@ -121,13 +124,20 @@ export class AppComponent implements OnDestroy {
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
+        this.popularCategories = this.getPopularCategories(categories);
         this.loadAllCourses();
       },
       error: (err) => console.error('Error loading categories', err)
     });
   }
+    private getPopularCategories(categories: Category[]): Category[] {
+    // Sort by number of children or some other metric
+    return [...categories]
+      .sort((a, b) => b.children.length - a.children.length)
+      .slice(0, 4);
+  }
 
-  private loadAllCourses(): void {
+private loadAllCourses(): void {
     this.isLoading = true;
     this.coursesService.getCourses().subscribe({
       next: (courses) => {
@@ -136,6 +146,19 @@ export class AppComponent implements OnDestroy {
           enrollmentStatus: 'not-enrolled',
           isEnrollmentLoading: false
         }));
+        
+        // Get featured (most recent) courses
+        this.featuredCourses = [...this.allCourses]
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, 3);
+          
+        // Get new courses (last 30 days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        this.newCourses = this.allCourses.filter(course => 
+          new Date(course.createdAt) > thirtyDaysAgo
+        ).slice(0, 4);
+        
         this.applyFilters();
         this.checkEnrollments();
         this.isLoading = false;
@@ -146,7 +169,6 @@ export class AppComponent implements OnDestroy {
       }
     });
   }
-
   private applyFilters(): void {
     // Filter courses by category
     this.filteredCourses = this.selectedCategoryId
