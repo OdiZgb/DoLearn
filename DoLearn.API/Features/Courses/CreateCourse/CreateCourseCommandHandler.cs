@@ -20,51 +20,86 @@ public class CreateCourseCommandHandler
 
     public async Task<CourseCreateResponse> Handle(CreateCourseCommand req, CancellationToken ct)
     {
-        // Authorization, entity creation, schedule, sessions…
-        var course = new Course {
-            Title       = req.Title,
-            Description = req.Description,
-            CourseCode  = req.CourseCode,
-            CreatedById = req.CreatedById,
-            ImgURL      = req.ImgURL,
-            CreatedAt   = DateTime.UtcNow,
-            LastUpdated = DateTime.UtcNow,
-            CategoryId = req.CategoryId,
+        // Validate category exists
+        var category = await _context.Categories
+            .FirstOrDefaultAsync(x => x.Id == req.CategoryId, ct);
+        if (category == null)
+        {
+            throw new Exception("Invalid category ID");
+        }
 
-        };
-        var category = _context.Categories.Where(x=>x.Id==req.CategoryId).First();
-        course.Category = category;
-        _context.Courses.Add(course);
-        await _context.SaveChangesAsync(ct);
+        // Validate session times
+        if (req.SessionStartTimes.Count != req.SessionEndTimes.Count)
+        {
+            throw new Exception("Mismatched session start/end times");
+        }
 
-        var sessions = req.SessionStartTimes
-            .Zip(req.SessionEndTimes, (st, et) => new CourseSession {
-                Start      = st,
-                Finish     = et,
-                IsCanceled = false
-            })
-            .ToList();
+        await using var transaction = await _context.Database.BeginTransactionAsync(ct);
 
-        var schedule = new CourseSchedule {
-            CourseId      = course.Id,
-            StartDate     = req.StartDate,
-            EndDate       = req.EndDate,
-            Sessions      = sessions,
-            IsSoftDeleted = false
-        };
-        _context.CourseSchedules.Add(schedule);
-        await _context.SaveChangesAsync(ct);
+        try
+        {
+            // Create course
+            var course = new Course
+            {
+                Title = req.Title,
+                Description = req.Description,
+                CourseCode = req.CourseCode,
+                CreatedById = req.CreatedById,
+                ImgURL = req.ImgURL,
+                CreatedAt = DateTime.UtcNow,
+                LastUpdated = DateTime.UtcNow,
+                CategoryId = req.CategoryId
+            };
+            _context.Courses.Add(course);
+            await _context.SaveChangesAsync(ct);
 
-        return new CourseCreateResponse(
-            course.Id,
-            course.Title,
-            course.CourseCode,
-            course.CreatedAt,
-            req.StartDate,
-            req.EndDate,
-            req.SessionStartTimes,
-            req.SessionEndTimes,
-            req.ImgURL
-        );
+            // Create sessions with MeetingURLs
+            var sessions = req.SessionStartTimes
+                .Zip(req.SessionEndTimes, (st, et) => new CourseSession
+                {
+                    Start = st,
+                    Finish = et,
+                    IsCanceled = false,
+                    MeetingURL = GenerateMeetingUrl() // Implement this
+                })
+                .ToList();
+
+            // Create schedule
+            var schedule = new CourseSchedule
+            {
+                CourseId = course.Id,
+                StartDate = req.StartDate,
+                EndDate = req.EndDate,
+                Sessions = sessions,
+                IsSoftDeleted = false
+            };
+            _context.CourseSchedules.Add(schedule);
+
+            await _context.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+
+            return new CourseCreateResponse(
+                course.Id,
+                course.Title,
+                course.CourseCode,
+                course.CreatedAt,
+                req.StartDate,
+                req.EndDate,
+                req.SessionStartTimes,
+                req.SessionEndTimes,
+                req.ImgURL
+            );
+        }
+        catch
+        {
+            await transaction.RollbackAsync(ct);
+            throw;
+        }
+    }
+
+    private string GenerateMeetingUrl()
+    {
+        // Implement your meeting URL generation logic
+        return $"https://meet.jit.si/{Guid.NewGuid()}";
     }
 }
