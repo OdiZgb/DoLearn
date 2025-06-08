@@ -1,0 +1,88 @@
+<div class="courses-container">
+  <div class="sidebar">
+    <h2>Categories</h2>
+    
+    <button mat-button (click)="clearCategoryFilters()" class="category-button">
+      All Categories
+    </button>
+
+    <mat-nav-list>
+      <ng-container *ngFor="let parentCategory of parentCategories">
+        <mat-expansion-panel *ngIf="hasSubcategories(parentCategory)">
+          <mat-expansion-panel-header (click)="onParentCategorySelect(parentCategory.id)">
+            <mat-panel-title>{{ parentCategory.name }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          
+          <mat-nav-list>
+            <a mat-list-item 
+               *ngFor="let childCategory of parentCategory.children"
+               (click)="onCategorySelect(childCategory.id)"
+               [class.active]="selectedCategoryId === childCategory.id">
+              {{ childCategory.name }}
+            </a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+
+        <a mat-list-item *ngIf="!hasSubcategories(parentCategory)"
+           (click)="onCategorySelect(parentCategory.id)"
+           [class.active]="selectedCategoryId === parentCategory.id">
+          {{ parentCategory.name }}
+        </a>
+      </ng-container>
+    </mat-nav-list>
+  </div>
+
+  <div class="content">
+    <div class="header">
+      <h1>
+        {{ selectedCategoryName ? selectedCategoryName + ' Courses' : 'All Courses' }}
+        <span *ngIf="filteredCourses.length > 0">({{ filteredCourses.length }})</span>
+      </h1>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <div *ngIf="!isLoading">
+      <div *ngIf="paginatedCourses.length === 0" class="no-courses">
+        <p>No courses found in this category.</p>
+      </div>
+
+      <div class="courses-grid">
+        <mat-card *ngFor="let course of paginatedCourses; trackBy: trackByCourseId" class="course-card">
+          <mat-card-header>
+            <mat-card-title>{{ course.title }}</mat-card-title>
+            <mat-card-subtitle>{{ course?.category?.name }}</mat-card-subtitle>
+          </mat-card-header>
+          
+          <img mat-card-image [src]="course?.imgURL" alt="Course image">
+          
+          <mat-card-content>
+            <p>{{ course.description | truncate:150 }}</p>
+          </mat-card-content>
+          
+          <mat-card-actions>
+            <button mat-button color="primary" [routerLink]="['/courses', course.id]">
+              View Details
+            </button>
+            
+            <span *ngIf="course.enrollmentStatus === 'enrolled'" class="enrollment-status enrolled">
+              Enrolled
+            </span>
+            <span *ngIf="course.enrollmentStatus === 'pending'" class="enrollment-status pending">
+              Pending Approval
+            </span>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <mat-paginator *ngIf="filteredCourses.length > pageSize"
+                     [length]="filteredCourses.length"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="[5, 10, 25]"
+                     (page)="handlePageChange($event)">
+      </mat-paginator>
+    </div>
+  </div>
+</div>

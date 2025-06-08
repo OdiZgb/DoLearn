@@ -3,31 +3,20 @@
   <mat-toolbar color="primary" class="main-toolbar">
 
     <button mat-button routerLink="/" routerLinkActive="active" class="logo-button">
-      <mat-icon fontIcon="home" *ngIf="!isMobile"></mat-icon>
-      <span class="title-text">{{ isMobile ? 'DL' : title }}</span>
+      <mat-icon fontIcon="home"  ></mat-icon>
     </button>
 
-    <div class="top-bar" *ngIf="!isMobile">
       <!-- Desktop Navigation -->
       <div class="top-bar-right">
         <div class="category-filter">
-          <button mat-button [matMenuTriggerFor]="categoryMenu">
+          <button mat-button routerLink="/courses" routerLinkActive="active">
             <mat-icon>list_alt</mat-icon>
             {{ 'Explore' }}
           </button>
         </div>
       </div>
-    </div>
 
-
-    <div class="nav-buttons" *ngIf="!isMobile">
-
-      <button *ngIf="userRole === 'Admin'" mat-button routerLink="/categories">
-        <mat-icon>category</mat-icon> Categories
-      </button>
-      <button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
-
-      <div *ngIf="isLoggedIn" class="user-menu">
+     <div *ngIf="isLoggedIn" class="user-menu">
           <button *ngIf="isLoggedIn" mat-icon-button routerLink="/contacts" matTooltip="Messages">
         <mat-icon>chat</mat-icon>
       </button>
@@ -37,12 +26,11 @@
         </button>
             
       </div>
-    </div>
+      <button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
 
-    <!-- Mobile Menu Button -->
-    <button *ngIf="isMobile" mat-icon-button [matMenuTriggerFor]="mobileMenu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
+ 
+
+ 
   </mat-toolbar>
 
   <!-- Mobile Menu -->

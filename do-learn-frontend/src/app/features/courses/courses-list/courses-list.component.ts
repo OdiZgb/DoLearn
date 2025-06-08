@@ -13,6 +13,11 @@ import { RouterModule } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { CategoryMenuItemComponent } from '../../categories/category-menu-item/category-menu-item.component';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { TruncatePipe } from '../../messages/chat-contacts/(truncate.pipe';
+import { TimeAgoPipe } from '../../../Shared/time-ago.pipe';
 
 @Component({
   standalone: true,
@@ -26,7 +31,12 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTreeModule,
+    MatListModule,
+    MatExpansionModule,
+    TruncatePipe,
+    MatProgressSpinnerModule
   ]
 })
 export class CoursesListComponent implements OnInit {
@@ -34,10 +44,12 @@ export class CoursesListComponent implements OnInit {
   filteredCourses: CourseWithStatus[] = [];
   paginatedCourses: CourseWithStatus[] = [];
   categories: Category[] = [];
+  parentCategories: Category[] = [];
   currentUserId?: number;
   userRole?: string;
   selectedCategoryId: number | null = null;
   selectedCategoryName?: string;
+  selectedParentCategoryId: number | null = null;
   isLoading = true;
   currentPage = 1;
   pageSize = 5;
@@ -58,6 +70,7 @@ export class CoursesListComponent implements OnInit {
     this.categoryService.getCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
+        this.parentCategories = categories.filter(cat => cat.parentId === null);
         this.loadAllCourses();
       },
       error: (err) => console.error('Error loading categories', err)
@@ -86,14 +99,41 @@ export class CoursesListComponent implements OnInit {
 
   private applyFilters(): void {
     // Filter courses by category
-    this.filteredCourses = this.selectedCategoryId
-      ? this.allCourses.filter(course => course.category?.id === this.selectedCategoryId)
-      : this.allCourses;
+    if (this.selectedCategoryId) {
+      this.filteredCourses = this.allCourses.filter(course => course.category?.id === this.selectedCategoryId);
+    } else if (this.selectedParentCategoryId) {
+      // Get all child category IDs
+      const childCategoryIds = this.getChildCategoryIds(this.selectedParentCategoryId);
+      this.filteredCourses = this.allCourses.filter(course => 
+        course.category && childCategoryIds.includes(course.category.id)
+      );
+    } else {
+      this.filteredCourses = this.allCourses;
+    }
 
     // Apply pagination
     const startIndex = (this.currentPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.paginatedCourses = this.filteredCourses.slice(startIndex, endIndex);
+  }
+
+  private getChildCategoryIds(parentId: number): number[] {
+    const parentCategory = this.categories.find(cat => cat.id === parentId);
+    if (!parentCategory) return [];
+
+    const childIds: number[] = [];
+    
+    const collectChildIds = (category: Category) => {
+      if (category.children) {
+        category.children.forEach(child => {
+          childIds.push(child.id);
+          collectChildIds(child);
+        });
+      }
+    };
+
+    collectChildIds(parentCategory);
+    return childIds;
   }
 
   private checkEnrollments(): void {
@@ -120,7 +160,25 @@ export class CoursesListComponent implements OnInit {
   onCategorySelect(categoryId: number): void {
     const category = this.findCategory(this.categories, categoryId);
     this.selectedCategoryId = categoryId;
+    this.selectedParentCategoryId = null;
     this.selectedCategoryName = category?.name;
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  onParentCategorySelect(parentId: number): void {
+    const parentCategory = this.categories.find(cat => cat.id === parentId);
+    this.selectedParentCategoryId = parentId;
+    this.selectedCategoryId = null;
+    this.selectedCategoryName = parentCategory?.name;
+    this.currentPage = 1;
+    this.applyFilters();
+  }
+
+  clearCategoryFilters(): void {
+    this.selectedCategoryId = null;
+    this.selectedParentCategoryId = null;
+    this.selectedCategoryName = undefined;
     this.currentPage = 1;
     this.applyFilters();
   }
@@ -144,6 +202,10 @@ export class CoursesListComponent implements OnInit {
 
   trackByCourseId(index: number, course: Course): number {
     return course.id;
+  }
+
+  hasSubcategories(category: Category): boolean {
+    return category.children && category.children.length > 0;
   }
 }
 
