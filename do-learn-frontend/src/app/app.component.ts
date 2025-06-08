@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
+import { ChangeDetectorRef, Component, HostListener, OnDestroy } from "@angular/core";
 import { Router, NavigationEnd, RouterModule } from "@angular/router";
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,7 +36,6 @@ import { CoursesService } from "./services/courses.service";
     CategoryMenuItemComponent,
     MatButtonModule,
     MatIconModule,
-    DatePipe,
     MatProgressSpinnerModule,
     MatPaginatorModule
     
@@ -66,6 +65,7 @@ export class AppComponent implements OnDestroy {
    featuredCourses: CourseWithStatus[] = [];
   newCourses: CourseWithStatus[] = [];
   popularCategories: Category[] = [];
+    isMobile = false;
   constructor(
     private authService: AuthService,
      public router: Router,
@@ -104,6 +104,11 @@ export class AppComponent implements OnDestroy {
     const protectedRoutes = ['/login', '/register'];
 
   }
+    @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+  }
+
   isHomeRoute(): boolean {
     return this.router.url === '/';
   }
@@ -118,8 +123,11 @@ export class AppComponent implements OnDestroy {
   ngOnInit(): void {
     this.loadInitialData();
     this.setupUserSubscription();
+        this.checkScreenSize();
   }
-
+  checkScreenSize() {
+    this.isMobile = window.innerWidth < 768; // Adjust breakpoint as needed
+  }
   private loadInitialData(): void {
     this.categoryService.getCategories().subscribe({
       next: (categories) => {

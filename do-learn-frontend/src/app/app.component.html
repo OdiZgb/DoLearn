@@ -1,11 +1,14 @@
 <ng-container *ngIf="showLayout; else noLayout">
-  <!-- Main Toolbar -->
+  <!-- Main Toolbar - Responsive -->
   <mat-toolbar color="primary" class="main-toolbar">
-    <button mat-button routerLink="/" routerLinkActive="active">
-      <mat-icon fontIcon="home"></mat-icon>{{ title }}
+
+    <button mat-button routerLink="/" routerLinkActive="active" class="logo-button">
+      <mat-icon fontIcon="home" *ngIf="!isMobile"></mat-icon>
+      <span class="title-text">{{ isMobile ? 'DL' : title }}</span>
     </button>
 
-    <div class="top-bar">
+    <div class="top-bar" *ngIf="!isMobile">
+      <!-- Desktop Navigation -->
       <div class="top-bar-right">
         <div class="category-filter">
           <button mat-button [matMenuTriggerFor]="categoryMenu">
@@ -16,81 +19,112 @@
       </div>
     </div>
 
-    <div class="center-nav">
-      <button *ngIf="isLoggedIn" mat-button routerLink="/dashboard" routerLinkActive="active">
-        <mat-icon>dashboard</mat-icon> Dashboard
-      </button>
+
+    <div class="nav-buttons" *ngIf="!isMobile">
 
       <button *ngIf="userRole === 'Admin'" mat-button routerLink="/categories">
         <mat-icon>category</mat-icon> Categories
       </button>
-    </div>
+      <button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
 
-    <mat-menu #categoryMenu="matMenu">
-      <app-category-menu-item
-        *ngFor="let category of categories"
-        [category]="category"
-        (categorySelected)="onCategorySelect($event)">
-      </app-category-menu-item>
-    </mat-menu>
-
-    <span class="spacer"></span>
-
-    <button *ngIf="!isLoggedIn" mat-button routerLink="/login">Login</button>
-    <button *ngIf="isLoggedIn" mat-icon-button routerLink="/contacts" matTooltip="Messages">
-      <mat-icon>chat</mat-icon>
-    </button>
-
-    <div *ngIf="isLoggedIn" class="user-menu">
-      <button mat-button [matMenuTriggerFor]="userMenu">
-        <mat-icon>person_outline</mat-icon>
-        <mat-icon>expand_more</mat-icon>
+      <div *ngIf="isLoggedIn" class="user-menu">
+          <button *ngIf="isLoggedIn" mat-icon-button routerLink="/contacts" matTooltip="Messages">
+        <mat-icon>chat</mat-icon>
       </button>
-      <mat-menu #userMenu="matMenu">
-        <button mat-menu-item routerLink="/profile">
-          <mat-icon class="menu-icon">account_circle</mat-icon> Profile
+        <button mat-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>person_outline</mat-icon>
+          <mat-icon>expand_more</mat-icon>
         </button>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon class="menu-icon">power_settings_new</mat-icon> Logout
-        </button>
-      </mat-menu>
+            
+      </div>
     </div>
+
+    <!-- Mobile Menu Button -->
+    <button *ngIf="isMobile" mat-icon-button [matMenuTriggerFor]="mobileMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
   </mat-toolbar>
+
+  <!-- Mobile Menu -->
+  <mat-menu #mobileMenu="matMenu">
+    <button mat-menu-item routerLink="/dashboard" *ngIf="isLoggedIn">
+      <mat-icon>dashboard</mat-icon> Dashboard
+    </button>
+    <button mat-menu-item routerLink="/categories" *ngIf="userRole === 'Admin'">
+      <mat-icon>category</mat-icon> Categories
+    </button>
+    <button mat-menu-item routerLink="/login" *ngIf="!isLoggedIn">
+      <mat-icon>login</mat-icon> Login
+    </button>
+    <button mat-menu-item routerLink="/contacts" *ngIf="isLoggedIn">
+      <mat-icon>chat</mat-icon> Messages
+    </button>
+    <button mat-menu-item routerLink="/profile" *ngIf="isLoggedIn">
+      <mat-icon>account_circle</mat-icon> Profile
+    </button>
+    <button mat-menu-item (click)="logout()" *ngIf="isLoggedIn" style="">
+      <mat-icon>power_settings_new</mat-icon> Logout
+    </button>
+  </mat-menu>
+
+  <!-- Category Menu (same as before) -->
+  <mat-menu #categoryMenu="matMenu">
+    <app-category-menu-item
+      *ngFor="let category of categories"
+      [category]="category"
+      (categorySelected)="onCategorySelect($event)">
+    </app-category-menu-item>
+  </mat-menu>
+
+  <!-- User Menu (same as before) -->
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item routerLink="/profile">
+      <mat-icon class="menu-icon">account_circle</mat-icon> Profile
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon class="menu-icon">power_settings_new</mat-icon> Logout
+    </button>
+  </mat-menu>
 
   <!-- Main Content -->
   <div class="main-container">
     <!-- Homepage Content -->
     <div *ngIf="isHomeRoute()" class="homepage">
-      <!-- Hero Section -->
+      <!-- Hero Section - Responsive -->
       <section class="hero-section">
         <div class="hero-content">
           <div class="hero-text">
             <h1>Expand Your Knowledge</h1>
             <p>Discover the best courses from top instructors worldwide</p>
             <div class="hero-actions">
-              <button mat-raised-button color="accent" routerLink="/courses">
-                Browse All Courses
+              <button mat-raised-button color="accent" routerLink="/courses" class="action-button">
+                Browse Courses
               </button>
               <button *ngIf="userRole === 'Teacher' || userRole === 'Admin'"
                       mat-stroked-button color="accent"
-                      routerLink="/courses/create">
+                      routerLink="/courses/create" class="action-button">
                 Create Course
               </button>
             </div>
           </div>
-          <div class="hero-image">
+          <div class="hero-image" *ngIf="!isMobile">
             <img src="https://static.vecteezy.com/system/resources/previews/051/966/255/non_2x/a-man-in-glasses-holding-a-laptop-free-png.png" alt="Learning illustration">
           </div>
         </div>
       </section>
 
-      <!-- Featured Courses -->
+      <!-- Featured Courses - Responsive Grid -->
       <section *ngIf="featuredCourses.length > 0" class="featured-courses">
-        <h2 class="section-title">Featured Courses</h2>
+        <div class="section-header">
+          <h2 class="section-title">Featured Courses</h2>
+          <a routerLink="/courses" class="see-all">See All</a>
+        </div>
         <div class="course-carousel">
           <div *ngFor="let course of featuredCourses" class="course-card" [routerLink]="['/courses', course.id]">
             <div class="course-badge">Featured</div>
-            <img [src]="course.imgURL || 'assets/images/course-placeholder.jpg'" [alt]="course.title">
+            <div class="course-image-container">
+              <img [src]="course.imgURL || 'assets/images/course-placeholder.jpg'" [alt]="course.title" class="course-image">
+            </div>
             <div class="course-info">
               <h3>{{course.title}}</h3>
               <p class="instructor">By {{course.teacher?.name || 'Unknown Instructor'}}</p>
@@ -109,7 +143,7 @@
         </div>
       </section>
 
-      <!-- Popular Categories -->
+      <!-- Popular Categories - Responsive Grid -->
       <section *ngIf="popularCategories.length > 0" class="popular-categories">
         <h2 class="section-title">Popular Categories</h2>
         <div class="categories-grid">
@@ -124,113 +158,59 @@
         </div>
       </section>
 
-      <!-- New 
-      <section *ngIf="newCourses.length > 0" class="new-arrivals">
+      <!-- Why Learn Section - Responsive -->
+      <section class="why-learn">
         <div class="section-header">
-          <h2 class="section-title">New Arrivals</h2>
-          <a routerLink="/courses" class="see-all">See All</a>
+          <h2>Why <span class="highlight">DoLearn</span> for Arabic?</h2>
+          <p>We get what others miss about learning Arabic</p>
         </div>
-        <div class="new-courses-grid">
-          <div *ngFor="let course of newCourses" class="new-course-card">
-            <div class="new-badge">New</div>
-            <img [src]="course.imgURL || 'assets/images/course-placeholder.jpg'" [alt]="course.title">
-            <div class="course-details">
-              <h3>{{course.title}}</h3>
-              <p class="category">{{course?.category?.name || 'Uncategorized'}}</p>
-              <div class="course-footer">
-                <span class="date">{{course.createdAt | date}}</span>
-                <button mat-icon-button [routerLink]="['/courses', course.id]">
-                  <mat-icon>arrow_forward</mat-icon>
-                </button>
-              </div>
+        
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="icon-circle">
+              <mat-icon>translate</mat-icon>
             </div>
+            <h3>Native Teachers, Clear English</h3>
+            <p>Our instructors are native Arabic speakers who are completely fluent in English</p>
+          </div>
+          
+          <div class="benefit-card">
+            <div class="icon-circle">
+              <mat-icon>record_voice_over</mat-icon>
+            </div>
+            <h3>Perfect Your Pronunciation</h3>
+            <p>Get real-time feedback on your pronunciation from qualified teachers</p>
+          </div>
+          
+          <div class="benefit-card">
+            <div class="icon-circle">
+              <mat-icon>schedule</mat-icon>
+            </div>
+            <h3>Learn When You Want</h3>
+            <p>24/7 access to lessons with live sessions at multiple time zones</p>
+          </div>
+          
+          <div class="benefit-card">
+            <div class="icon-circle">
+              <mat-icon>auto_awesome</mat-icon>
+            </div>
+            <h3>Modern Learning Tools</h3>
+            <p>Interactive exercises, speech recognition, and progress tracking</p>
           </div>
         </div>
       </section>
-Arrivals -->
-      <!-- Statistics Section
-      <section class="stats-section">
-        <div class="stats-container">
-          <div class="stat-item">
-            <div class="stat-number">10,000+</div>
-            <div class="stat-label">Active Learners</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">500+</div>
-            <div class="stat-label">Courses Available</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">200+</div>
-            <div class="stat-label">Expert Instructors</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">98%</div>
-            <div class="stat-label">Satisfaction Rate</div>
-          </div>
-        </div>
-      </section>
- -->
-      <!-- Testimonials -->
-     <!-- Arabic Learning Hero Section -->
 
-<!-- Why Learn Arabic Section -->
-<section class="why-learn">
-  <div class="section-header">
-    <h2>Why <span class="highlight">DoLearn</span> for Arabic?</h2>
-    <p>We get what others miss about learning Arabic</p>
-  </div>
-  
-  <div class="benefits-grid">
-    <div class="benefit-card">
-      <div class="icon-circle">
-        <mat-icon>translate</mat-icon>
-      </div>
-      <h3>Native Teachers, Clear English</h3>
-      <p>Our instructors are native Arabic speakers who are completely fluent in English - no confusing explanations</p>
-    </div>
-    
-    <div class="benefit-card">
-      <div class="icon-circle">
-        <mat-icon>record_voice_over</mat-icon>
-      </div>
-      <h3>Perfect Your Tajweed</h3>
-      <p>Get real-time feedback on your pronunciation from qualified teachers</p>
-    </div>
-    
-    <div class="benefit-card">
-      <div class="icon-circle">
-        <mat-icon>schedule</mat-icon>
-      </div>
-      <h3>Learn When You Want</h3>
-      <p>24/7 access to lessons with live sessions at multiple time zones</p>
-    </div>
-    
-    <div class="benefit-card">
-      <div class="icon-circle">
-        <mat-icon>auto_awesome</mat-icon>
-      </div>
-      <h3>Modern Learning Tools</h3>
-      <p>Interactive exercises, speech recognition, and progress tracking</p>
-    </div>
-  </div>
-</section>
-
-<!-- Student Results Section -->
-
-<!-- Testimonials - Cool Modern Style -->
-    <section class="cool-testimonials">
-      <div class="section-header">
-        <h2>Students <span class="highlight">Love Us</span></h2>
-        <p>Don't take our word for it</p>
-      </div>
-      
-      <div class="testimonial-cards">
-        <div class="testimonial-card">
-          <div class="card-content">
+      <!-- Testimonials - Responsive -->
+      <section class="testimonials">
+        <h2 class="section-title">Students <span class="highlight">Love Us</span></h2>
+        <p class="section-subtitle">Don't take our word for it</p>
+        
+        <div class="testimonial-cards">
+          <div class="testimonial-card">
             <div class="quote-mark">"</div>
-            <p class="testimonial-text">DoLearn's Arabic program helped me finally understand Quranic verses directly without translation. Their teaching method just clicks!</p>
+            <p class="testimonial-text">DoLearn's Arabic program helped me finally understand Arabic directly without translation. Their teaching method just clicks!</p>
             <div class="student-info">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUND_azG5vWChxpHn9GWjZKHKNPsYj9Dz-wyBj8CWYt04gB5FcT4vb2SrCoPiuHZSgHpY&usqp=CAU" alt="Sarah K." class="student-avatar">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah K." class="student-avatar">
               <div class="student-details">
                 <h4>Sarah K.</h4>
                 <p>Medical Student</p>
@@ -244,17 +224,15 @@ Arrivals -->
               </div>
             </div>
           </div>
-        </div>
-        
-        <div class="testimonial-card">
-          <div class="card-content">
+          
+          <div class="testimonial-card">
             <div class="quote-mark">"</div>
             <p class="testimonial-text">I went from zero to understanding Arabic news channels in 6 months. The native teachers make all the difference!</p>
             <div class="student-info">
-              <img src="https://pbs.twimg.com/profile_images/1912168162054782977/mUvcejZt_400x400.jpg" alt="Jamal R." class="student-avatar">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Jamal R." class="student-avatar">
               <div class="student-details">
                 <h4>Jamal R.</h4>
-                <p>Freelancer</p>
+                <p>Business Owner</p>
                 <div class="rating">
                   <mat-icon>star</mat-icon>
                   <mat-icon>star</mat-icon>
@@ -266,39 +244,17 @@ Arrivals -->
             </div>
           </div>
         </div>
-        
-        <div class="testimonial-card">
-          <div class="card-content">
-            <div class="quote-mark">"</div>
-            <p class="testimonial-text">My tajweed improved dramatically with their speech analysis tools. Now I can recite properly for the first time!</p>
-            <div class="student-info">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5YZZ8KP9YdhnqF-uUpRilelEjm1dYsYxVSNM16MzX14un5gYInDD1jrzrccFdZJZsWQ8&usqp=CAU" alt="Amina T." class="student-avatar">
-              <div class="student-details">
-                <h4>Amina T.</h4>
-                <p>Accountant</p>
-                <div class="rating">
-                  <mat-icon>star</mat-icon>
-                  <mat-icon>star</mat-icon>
-                  <mat-icon>star</mat-icon>
-                  <mat-icon>star</mat-icon>
-                  <mat-icon>star</mat-icon>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
 
       <!-- Call to Action -->
       <section class="cta-section">
         <div class="cta-content">
           <h2>Ready to start learning?</h2>
-          <p>Join thousands of students advancing their careers with our courses</p>
-          <button *ngIf="!isLoggedIn" mat-raised-button color="primary" routerLink="/register">
+          <p>Join thousands of students advancing their skills with our courses</p>
+          <button *ngIf="!isLoggedIn" mat-raised-button color="primary" routerLink="/register" class="cta-button">
             Get Started Now
           </button>
-          <button *ngIf="isLoggedIn" mat-raised-button color="primary" routerLink="/courses">
+          <button *ngIf="isLoggedIn" mat-raised-button color="primary" routerLink="/courses" class="cta-button">
             Browse Courses
           </button>
         </div>
@@ -311,20 +267,25 @@ Arrivals -->
     </div>
   </div>
 
-  <!-- Footer Section -->
+  <!-- Footer - Responsive -->
   <footer class="main-footer">
     <div class="footer-content">
       <div class="footer-left">
         <p>&copy; {{ currentYear }} DoLearn. All rights reserved.</p>
       </div>
       <div class="footer-right">
-        <a href="mailto:odizgb@gmail.com" aria-label="Email"><mat-icon>mail</mat-icon></a>
-        <a href="https://x.com/odyzgb" target="_blank" rel="noopener" aria-label="Twitter"><mat-icon>public</mat-icon></a>
-        <a href="https://instagram.com/odizgb" target="_blank" rel="noopener" aria-label="Instagram"><mat-icon>photo_camera</mat-icon></a>
-        <a href="https://facebook.com/odizgb" target="_blank" rel="noopener" aria-label="Facebook"><mat-icon>facebook</mat-icon></a>
+        <div class="footer-links">
+          <a routerLink="/about">About</a>
+          <a routerLink="/contact">Contact</a>
+          <a routerLink="/privacy">Privacy</a>
+        </div>
+        <div class="social-links">
+          <a href="mailto:contact@dolearn.com" aria-label="Email"><mat-icon>mail</mat-icon></a>
+          <a href="#" target="_blank" rel="noopener" aria-label="Twitter"><mat-icon>public</mat-icon></a>
+          <a href="#" target="_blank" rel="noopener" aria-label="Instagram"><mat-icon>photo_camera</mat-icon></a>
+        </div>
       </div>
     </div>
-
   </footer>
 </ng-container>
 
