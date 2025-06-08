@@ -226,31 +226,33 @@
         </mat-card-content>
 
         <!-- Enrollment Button -->
-        <mat-card-actions class="enrollment-actions">
-          <div class="selection-counter" *ngIf="selectedSessions.size > 0">
-            {{ selectedSessions.size }}/{{ REQUIRED_SESSIONS }} sessions selected
-          </div>
-          
-          <button *ngIf="isLoggedIn" 
-                  mat-raised-button 
-                  color="primary" 
-                  class="enroll-btn"
-                  [disabled]="!canEnroll()"
-                  (click)="enroll()">
-            <mat-icon>rocket_launch</mat-icon>
-            <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
-            <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
-          </button>
+<mat-card-actions class="enrollment-actions">
+  <div class="selection-counter" *ngIf="selectedSessions.size > 0">
+    {{ selectedSessions.size }}/{{ REQUIRED_SESSIONS }} sessions selected
+  </div>
 
-          <button *ngIf="!isLoggedIn" 
-                  mat-raised-button 
-                  color="primary" 
-                  class="enroll-btn"
-                  (click)="redirectToRegisterPage()">
-            <mat-icon>login</mat-icon>
-            <span>Sign Up to Enroll</span>
-          </button>
-        </mat-card-actions>
+  <!-- Show "Enroll Now" button -->
+<button *ngIf="isLoggedIn && canEnroll()"
+        mat-raised-button 
+        color="primary" 
+        class="enroll-btn"
+        (click)="displayPayPalButton()">
+  <mat-icon>rocket_launch</mat-icon>
+  <span>Enroll Now</span>
+</button>
+
+<div *ngIf="showPayPal" id="paypal-button-container" style="margin-top: 1rem;"></div>
+
+  <!-- If user not logged in -->
+  <button *ngIf="!isLoggedIn" 
+          mat-raised-button 
+          color="primary" 
+          class="enroll-btn"
+          (click)="redirectToRegisterPage()">
+    <mat-icon>login</mat-icon>
+    <span>Sign Up to Enroll</span>
+  </button>
+</mat-card-actions>
       </mat-card>
     </div>
   </div>

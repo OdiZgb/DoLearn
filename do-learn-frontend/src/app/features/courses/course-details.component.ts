@@ -55,7 +55,10 @@ export class CourseDetailsComponent implements OnInit {
   allSessions:any = [];
   selectedDay?: CalendarDay;
   isLoggedIn = false;
+   paypal: any;
+paypalRendered = false;
   private authSubscription: Subscription;
+  showPayPal = false;
 userReservedSessions: any[] = [];
   constructor(
     private route: ActivatedRoute,
@@ -73,6 +76,60 @@ userReservedSessions: any[] = [];
     redirectToRegisterPage(): void {
       this.router.navigate(['/register']);
    }
+ngAfterViewInit() {
+  // Only render PayPal if showPayPal is true
+  if (this.showPayPal && this.isLoggedIn && this.canEnroll()) {
+    this.renderPayPalButton();
+  }
+}
+ngOnChanges() {
+  if (this.showPayPal && this.isLoggedIn && this.canEnroll()) {
+    this.renderPayPalButton();
+  }}
+displayPayPalButton(): void {
+  this.showPayPal = true;
+  setTimeout(() => {
+    this.renderPayPalButton();
+  }, 0); // Let Angular update DOM first
+}
+
+renderPayPalButton(): void {
+    console.log('Trying to render PayPal button...1');
+  const checkInterval = setInterval(() => {
+    if ((<any>window).paypal) {
+      clearInterval(checkInterval);
+    console.log('Trying to render PayPal button...2');
+
+      (<any>window).paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal',
+        },
+        createOrder: (data: any, actions: any) => {
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: '20.00' // Replace with actual course price
+              }
+            }]
+          });
+        },
+        onApprove: (data: any, actions: any) => {
+          return actions.order.capture().then((details: any) => {
+            console.log('Transaction completed:', details);
+            alert('Transaction completed by ' + details.payer.name.given_name);
+          });
+        },
+        onError: (err: any) => {
+          console.error('PayPal error:', err);
+        }
+      }).render('#paypal-button-container');
+    }
+  }, 100);
+}
+
 getTeacherGradient(id: number): string {
   const hue = id % 360;
   return `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${(hue + 30) % 360}, 70%, 50%))`;
