@@ -97,25 +97,47 @@ export class CoursesListComponent implements OnInit {
     });
   }
 
-  private applyFilters(): void {
-    // Filter courses by category
-    if (this.selectedCategoryId) {
-      this.filteredCourses = this.allCourses.filter(course => course.category?.id === this.selectedCategoryId);
-    } else if (this.selectedParentCategoryId) {
-      // Get all child category IDs
-      const childCategoryIds = this.getChildCategoryIds(this.selectedParentCategoryId);
-      this.filteredCourses = this.allCourses.filter(course => 
-        course.category && childCategoryIds.includes(course.category.id)
-      );
-    } else {
-      this.filteredCourses = this.allCourses;
-    }
-
-    // Apply pagination
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedCourses = this.filteredCourses.slice(startIndex, endIndex);
+private applyFilters(): void {
+  // Filter courses by category
+  if (this.selectedCategoryId) {
+    // Single category selected
+    this.filteredCourses = this.allCourses.filter(course => course.category?.id === this.selectedCategoryId);
+  } else if (this.selectedParentCategoryId) {
+    // Parent category selected - get all courses from this category and its children
+    const categoryIds = this.getAllCategoryIds(this.selectedParentCategoryId);
+    this.filteredCourses = this.allCourses.filter(course => 
+      course.category && categoryIds.includes(course.category.id)
+    );
+  } else {
+    // No category selected - show all courses
+    this.filteredCourses = this.allCourses;
   }
+
+  // Apply pagination
+  const startIndex = (this.currentPage - 1) * this.pageSize;
+  const endIndex = startIndex + this.pageSize;
+  this.paginatedCourses = this.filteredCourses.slice(startIndex, endIndex);
+}
+
+private getAllCategoryIds(parentId: number): number[] {
+  const categoryIds: number[] = [parentId]; // Include the parent category itself
+  
+  const parentCategory = this.categories.find(cat => cat.id === parentId);
+  if (!parentCategory) return categoryIds;
+
+  // Recursively add all child category IDs
+  const addChildIds = (category: Category) => {
+    if (category.children && category.children.length > 0) {
+      category.children.forEach(child => {
+        categoryIds.push(child.id);
+        addChildIds(child);
+      });
+    }
+  };
+
+  addChildIds(parentCategory);
+  return categoryIds;
+}
 
   private getChildCategoryIds(parentId: number): number[] {
     const parentCategory = this.categories.find(cat => cat.id === parentId);
