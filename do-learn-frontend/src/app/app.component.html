@@ -8,12 +8,14 @@
 
       <!-- Desktop Navigation -->
       <div class="top-bar-right">
+        
         <div class="category-filter">
           <button mat-button routerLink="/courses" routerLinkActive="active">
             <mat-icon>list_alt</mat-icon>
             {{ 'Explore' }}
           </button>
         </div>
+        
       </div>
 
      <div *ngIf="isLoggedIn" class="user-menu">
