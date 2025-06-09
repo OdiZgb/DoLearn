@@ -20,6 +20,7 @@
           <button *ngIf="isLoggedIn" mat-icon-button routerLink="/contacts" matTooltip="Messages">
         <mat-icon>chat</mat-icon>
       </button>
+      
         <button mat-button [matMenuTriggerFor]="userMenu">
           <mat-icon>person_outline</mat-icon>
           <mat-icon>expand_more</mat-icon>
@@ -68,6 +69,9 @@
   <mat-menu #userMenu="matMenu">
     <button mat-menu-item routerLink="/profile">
       <mat-icon class="menu-icon">account_circle</mat-icon> Profile
+    </button>
+        <button mat-menu-item routerLink="/dashboard" *ngIf="isLoggedIn">
+      <mat-icon>dashboard</mat-icon> My Courses
     </button>
     <button mat-menu-item (click)="logout()">
       <mat-icon class="menu-icon">power_settings_new</mat-icon> Logout
