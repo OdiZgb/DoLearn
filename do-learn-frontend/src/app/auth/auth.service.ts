@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:5055/api/Auth'; // Update if needed
+  private apiUrl = `${environment.apiUrl}/api/Auth`;
   private currentUser = new BehaviorSubject<any>(null);
   currentUser$ = this.currentUser.asObservable();
   constructor(private http: HttpClient) {
@@ -28,7 +29,7 @@ export class AuthService {
  
  
   register(data: { email: string; password: string; fullName: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, data);
+    return this.http.post(`${this.apiUrl}/register`, data);
   }
 
   
@@ -48,15 +49,15 @@ export class AuthService {
   }
 
   login(data: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, data);
+    return this.http.post(`${this.apiUrl}/login`, data);
   }
   fetchUserProfile(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/me`).pipe(
+    return this.http.get(`${this.apiUrl}/me`).pipe(
       tap(user => this.currentUser.next(user))
     );
   }
     getUser(id:number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/users/`+id);
+    return this.http.get(`${this.apiUrl}/users/`+id);
   }
     
   saveToken(token: string) {

@@ -4,6 +4,7 @@ import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Message } from '../models/message';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class SignalRService {
   public messageRead$ = new Subject<number>();
   public connectionState$ = new BehaviorSubject<signalR.HubConnectionState>(signalR.HubConnectionState.Disconnected);
   // Directly use your API URL
-  private apiUrl = 'http://localhost:5055'; // Your API base URL
+  private apiUrl = `${environment.apiUrl}`;
 
   constructor(private authService: AuthService) {}
 

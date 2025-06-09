@@ -4,12 +4,13 @@ import { map, Observable } from 'rxjs';
 import { Course } from '../models/Course';
 import { CourseResponse } from '../models/CourseResponse';
 import { SessionDto } from '../features/courses/session.dto';
+import { environment } from '../../environments/environment'; // Add this import
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoursesService {
-  private apiUrl = 'http://localhost:5055/api/Courses'; // Hell yeah we remember
+    private apiUrl = `${environment.apiUrl}/api/Courses`;
 
   constructor(private http: HttpClient) {}
 
