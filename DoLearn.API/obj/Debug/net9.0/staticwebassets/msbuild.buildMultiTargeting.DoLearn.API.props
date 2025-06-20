@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\DoLearn.API.props" />
-</Project>

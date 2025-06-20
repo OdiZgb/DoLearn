@@ -46,13 +46,20 @@ namespace DoLearn.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-        [HttpGet("me")]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var query = new GetUser.Query(userId);
-            var result = await _mediator.Send(query);
-            return Ok(result);
-        }
+[HttpGet("me")]
+public async Task<IActionResult> GetCurrentUser()
+{
+    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    Console.WriteLine($"userIdString from claims: '{userIdString}'"); // or use your logging framework
+
+    if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
+    {
+        return Unauthorized(new { message = "User is not authenticated." });
+    }
+
+    var query = new GetUser.Query(userId);
+    var result = await _mediator.Send(query);
+    return Ok(result);
+}
     }
 }

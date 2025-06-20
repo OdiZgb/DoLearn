@@ -2,7 +2,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.RateLimiting;
 using ChatApp.Hubs;
 using DoLearn.API.Data;
 using DoLearn.API.Models;
@@ -13,126 +12,142 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     Args = args,
-    ContentRootPath = Directory.GetCurrentDirectory(), // Sets the content root to the current directory
-    WebRootPath = "wwwroot" // Sets the web root to the "wwwroot" folder
+    ContentRootPath = Directory.GetCurrentDirectory(),
+    WebRootPath = "wwwroot"
 });
+
+// --- SERVICES ---
+
 // 1. DbContext
-builder.Services.AddDbContext<AppDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// 2. MediatR
-builder.Services.AddMediatR(cfg => 
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-
-// 3. Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options => 
-{
-options.TokenValidationParameters = new TokenValidationParameters
-{
-    ValidateIssuer = true,
-    ValidateAudience = true,
-    ValidateLifetime = true,
-    ValidateIssuerSigningKey = true,
-    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-    ValidAudience = builder.Configuration["Jwt:Audience"],
-    IssuerSigningKey = new SymmetricSecurityKey(
-        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-    
-    // 👇 This ensures `User.FindFirst(ClaimTypes.NameIdentifier)` works
-    NameClaimType = ClaimTypes.NameIdentifier
-};
-});
-// 4. Controllers
-builder.Services.AddControllers();
-builder.Services.AddScoped<TokenService>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// 2. MediatR + Validation
+builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-// 4. CORS (Allow requests from Angular frontend)
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", builder =>
-    {
-        builder.WithOrigins("http://localhost:4200") // your frontend URL
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials();
-});
-});
 
-// 5. Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSignalR();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "DoLearn API", Version = "v1" });
-});
-builder.Services.AddTransient(
-    typeof(IPipelineBehavior<,>), 
-    typeof(ValidationBehavior<,>)
-);
-// Add after AddAuthentication()
+// 3. JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            NameClaimType = ClaimTypes.NameIdentifier
+        };
+    });
+
+// 4. Authorization
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => 
+    options.AddPolicy("AdminOnly", policy =>
         policy.RequireRole(UserRole.Admin.ToString()));
 });
+
+// 5. Controllers + JSON
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
+
+// 6. CORS - single policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+// Then in middleware:
+// 7. Swagger + SignalR + TokenService
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "DoLearn API", Version = "v1" });
+});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSignalR();
+builder.Services.AddScoped<TokenService>();
+
+// 8. Kestrel Port
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5000);
+});
+
 var app = builder.Build();
 
-// Development Middleware
+// --- MIDDLEWARE ---
+
 if (app.Environment.IsDevelopment())
 {
+    app.UseHsts();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "DoLearn API v1");
     });
-
 }
 
-app.UseExceptionHandler(exceptionHandlerApp =>
+// Global exception handler
+app.UseExceptionHandler(errorApp =>
 {
-    exceptionHandlerApp.Run(async context =>
+    errorApp.Run(async context =>
     {
         context.Response.ContentType = "application/json";
         var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
-        if (exception is DuplicateEmailException)
+        context.Response.StatusCode = exception switch
         {
-            context.Response.StatusCode = StatusCodes.Status409Conflict;
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new
-            {
-                error = exception.Message
-            }));
-        }
+            DuplicateEmailException => StatusCodes.Status409Conflict,
+            _ => StatusCodes.Status500InternalServerError
+        };
+
+        var response = new
+        {
+            error = exception?.Message
+        };
+
+        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     });
 });
 
-
+// Order matters
 app.UseMiddleware<ExceptionHandlingMiddleware>();
- app.MapHub<MessageHub>("/messageHub", options =>
+app.UseStaticFiles();
+app.UseCors("AllowAll");
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapHub<MessageHub>("/messageHub", options =>
 {
     options.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
 });
-app.UseHttpsRedirection();
-app.UseCors("AllowFrontend"); // Enable CORS policy
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseStaticFiles();
 app.MapControllers();
 
+// Listen on public interface
+app.Urls.Add("http://0.0.0.0:5000");
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 app.Run();

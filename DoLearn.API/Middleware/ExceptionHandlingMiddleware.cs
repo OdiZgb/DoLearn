@@ -1,6 +1,7 @@
 using System.Net;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 using System.Threading.Tasks;
 
 public class ExceptionHandlingMiddleware
@@ -21,7 +22,16 @@ public class ExceptionHandlingMiddleware
         catch (DuplicateEmailException ex)
         {
             context.Response.StatusCode = (int)HttpStatusCode.Conflict;
-            await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = "A conflict occurred",
+                details = new
+                {
+                    message = ex.Message,
+                    type = ex.GetType().Name,
+                    stackTrace = ex.StackTrace
+                }
+            });
         }
         catch (ValidationException ex)
         {
@@ -41,7 +51,12 @@ public class ExceptionHandlingMiddleware
             await context.Response.WriteAsJsonAsync(new 
             { 
                 error = "An unexpected error occurred",
-                details = ex
+                details = new 
+                {
+                    message = ex.Message,
+                    type = ex.GetType().Name,
+                    stackTrace = ex.StackTrace
+                }
             });
         }
     }

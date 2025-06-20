@@ -1,4 +1,3 @@
-// Data/AppDbContextFactory.cs
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -9,7 +8,7 @@ namespace DoLearn.API.Data
         public AppDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=DoLearnDB;Trusted_Connection=True;");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=dolearndb;Username=admin;Password=root;");
             return new AppDbContext(optionsBuilder.Options);
         }
     }
