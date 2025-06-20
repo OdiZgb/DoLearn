@@ -38,10 +38,10 @@ namespace DoLearn.API.Features.Courses.GetCourse
                 course.Title,
                 course.CourseCode,
                 course.CreatedAt,
-                schedule?.StartDate ?? DateTime.MinValue,
-                schedule?.EndDate ?? DateTime.MinValue,
+                schedule?.StartDate ?? DateTimeOffset.MinValue,
+                schedule?.EndDate ?? DateTimeOffset.MinValue,
                 schedule.Sessions,
-                ImgURL: "http://localhost:5055/" + course.ImgURL,
+                ImgURL: "https://www.dolearn.net:5000/" + course.ImgURL,
                 course.Description,
                 course.CreatedBy
 

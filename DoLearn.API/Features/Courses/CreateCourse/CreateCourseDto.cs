@@ -7,14 +7,14 @@ public class CreateCourseDto
     public string Title { get; set; } = null!;
     public string? Description { get; set; }
     public string CourseCode { get; set; } = null!;
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate   { get; set; }
+    public DateTimeOffset StartDate { get; set; }
+    public DateTimeOffset EndDate   { get; set; }
 
     public decimal Price { get; set; }
 
     // Binder will pick up repeated entries of these keys
-    public List<DateTime> SessionStartTimes { get; set; } = new();
-    public List<DateTime> SessionEndTimes   { get; set; } = new();
+    public List<DateTimeOffset> SessionStartTimes { get; set; } = new();
+    public List<DateTimeOffset> SessionEndTimes   { get; set; } = new();
 
     public IFormFile? Image { get; set; }
     public int Capacity{set;get;} = 1;

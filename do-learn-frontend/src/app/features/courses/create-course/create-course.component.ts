@@ -191,14 +191,14 @@ export class CreateCourseComponent implements OnInit {
     fd.append('description', raw.description);
     fd.append('CategoryId', raw.categoryId.toString());
     fd.append('courseCode',  raw.courseCode);
-    fd.append('startDate',   raw.startDate);
-    fd.append('endDate',     raw.endDate);
+    fd.append('startDate',   new Date(raw.startDate).toISOString());
+    fd.append('endDate',     new Date(raw.endDate).toISOString());
     fd.append('price',       raw.price.toString());
 
     // Sessions: repeated entries so ASP.NET Core can bind List<DateTime>
     raw.sessions.forEach((s: any) => {
-      fd.append('SessionStartTimes', s.startTime);
-      fd.append('SessionEndTimes',   s.endTime);
+      fd.append('SessionStartTimes', new Date(s.startTime).toISOString());
+      fd.append('SessionEndTimes',   new Date(s.endTime).toISOString());
     });
 
     // File (must match DTO property name "Image")

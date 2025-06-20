@@ -2,10 +2,10 @@ public record CourseCreateResponse(
     int    Id,
     string Title,
     string CourseCode,
-    DateTime CreatedAt,
-    DateTime StartDate,
-    DateTime EndDate,
-    List<DateTime> SessionStartTimes,
-    List<DateTime> SessionEndTimes,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset StartDate,
+    DateTimeOffset EndDate,
+    List<DateTimeOffset> SessionStartTimes,
+    List<DateTimeOffset> SessionEndTimes,
     string? ImgURL                   // ← include here too
 );

@@ -5,8 +5,8 @@ public class Enrollment
     public int Id { get; set; }
     public List<CourseSession> ReservedSessions { get; set; } = new();
 
-    public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
-    public DateTime? EndedAt { get; set; }
+    public DateTimeOffset  EnrolledAt { get; set; } = DateTime.UtcNow;
+    public DateTimeOffset ? EndedAt { get; set; }
     public string? Notes { get; set; }
 
     // Add session reservations
