@@ -240,10 +240,10 @@
   <mat-icon>rocket_launch</mat-icon>
   <span>Enroll Now</span>
 </button>
-
-<div *ngIf="showPayPal" id="paypal-button-container" style="margin-top: 1rem;"></div>
-
-  <!-- If user not logged in -->
+ 
+  <!-- Only show PayPal button when config is ready -->
+  
+ 
   <button *ngIf="!isLoggedIn" 
           mat-raised-button 
           color="primary" 

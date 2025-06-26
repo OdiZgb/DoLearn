@@ -41,7 +41,7 @@ namespace DoLearn.API.Features.Courses.GetCourse
                 schedule?.StartDate ?? DateTimeOffset.MinValue,
                 schedule?.EndDate ?? DateTimeOffset.MinValue,
                 schedule.Sessions,
-                ImgURL: "https://www.dolearn.net:5000/" + course.ImgURL,
+                ImgURL: "https://www.dolearn.net:5000" + course.ImgURL,
                 course.Description,
                 course.CreatedBy
 

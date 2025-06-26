@@ -11,6 +11,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
@@ -69,14 +70,16 @@ builder.Services.AddControllers()
 // 6. CORS - single policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowAbsolutelyEverything", policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .SetIsOriginAllowed(_ => true) // Allow any origin
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials(); // If you need credentials/cookies
     });
 });
+
 // Then in middleware:
 // 7. Swagger + SignalR + TokenService
 builder.Services.AddSwaggerGen(c =>
@@ -94,12 +97,25 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    try 
+    {
+        Console.WriteLine("Applying migrations...");
+        db.Database.Migrate();
+        Console.WriteLine("Migrations applied successfully");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Migration failed: {ex}");
+        throw;
+    }
+}
 // --- MIDDLEWARE ---
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseHsts();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -132,9 +148,13 @@ app.UseExceptionHandler(errorApp =>
 
 // Order matters
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseCors("AllowAbsolutelyEverything");
 app.UseStaticFiles();
-app.UseCors("AllowAll");
 app.UseRouting();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapHub<MessageHub>("/messageHub", options =>
@@ -142,12 +162,6 @@ app.MapHub<MessageHub>("/messageHub", options =>
     options.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
 });
 app.MapControllers();
-
+ 
 // Listen on public interface
-app.Urls.Add("http://0.0.0.0:5000");
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
 app.Run();

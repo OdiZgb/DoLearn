@@ -806,4 +806,13 @@
   .categories-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
+}.paypal-container {
+  margin-top: 20px;
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 4px;
+  
+  .cancel-payment-btn {
+    margin-top: 15px;
+  }
 }

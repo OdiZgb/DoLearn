@@ -35,13 +35,12 @@ interface CalendarDay {
     MatButtonToggleModule,
     DatePipe,
     RouterModule,
-    FormsModule 
-  ]
+    FormsModule,
+   ]
 })
 export class CourseDetailsComponent implements OnInit {
   readonly REQUIRED_SESSIONS = 1;
-
-  course!: Course;
+   course!: Course;
   enrollmentStatus: 'enrolled' | 'pending' | 'not-enrolled' = 'not-enrolled';
   isEnrollmentLoading = false;
   userRole?: string;
@@ -88,11 +87,14 @@ ngOnChanges() {
   }}
 displayPayPalButton(): void {
   this.showPayPal = true;
-  setTimeout(() => {
-    this.renderPayPalButton();
-  }, 0); // Let Angular update DOM first
+  this.paypalRendered = false; // Allow re-rendering
 }
-
+ngAfterViewChecked(): void {
+  if (this.showPayPal && !this.paypalRendered && this.isLoggedIn && this.canEnroll()) {
+    this.renderPayPalButton();
+    this.paypalRendered = true;
+  }
+}
 renderPayPalButton(): void {
     console.log('Trying to render PayPal button...1');
   const checkInterval = setInterval(() => {
@@ -111,7 +113,7 @@ renderPayPalButton(): void {
           return actions.order.create({
             purchase_units: [{
               amount: {
-                value: '20.00' // Replace with actual course price
+                value: '1' // Replace with actual course price
               }
             }]
           });
@@ -143,8 +145,7 @@ getInitials(username: string): string {
     .substring(0, 2);
 }
   ngOnInit(): void {
-
- this.authService.fetchUserProfile().subscribe({
+  this.authService.fetchUserProfile().subscribe({
     next: (user) => {
       this.userId = user.id;
       this.userRole = user?.role;
@@ -192,7 +193,7 @@ getInitials(username: string): string {
       error: (err) => console.error('Failed to load course', err)
     });
   }
-
+   
   private checkEnrollmentStatus(courseId: number): void {
     this.coursesService.getEnrollmentStatus(courseId).subscribe({
       next: (status) => this.enrollmentStatus = status
@@ -252,7 +253,28 @@ getInitials(username: string): string {
            date1.getMonth() === date2.getMonth() &&
            date1.getDate() === date2.getDate();
   }
-
+// In your component class, add this initialization method:
+ 
+private completeEnrollmentAfterPayment(): void {
+  if (this.selectedSessions.size == 0) return;
+  
+  this.isEnrollmentLoading = true;
+  this.coursesService.enrollInCourse(
+    this.course.id,
+    Array.from(this.selectedSessions)
+  ).pipe(
+    finalize(() => this.isEnrollmentLoading = false)
+  ).subscribe({
+    next: () => {
+      this.enrollmentStatus = 'pending';
+      this.selectedSessions.clear();
+      this.showPayPal = false;
+      this.snackBar.open(`Successfully enrolled in ${this.REQUIRED_SESSIONS} sessions!`, 'Dismiss', { duration: 3000 });
+      this.generateCalendar();
+    },
+    error: (err) => this.snackBar.open(err.error || 'Enrollment failed', 'Dismiss')
+  });
+}
   toggleSession(session: SessionDto): void {
     if (!this.isSessionAvailable(session)) return;
     
