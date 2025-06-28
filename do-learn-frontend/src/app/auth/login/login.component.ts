@@ -12,7 +12,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
-
+declare const google: any; // add at the top
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -50,6 +50,12 @@ export class LoginComponent {
       rememberMe: [false]
     });
   }
+  ngOnInit() {
+    google.accounts.id.initialize({
+      client_id: '1027061470306-0qttu3c6aeglcc0pkmpt3d5b466aqof3.apps.googleusercontent.com',
+      callback: (response: any) => this.handleGoogleCredential(response.credential)
+    });
+  }
 
   onSubmit() {
     if (this.loginForm.invalid) return;
@@ -79,6 +85,23 @@ export class LoginComponent {
       panelClass: ['error-snackbar'],
       verticalPosition: 'bottom',
       horizontalPosition: 'end'
+    });
+  }
+    startGoogleSignIn() {
+    google.accounts.id.prompt(); // shows the popup
+  }
+ handleGoogleCredential(idToken: string) {
+    this.isLoading = true;
+    this.authService.googleLogin(idToken).subscribe({
+      next: (res) => {
+        this.authService.saveToken(res.token);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = 'Google login failed';
+        this.showErrorToast();
+      }
     });
   }
 }

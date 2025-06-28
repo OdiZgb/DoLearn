@@ -15,7 +15,11 @@ export class AuthService {
     
   }
   
-
+  googleLogin(idToken: string) {
+    return this.http.post<{ token: string; expiration: string }>('/api/auth/google-login', {
+      idToken
+    });
+  }
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isLoggedIn$ = this.isAuthenticatedSubject.asObservable();
 

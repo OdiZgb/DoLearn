@@ -4,6 +4,7 @@ using DoLearn.API.Features.Auth.Register;
 using DoLearn.API.Features.Auth.Login;
 using System.Security.Claims;
 using DoLearn.API.Features.Auth;
+using DoLearn.API.Features.Auth.GoogleLogin;
 
 namespace DoLearn.API.Controllers
 {
@@ -46,20 +47,26 @@ namespace DoLearn.API.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-[HttpGet("me")]
-public async Task<IActionResult> GetCurrentUser()
-{
-    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    Console.WriteLine($"userIdString from claims: '{userIdString}'"); // or use your logging framework
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Console.WriteLine($"userIdString from claims: '{userIdString}'"); // or use your logging framework
 
-    if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
-    {
-        return Unauthorized(new { message = "User is not authenticated." });
-    }
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out var userId))
+            {
+                return Unauthorized(new { message = "User is not authenticated." });
+            }
 
-    var query = new GetUser.Query(userId);
-    var result = await _mediator.Send(query);
-    return Ok(result);
-}
+            var query = new GetUser.Query(userId);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
     }
 }
