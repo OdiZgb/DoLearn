@@ -26,7 +26,7 @@ public class GetEnrolledCoursesHandler : IRequestHandler<GetEnrolledCoursesQuery
         // Update image URLs (consider moving this to a DTO or service)
         foreach (var course in courses)
         {
-            course.ImgURL = "https://dolearn.net:5000" + course.ImgURL;
+            course.ImgURL = "https://dolearn.net" + course.ImgURL;
             
         }
          courses = courses.Distinct().ToList();

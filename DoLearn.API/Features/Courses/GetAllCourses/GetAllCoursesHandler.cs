@@ -19,7 +19,7 @@ namespace DoLearn.API.Features.Courses.EnrollInCourse
         var courses =  await _context.Courses.Include(x=>x.Category).ToListAsync(cancellationToken);
         foreach (var course in courses)
         {
-            course.ImgURL = "http://dolearn.net:5000"+ course.ImgURL;
+            course.ImgURL = "https://dolearn.net"+ course.ImgURL;
         }
         return await _context.Courses.ToListAsync(cancellationToken);
     }

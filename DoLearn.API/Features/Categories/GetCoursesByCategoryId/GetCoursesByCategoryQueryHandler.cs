@@ -34,7 +34,7 @@ public class GetCoursesByCategoryQueryHandler
         
         foreach (var course in courses)
         {
-            course.ImgURL = "http://dolearn.net:5000"+ course.ImgURL;
+            course.ImgURL = "https://dolearn.net"+ course.ImgURL;
         }
      return courses;
     }

@@ -18,7 +18,7 @@ public class GetCreatedCoursesHandler : IRequestHandler<GetCreatedCoursesQuery, 
             .Where(uc => uc.CreatedBy.Id == request.UserId).ToListAsync(cancellationToken);;
             foreach (var course in courses)
             {
-            course.ImgURL = "http://dolearn.net:5000"+ course.ImgURL;
+            course.ImgURL = "https://dolearn.net"+ course.ImgURL;
             }
 
         return courses;
