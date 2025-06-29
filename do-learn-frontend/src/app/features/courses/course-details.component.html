@@ -234,8 +234,6 @@ More actions
 
           <mat-card-title>Course Schedule</mat-card-title>
 
-          <mat-card-subtitle>Select {{ REQUIRED_SESSIONS }} sessions to enroll</mat-card-subtitle>
-
         </mat-card-header>
 
 
@@ -451,91 +449,29 @@ More actions
         <!-- Enrollment Button -->
 
 
-        <mat-card-actions class="enrollment-actions">
+<mat-card-actions class="enrollment-actions">
+  <!-- Selection Counter -->
+  <div class="selection-counter" *ngIf="selectedSessions.size > 0">
+    {{ selectedSessions.size }}/{{ REQUIRED_SESSIONS }} sessions selected
+  </div>
 
+  <!-- Only PayPal Button (No Enroll Button) -->
+  <div *ngIf="isLoggedIn && selectedSessions.size > 0" class="paypal-container">
+    <div id="paypal-button-container"></div>
+  </div>
 
-          <div class="selection-counter" *ngIf="selectedSessions.size > 0">
+  <!-- Sign Up Button (Shown if NOT logged in) -->
+  <button *ngIf="!isLoggedIn" 
+          mat-raised-button 
+          color="primary" 
+          class="enroll-btn"
+          (click)="redirectToRegisterPage()">
+    <mat-icon>login</mat-icon>
+    <span>Sign Up to Enroll</span>
+  </button>
+</mat-card-actions>
 
-
-            {{ selectedSessions.size }}/{{ REQUIRED_SESSIONS }} sessions selected
-
-
-          </div>
-
-
-          
-
-
-          <button *ngIf="isLoggedIn" 
-
-
-                  mat-raised-button 
-
-
-                  color="primary" 
-
-
-                  class="enroll-btn"
-
-
-                  [disabled]="!canEnroll()"
-
-
-                  (click)="enroll()">
-
-
-            <mat-icon>rocket_launch</mat-icon>
-
-
-            <span>{{ isEnrollmentLoading ? 'Processing...' : 'Enroll Now' }}</span>
-
-
-            <mat-spinner *ngIf="isEnrollmentLoading" diameter="20"></mat-spinner>
-
-
-          </button>
-
-
-
-
-          <button *ngIf="!isLoggedIn" 
-
-
-                  mat-raised-button 
-
-
-                  color="primary" 
-
-
-                  class="enroll-btn"
-
-
-                  (click)="redirectToRegisterPage()">
-
-
-            <mat-icon>login</mat-icon>
-
-
-            <span>Sign Up to Enroll</span>
-
-
-          </button>
-
-
-        </mat-card-actions>
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
       </mat-card>
 

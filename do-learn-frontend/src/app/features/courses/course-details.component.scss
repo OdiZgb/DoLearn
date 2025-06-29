@@ -815,4 +815,15 @@
   .cancel-payment-btn {
     margin-top: 15px;
   }
+}/* Ensure PayPal button has proper spacing */
+.paypal-container {
+  margin-top: 16px;
+  width: 100%;
+}
+
+/* Optional: Adjust PayPal button width */
+#paypal-button-container {
+  min-width: 200px;
+  max-width: 300px;
+  margin: 0 auto; /* Center horizontally */
 }

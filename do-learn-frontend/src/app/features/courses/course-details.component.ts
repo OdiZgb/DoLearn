@@ -39,7 +39,7 @@ interface CalendarDay {
   isToday: boolean;
 
 }
-
+declare var paypal: any;
 
 
 @Component({
@@ -81,7 +81,7 @@ interface CalendarDay {
 export class CourseDetailsComponent implements OnInit {
 
   readonly REQUIRED_SESSIONS = 1;
-
+isPaymentLoading = false;
 
 
   course!: Course;
@@ -232,7 +232,13 @@ getInitials(username: string): string {
   ngOnInit(): void {
 
 
-
+ setTimeout(() => {
+    if (typeof paypal !== 'undefined') {
+      this.renderPayPalButton();
+    } else {
+      console.error('PayPal SDK not loaded!');
+    }
+  }, 0);
  this.authService.fetchUserProfile().subscribe({
 
     next: (user) => {
@@ -451,31 +457,15 @@ getInitials(username: string): string {
 
 
 
-  toggleSession(session: SessionDto): void {
-
-    if (!this.isSessionAvailable(session)) return;
-
-
-
-    if (this.selectedSessions.has(session.id)) {
-
-      this.selectedSessions.delete(session.id);
-
-    } else {
-
-      if (this.selectedSessions.size >= this.REQUIRED_SESSIONS) {
-
-        this.snackBar.open(`Please select exactly ${this.REQUIRED_SESSIONS} sessions`, 'Dismiss');
-
-        return;
-
-      }
-
-      this.selectedSessions.add(session.id);
-
-    }
-
+toggleSession(session: any) {
+  if (this.selectedSessions.has(session.id)) {
+    this.selectedSessions.delete(session.id);
+  } else {
+    this.selectedSessions.add(session.id);
   }
+
+  setTimeout(() => this.renderPayPalButton(), 0);
+}
 
 selectedDayDate?: Date; 
 
@@ -561,9 +551,6 @@ nextMonth(): void {
 
     if (this.selectedSessions.size == 0) return;
 
-    const confirm = window.confirm(`You're enrolling in ${this.REQUIRED_SESSIONS} sessions. Confirm?`);
-
-    if (!confirm) return;
 
     this.isEnrollmentLoading = true;
 
@@ -688,4 +675,51 @@ hasAnyReservations(): boolean {
     return new Date(date) > new Date();
 
   }
+
+  renderPayPalButton() {
+  const totalAmount = this.selectedSessions.size * 10;
+
+  // Optional: remove previous button to avoid duplicates
+  const container = document.getElementById('paypal-button-container');
+  if (container) container.innerHTML = '';
+
+  paypal.Buttons({
+    style: {
+      layout: 'vertical',
+      color: 'blue',
+      shape: 'pill',
+      label: 'paypal'
+    },
+
+    createOrder: (data: any, actions: any) => {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: totalAmount.toFixed(2)
+          }
+        }]
+      });
+    },
+
+    onApprove: (data: any, actions: any) => {
+      this.isPaymentLoading = true;
+      return actions.order.capture().then((details: any) => {
+        console.log('Payment approved by: ' + details.payer.name.given_name);
+        this.localEnrollAfterPayment(); // Do local enroll
+        this.isPaymentLoading = false;
+      });
+    },
+
+    onError: (err: any) => {
+      console.error('PayPal error:', err);
+      this.isPaymentLoading = false;
+    }
+  }).render('#paypal-button-container');
+}
+localEnrollAfterPayment() {
+  // You still keep your selectedSessions (IDs)
+  // Call your existing enroll() to do frontend enrollment
+  this.enroll();
+  alert('Payment complete! You are now enrolled.');
+}
 }
