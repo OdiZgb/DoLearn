@@ -12,6 +12,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+declare const google: any; // add at the top
 @Component({
   standalone: true,
   selector: 'app-register',
@@ -32,7 +33,7 @@ export class RegisterComponent {
   registerForm: FormGroup;
   isLoading = false;
   hidePassword = true;
-
+  errorMessage = '';
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -45,7 +46,12 @@ export class RegisterComponent {
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
-
+  ngOnInit() {
+    google.accounts.id.initialize({
+      client_id: '1027061470306-0qttu3c6aeglcc0pkmpt3d5b466aqof3.apps.googleusercontent.com',
+      callback: (response: any) => this.handleGoogleCredential(response.credential)
+    });
+  }
   onSubmit() {
     if (this.registerForm.invalid) return;
 
@@ -59,17 +65,36 @@ export class RegisterComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.showErrorToast(err.error?.message || 'Registration failed');
+        this.errorMessage = err.error?.message || 'Invalid email or password';
       }
     });
   }
 
-  private showErrorToast(message: string) {
-    this.snackBar.open(message, 'Dismiss', {
+ 
+    private showErrorToast() {
+    this.snackBar.open(this.errorMessage, 'Dismiss', {
       duration: 5000,
       panelClass: ['error-snackbar'],
       verticalPosition: 'bottom',
       horizontalPosition: 'end'
+    });
+  }
+    startGoogleSignIn() {
+    google.accounts.id.prompt(); // shows the popup
+  }
+ 
+   handleGoogleCredential(idToken: string) {
+    this.isLoading = true;
+    this.authService.googleLogin(idToken).subscribe({
+      next: (res) => {
+        this.authService.saveToken(res.token);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = 'Google login failed';
+        this.showErrorToast();
+      }
     });
   }
 }
