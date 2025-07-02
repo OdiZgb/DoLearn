@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, HostListener, OnDestroy } from "@angular/core";
 import { Router, NavigationEnd, RouterModule } from "@angular/router";
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +16,8 @@ import { MatCardModule } from "@angular/material/card";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
 import { CoursesService } from "./services/courses.service";
+import { DomSanitizer } from "@angular/platform-browser";
+
 @Component({
   standalone: true,
   selector: 'app-root',
@@ -71,8 +73,11 @@ export class AppComponent implements OnDestroy {
      public router: Router,
     private categoryService: CategoryService,
     private coursesService: CoursesService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer
   ) {
+      this.registerSocialIcons();
     this.authSubscription = this.authService.isLoggedIn$.subscribe(loggedIn => {
       this.isLoggedIn = loggedIn;
       this.checkLoginRedirect();
@@ -236,7 +241,31 @@ private loadAllCourses(): void {
     }
     return undefined;
   }
-
+private registerSocialIcons() {
+  // Twitter (official bird logo)
+  this.matIconRegistry.addSvgIcon(
+    'twitter',
+    this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/twitter-brand.svg')
+  );
+  
+  // Facebook (official "f" logo)
+  this.matIconRegistry.addSvgIcon(
+    'facebook',
+    this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/facebook-brand.svg')
+  );
+  
+  // Instagram (official camera logo)
+  this.matIconRegistry.addSvgIcon(
+    'instagram',
+    this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/instagram-brand.svg')
+  );
+  
+  // YouTube (official play button logo)
+  this.matIconRegistry.addSvgIcon(
+    'youtube',
+    this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/youtube-brand.svg')
+  );
+}
   trackByCourseId(index: number, course: Course): number {
     return course.id;
   }

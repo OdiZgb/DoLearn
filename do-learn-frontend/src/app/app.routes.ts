@@ -11,6 +11,11 @@ import { CategoryFormComponent } from './features/categories/category-form/categ
 import { AppComponent } from './app.component';
 import { ChatComponent } from './features/messages/chat/chat.component';
 import { ChatContactsComponent } from './features/messages/chat-contacts/chat-contacts.component';
+import { TermsComponent } from './features/terms/terms.component';
+import { AboutComponent } from './features/about/about.component';
+import { PrivacyComponent } from './features/privacy/privacy.component';
+import { ContactComponent } from './features/contact/contact.component';
+import { PricingRefundComponent } from './features/pricing-refund/pricing-refund.component';
 
 export const routes: Routes = [
   { path: '', component: AppComponent},
@@ -22,6 +27,11 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'contacts', component: ChatContactsComponent },
+  { path: 'terms', component: TermsComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'privacy', component: PrivacyComponent },
+{ path: 'contact', component: ContactComponent },
+{ path: 'pricing-refund', component: PricingRefundComponent },
     { path: 'profile/:id', component: ProfileComponent },
       { 
     path: 'messages/:id', 
