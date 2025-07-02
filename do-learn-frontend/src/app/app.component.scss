@@ -1894,4 +1894,42 @@ $light: #f5f7fa;         // Light background
       #285AEB 90%);
     color: white !important;
   }
+}/* ONLY these styles - matches #3388c2 with reversed hover */
+.popular-categories .category-card {
+  background: #3388c2; /* Your exact blue */
+  color: white;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  /* Subtle white vector pattern */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, 
+      rgba(255,255,255,0.15) 0%, 
+      transparent 70%);
+  }
+
+  /* Darker by default */
+  box-shadow: 0 4px 15px rgba(51, 136, 194, 0.4);
+  
+  /* Lighter on hover */
+  &:hover {
+    background: #4a9de3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(51, 136, 194, 0.6);
+  }
+
+  .category-icon {
+    background: rgba(255,255,255,0.15);
+    color: white;
+  }
+
+  h3 { color: white; }
+  p { color: rgba(255,255,255,0.8); }
 }
