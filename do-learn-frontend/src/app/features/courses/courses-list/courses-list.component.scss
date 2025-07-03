@@ -328,3 +328,43 @@ body {
     }
   }
 }
+.clickable-card {
+  cursor: pointer;
+  position: relative;
+  
+  // Prevent text selection when clicking
+  user-select: none;
+  
+  // Make sure clickable area covers the whole card
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+  // Add overlay effect on hover
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(59, 130, 246, 0);
+    transition: background 0.2s ease;
+    border-radius: 20px;
+  }
+  
+  &:hover::after {
+    background: rgba(59, 130, 246, 0.05);
+  }
+  
+  // Prevent buttons from triggering card click
+  mat-card-actions {
+    position: relative;
+    z-index: 1;
+    
+    button {
+      // This allows the button to be clickable without triggering card navigation
+      pointer-events: auto;
+    }
+  }
+}
