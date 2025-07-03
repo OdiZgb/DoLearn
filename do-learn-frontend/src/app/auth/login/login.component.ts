@@ -1,5 +1,4 @@
-// login.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
@@ -11,8 +10,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
-declare const google: any; // add at the top
+import { CommonModule, NgIf } from '@angular/common';
+
+declare const google: any;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -29,14 +30,17 @@ declare const google: any; // add at the top
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatCardModule,
-    MatSnackBarModule // Added MatSnackBarModule here
+    MatSnackBarModule,
+    NgIf // Added NgIf for *ngIf directives
   ]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
+  @ViewChild('googleSignInButton', { static: false }) googleSignInButton!: ElementRef;
+  
   loginForm: FormGroup;
   isLoading = false;
-  errorMessage = '';
   hidePassword = true;
+  private googleInitialized = false;
 
   constructor(
     private fb: FormBuilder,
@@ -50,19 +54,107 @@ export class LoginComponent {
       rememberMe: [false]
     });
   }
+
   ngOnInit() {
-    google.accounts.id.initialize({
-      client_id: '1027061470306-0qttu3c6aeglcc0pkmpt3d5b466aqof3.apps.googleusercontent.com',
-      callback: (response: any) => this.handleGoogleCredential(response.credential)
+    this.loadGoogleAuthLibrary();
+  }
+  ngAfterViewInit() {
+    this.checkGoogleAndRender();
+  }
+    private checkGoogleAndRender() {
+    if (typeof google !== 'undefined' && google.accounts && this.googleSignInButton?.nativeElement) {
+      this.renderGoogleButton();
+    } else {
+      setTimeout(() => this.checkGoogleAndRender(), 100);
+    }
+  }
+  ngOnDestroy() {
+    this.cleanupGoogleScript();
+  }
+
+private loadGoogleAuthLibrary() {
+  if (typeof google !== 'undefined') {
+    this.initializeGoogle();
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = 'https://accounts.google.com/gsi/client';
+  script.async = true;
+  script.defer = true;
+  script.id = 'google-signin-script';
+  script.onload = () => {
+    console.log('Google script loaded successfully');
+    this.initializeGoogle();
+    this.checkGoogleAndRender();
+  };
+  script.onerror = (error) => {
+    console.error('Failed to load Google script:', error);
+    this.snackBar.open('Failed to load Google Sign-In. Please disable adblocker.', 'OK', {
+      duration: 10000
     });
+  };
+  document.head.appendChild(script);
+}
+
+  private initializeGoogle() {
+    try {
+      google.accounts.id.initialize({
+        client_id: '1027061470306-0qttu3c6aeglcc0pkmpt3d5b466aqof3.apps.googleusercontent.com',
+        callback: (response: any) => {
+          if (response?.credential) {
+            this.handleGoogleCredential(response.credential);
+          }
+        },
+        auto_select: false
+      });
+      this.googleInitialized = true;
+    } catch (e) {
+      console.error('Google initialization failed:', e);
+    }
+  }
+
+  private renderGoogleButton() {
+    if (!this.googleInitialized || !this.googleSignInButton?.nativeElement) {
+      setTimeout(() => this.renderGoogleButton(), 100);
+      return;
+    }
+
+   try {
+      google.accounts.id.renderButton(
+        this.googleSignInButton.nativeElement,
+        {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+          width: '100%',
+          text: 'continue_with',
+          shape: 'rectangular'
+        }
+      );
+      
+      // Optional: Show the One Tap prompt
+      google.accounts.id.prompt();
+    } catch (e) {
+      console.error('Google button render failed:', e);
+      setTimeout(() => this.renderGoogleButton(), 500);
+    }
+  }
+
+  private cleanupGoogleScript() {
+    const script = document.getElementById('google-signin-script');
+    if (script) {
+      script.remove();
+    }
+    if (typeof google !== 'undefined' && google.accounts) {
+      google.accounts.id.cancel();
+    }
   }
 
   onSubmit() {
     if (this.loginForm.invalid) return;
 
     this.isLoading = true;
-    this.errorMessage = '';
-
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
         this.authService.saveToken(res.token);
@@ -73,24 +165,20 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Invalid email or password';
-        this.showErrorToast();
+        this.snackBar.open(err.error?.message || 'Invalid email or password', 'Dismiss', {
+          duration: 5000,
+          panelClass: ['error-snackbar']
+        });
       }
     });
   }
 
-  private showErrorToast() {
-    this.snackBar.open(this.errorMessage, 'Dismiss', {
-      duration: 5000,
-      panelClass: ['error-snackbar'],
-      verticalPosition: 'bottom',
-      horizontalPosition: 'end'
-    });
-  }
-    startGoogleSignIn() {
-    google.accounts.id.prompt(); // shows the popup
-  }
- handleGoogleCredential(idToken: string) {
+  handleGoogleCredential(idToken: string) {
+    if (!idToken) {
+      this.snackBar.open('Invalid Google token received', 'OK');
+      return;
+    }
+    
     this.isLoading = true;
     this.authService.googleLogin(idToken).subscribe({
       next: (res) => {
@@ -99,8 +187,11 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = 'Google login failed';
-        this.showErrorToast();
+        this.snackBar.open(
+          err.error?.message || 'Google login failed. Try another method.',
+          'OK',
+          { duration: 5000 }
+        );
       }
     });
   }

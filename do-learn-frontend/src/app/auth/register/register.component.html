@@ -1,4 +1,3 @@
-<!-- register.component.html -->
 <div class="register-container">
   <mat-card class="register-card">
     <mat-card-header class="register-header">
@@ -71,16 +70,13 @@
 
       <!-- Social Login -->
       <div class="social-login">
-        <button mat-stroked-button class="social-button" (click)="startGoogleSignIn()">
-          <img src="assets/google-icon.svg" alt="Google" class="social-icon">
-          Continue with Google
-        </button>
+        <div #googleSignInButton id="googleSignInButton" style="width: 100%;"></div>
       </div>
     </mat-card-content>
+
     <mat-card-footer class="register-footer">
       Already have an account? 
-      <a href="/login" routerLink="/login" class="signup-link">Sign in</a>
-
+      <a routerLink="/login" class="signup-link">Sign in</a>
     </mat-card-footer>
   </mat-card>
 </div>

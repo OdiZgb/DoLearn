@@ -70,12 +70,9 @@
 
       <!-- Social Login -->
 <!-- Social Login -->
-    <div class="social-login">
-      <button mat-stroked-button class="social-button" (click)="startGoogleSignIn()">
-        <img src="assets/google-icon.svg" alt="Google" class="social-icon">
-        Continue with Google
-      </button>
-    </div>
+<div class="social-login">
+  <div #googleSignInButton id="googleSignInButton" style="width: 100%;"></div>
+</div>
     </mat-card-content>
 
     <mat-card-footer class="login-footer">

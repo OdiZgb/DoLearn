@@ -107,4 +107,29 @@
   &:hover {
     text-decoration: underline;
   }
+}/* In your component's CSS */
+#googleSignInButton {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* For the popup */
+.g_id_signin {
+  width: 100% !important;
+}.social-login {
+  width: 100%;
+  margin-top: 20px;
+  
+  #googleSignInButton {
+    width: 100%;
+    
+    iframe {
+      width: 100% !important;
+    }
+    
+    div {
+      margin: 0 auto;
+    }
+  }
 }
