@@ -826,4 +826,18 @@
   min-width: 200px;
   max-width: 300px;
   margin: 0 auto; /* Center horizontally */
+}/* Add to your component's CSS file */
+.calendar-day.past-day {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.session-slot.past-session {
+  background-color: #f5f5f5;
+  color: #999;
+  pointer-events: none;
+}
+
+.session-dot.past {
+  opacity: 0.5;
 }

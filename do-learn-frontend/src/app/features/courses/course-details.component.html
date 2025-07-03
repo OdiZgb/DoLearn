@@ -1,7 +1,5 @@
 <div class="course-detail-container">
-More actions
-
-  <!-- Course Hero Section -->
+ 
 
   <div class="course-hero">
 
@@ -299,36 +297,26 @@ More actions
 
 
             <div *ngFor="let day of calendarDays" 
-
                 class="calendar-day"
-
                 [class.current-month]="day.isCurrentMonth"
-
                 [class.today]="day.isToday"
-
                 [class.has-sessions]="day.sessions.length > 0"
-
                 [class.fully-booked]="isDayFullyReserved(day)"
-
                 [class.selected]="selectedDayDate && day.date.getTime() === selectedDayDate.getTime()"
-
-                (click)="handleDayClick(day)">
+                [class.past-day]="isPastDate(day.date)"
+                (click)="!isPastDate(day.date) && handleDayClick(day)">
 
                 <div class="date-number">{{ day.date | date:'d' }}</div>
 
                 <div class="session-dots">
 
-                  <div *ngFor="let session of day.sessions" 
-
-                       class="session-dot"
-
-                       [class.available]="isSessionAvailable(session)"
-
-                       [class.reserved]="!isSessionAvailable(session)"
-
-                       [class.selected]="selectedSessions.has(session.id)">
-
-                  </div>
+                <div *ngFor="let session of day.sessions" 
+                    class="session-dot"
+                    [class.available]="isSessionAvailable(session)"
+                    [class.reserved]="!isSessionAvailable(session)"
+                    [class.selected]="selectedSessions.has(session.id)"
+                    [class.past]="isPastSession(session.start)">
+                </div>
 
                 </div>
 
@@ -346,17 +334,13 @@ More actions
 
               <div class="session-slots">
 
-                <div *ngFor="let session of selectedDay.sessions" 
-
-                     class="session-slot"
-
-                     [class.available]="isSessionAvailable(session)"
-
-                     [class.reserved]="!isSessionAvailable(session)"
-
-                     [class.selected]="selectedSessions.has(session.id)"
-
-                     (click)="toggleSession(session)">
+            <div *ngFor="let session of selectedDay.sessions" 
+                class="session-slot"
+                [class.available]="isSessionAvailable(session)"
+                [class.reserved]="!isSessionAvailable(session)"
+                [class.selected]="selectedSessions.has(session.id)"
+                [class.past-session]="isPastSession(session.start)"
+                (click)="!isPastSession(session.start) && toggleSession(session)">
 
                   <div class="time-range">
 

@@ -320,9 +320,6 @@ getInitials(username: string): string {
       next: (course: any) => {
 
         this.course = course;
-
-        this.currentMonth = new Date(course.startDate);
-
         this.generateCalendar();
 
         this.checkEnrollmentStatus(course.id);
@@ -429,9 +426,9 @@ getInitials(username: string): string {
 
   private getSessionsForDate(date: Date): SessionDto[] {
 
-    return this.allSessions.filter((session:any) => {
+    return this.allSessions.filter((session?:any) => {
 
-      const sessionDate = new Date(session.start);
+      const sessionDate = new Date(session?.start);
 
       return sessionDate.getFullYear() === date.getFullYear() &&
 
@@ -589,12 +586,11 @@ nextMonth(): void {
 
 
   isSessionAvailable(session: SessionDto): boolean {
-
-    // Consider session unavailable if there are ANY reservations
-
-    return session.reservations.length === 0 && !session.isCanceled;
-
-  }
+  const now = new Date();
+  return session.reservations.length === 0 && 
+         !session.isCanceled && 
+         new Date(session.start) > now;
+}
 
   isDaySelected(day: CalendarDay): boolean {
 
@@ -649,15 +645,6 @@ hasAnyReservations(): boolean {
   return this.allSessions.some((session:any) => this.hasUserReservation(session));
 
 }
-
-  // Date status helpers
-
-  isPastSession(date: Date): boolean {
-
-    return new Date(date) < new Date();
-
-  }
-
 
 
   isCurrentSession(date: Date): boolean {
@@ -721,5 +708,15 @@ localEnrollAfterPayment() {
   // Call your existing enroll() to do frontend enrollment
   this.enroll();
   alert('Payment complete! You are now enrolled.');
+}
+isPastDate(date: Date): boolean {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return date < today;
+}
+
+isPastSession(date: Date | string): boolean {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  return dateObj < new Date();
 }
 }
