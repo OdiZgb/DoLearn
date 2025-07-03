@@ -1,4 +1,3 @@
-<!-- profile.component.html -->
 <div class="profile-container">
     <mat-card class="profile-card">
       <!-- Profile Header with Gradient -->
@@ -9,10 +8,12 @@
           </div>
         </div>
         <div class="profile-info">
-          <h1 class="username">{{ user?.username }}</h1>
-           <button mat-icon-button class="message-button" (click)="navigateToMessages()" matTooltip="Send message">
+          <div class="username-container">
+            <h1 class="username">{{ user?.username }}</h1>
+            <button mat-icon-button class="message-button" (click)="navigateToMessages()" matTooltip="Send message">
               <mat-icon>message</mat-icon>
             </button>
+          </div>
           <div class="role-badge" [class]="user?.role.toLowerCase()">
             {{ user?.role }}
           </div>
@@ -22,7 +23,7 @@
       <!-- Profile Details -->
       <mat-card-content>
         <div class="details-grid">
-          <!-- Left Column -->
+          <!-- Email -->
           <div class="detail-item">
             <mat-icon>email</mat-icon>
             <div class="detail-content">
@@ -32,22 +33,12 @@
           </div>
   
           <div class="detail-item">
-            <mat-icon>cake</mat-icon>
-            <div class="detail-content">
-              <h3>Birthdate</h3>
-              <p>{{ user?.birthdate | date: 'longDate' }}</p>
-            </div>
-          </div>
-  
-          <!-- Right Column -->
-          <div class="detail-item">
             <mat-icon>event</mat-icon>
             <div class="detail-content">
               <h3>Member Since</h3>
               <p>{{ user?.registered | date: 'MMM yyyy' }}</p>
             </div>
           </div>
-  
           <div class="detail-item">
             <mat-icon>library_books</mat-icon>
             <div class="detail-content">
