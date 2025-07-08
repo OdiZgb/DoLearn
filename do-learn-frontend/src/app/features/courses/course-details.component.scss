@@ -1,28 +1,28 @@
-
 .course-detail-container {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 0 16px;
+  max-width: 100%; /* always fits viewport */
+  overflow-x: hidden; /* prevent accidental horizontal overflow */
 }
 
-/* Hero Section */
+/* Hero Section - Mobile First */
 .course-hero {
   position: relative;
-  margin-bottom: 32px;
-  border-radius: 12px;
+  margin-bottom: 24px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   .hero-image-container {
     position: relative;
-    height: 300px;
+    height: 200px; // Smaller height for mobile
     
     .hero-image {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 100%;
+      height: auto; /* keep aspect ratio */
     }
-    
+        
     .hero-overlay {
       position: absolute;
       top: 0;
@@ -37,7 +37,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 32px;
+    padding: 16px;
     color: white;
     width: 100%;
     
@@ -45,81 +45,89 @@
       display: inline-block;
       background: rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(5px);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 16px;
+      font-size: 12px;
       font-weight: 500;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
     
     .course-title {
-      font-size: 32px;
+      font-size: 20px;
       font-weight: 700;
-      margin: 0 0 12px 0;
+      margin: 0 0 8px 0;
       line-height: 1.2;
     }
     
     .course-meta {
       display: flex;
-      gap: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
       
       .meta-item {
         display: flex;
         align-items: center;
-        gap: 6px;
-        font-size: 14px;
+        gap: 4px;
+        font-size: 12px;
         
         mat-icon {
-          font-size: 18px;
-          width: 18px;
-          height: 18px;
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
         }
       }
     }
   }
 }
 
-/* Main Content Grid */
+/* Main Content Grid - Mobile First */
 .course-content-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-  
-  @media (min-width: 900px) {
-    grid-template-columns: 350px 1fr;
-  }
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 20px;
+  min-width: 0; /* allow shrinking instead of overflowing */
 }
 
 /* Course Details */
 .details-card {
-  margin-bottom: 24px;
-  border-radius: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
   
   .course-description {
     line-height: 1.6;
     color: #555;
+    font-size: 14px;
+    
+    p {
+      margin-bottom: 1em;
+    }
+    
+    ol, ul {
+      margin-left: 1.5em;
+      padding-left: 0;
+    }
   }
   
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 24px;
+    gap: 8px;
+    margin-top: 16px;
     
     .stat-item {
       text-align: center;
-      padding: 12px;
+      padding: 8px;
       background: #f8f9fa;
-      border-radius: 8px;
+      border-radius: 6px;
       
       .stat-value {
-        font-size: 24px;
+        font-size: 18px;
         font-weight: 700;
         color: #3f51b5;
       }
       
       .stat-label {
-        font-size: 12px;
+        font-size: 11px;
         color: #666;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -130,22 +138,33 @@
 
 /* Teacher Card */
 .teacher-card {
-  border-radius: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  
+  .mat-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    
+    .mat-card-avatar {
+      margin-right: 0;
+      margin-bottom: 12px;
+    }
+  }
   
   .teacher-avatar {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-weight: 700;
-    font-size: 20px;
+    font-size: 18px;
   }
   
   .teacher-meta {
-    margin: 16px 0;
+    margin: 12px 0;
     
     .meta-item {
       display: flex;
@@ -153,9 +172,11 @@
       gap: 8px;
       margin-bottom: 8px;
       color: #555;
+      font-size: 14px;
       
       mat-icon {
         color: #3f51b5;
+        font-size: 18px;
       }
     }
   }
@@ -163,20 +184,109 @@
   .view-profile-btn {
     width: 100%;
     margin-top: 8px;
+    font-size: 14px;
+  }
+}
+
+/* Session Overview Card */
+.session-overview-card {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  
+  .session-overview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .session-overview-item {
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    .session-date-time {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-weight: 500;
+      font-size: 14px;
+      
+      mat-icon {
+        font-size: 18px;
+      }
+    }
+    
+    .session-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      
+      span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: bold;
+        
+        mat-icon {
+          font-size: 18px;
+        }
+        
+        &.available {
+          color: #2e7d32;
+        }
+        
+        &.reserved {
+          color: #f57c00;
+        }
+        
+        &.canceled {
+          color: #c62828;
+        }
+      }
+      
+      a {
+        color: #1e88e5;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        
+        mat-icon {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+  
+  .no-sessions-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    padding: 12px;
+    font-size: 14px;
+    
+    mat-icon {
+      color: #3f51b5;
+    }
   }
 }
 
 /* Schedule Card */
 .schedule-card {
-  border-radius: 12px;
-  height: 100%;
+  border-radius: 8px;
+  margin-bottom: 20px;
   
   .view-toggle-container {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     
     .mat-button-toggle-group {
       width: 100%;
-      border-radius: 8px;
+      border-radius: 6px;
       overflow: hidden;
       
       .mat-button-toggle {
@@ -184,8 +294,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        padding: 8px;
+        gap: 6px;
+        padding: 6px;
+        font-size: 13px;
+        
+        mat-icon {
+          font-size: 18px;
+        }
       }
     }
   }
@@ -197,32 +312,40 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     
     .current-month {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 500;
       margin: 0;
+      text-align: center;
+      flex: 1;
     }
     
     button {
       background: #f5f7fa;
       border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      
+      mat-icon {
+        font-size: 18px;
+      }
     }
   }
   
   .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    margin-bottom: 24px;
+    gap: 4px;
+    margin-bottom: 16px;
     
     .calendar-weekday {
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       color: #666;
-      padding: 8px 0;
+      padding: 6px 0;
       text-transform: uppercase;
     }
     
@@ -232,11 +355,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
       background: #f8f9fa;
+      font-size: 12px;
       
       &:hover {
         background: #e9ecef;
@@ -271,25 +395,34 @@
         }
       }
       
-      &.selected-day {
-        background: #e3f2fd;
-        border-color: #bbdefb;
+      &.selected {
+        background: #3f51b5;
+        color: white;
+        
+        .date-number {
+          color: white;
+        }
+      }
+      
+      &.past-day {
+        opacity: 0.6;
+        pointer-events: none;
       }
       
       .date-number {
-        font-size: 14px;
-        margin-bottom: 4px;
+        font-size: 12px;
+        margin-bottom: 2px;
       }
       
       .session-dots {
         display: flex;
-        gap: 3px;
+        gap: 2px;
         flex-wrap: wrap;
         justify-content: center;
         
         .session-dot {
-          width: 6px;
-          height: 6px;
+          width: 4px;
+          height: 4px;
           border-radius: 50%;
           background: #bbb;
           
@@ -305,6 +438,10 @@
             background: #3f51b5;
             transform: scale(1.2);
           }
+          
+          &.past {
+            opacity: 0.5;
+          }
         }
       }
     }
@@ -312,28 +449,29 @@
   
   .selected-day-sessions {
     border-top: 1px solid #eee;
-    padding-top: 16px;
+    padding-top: 12px;
     
     .sessions-title {
-      font-size: 16px;
-      margin: 0 0 12px 0;
+      font-size: 15px;
+      margin: 0 0 10px 0;
       color: #333;
     }
     
     .session-slots {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       
       .session-slot {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 16px;
-        border-radius: 8px;
+        padding: 10px 12px;
+        border-radius: 6px;
         cursor: pointer;
         transition: all 0.2s ease;
         border: 1px solid #e0e0e0;
+        font-size: 13px;
         
         &:hover {
           background: #f5f5f5;
@@ -354,6 +492,12 @@
           border-color: #bbdefb;
         }
         
+        &.past-session {
+          background-color: #f5f5f5;
+          color: #999;
+          pointer-events: none;
+        }
+        
         .time-range {
           font-weight: 500;
         }
@@ -361,12 +505,12 @@
         .availability-badge {
           display: flex;
           align-items: center;
-          gap: 6px;
-          font-size: 12px;
+          gap: 4px;
+          font-size: 11px;
           
           mat-icon {
             color: #4caf50;
-            font-size: 18px;
+            font-size: 16px;
           }
         }
       }
@@ -378,16 +522,17 @@
 .list-view {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   
   .list-item {
     display: flex;
     align-items: center;
-    padding: 12px 16px;
-    border-radius: 8px;
+    padding: 10px 12px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
     border: 1px solid #e0e0e0;
+    font-size: 13px;
     
     &:hover {
       background: #f5f5f5;
@@ -412,23 +557,23 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 60px;
-      margin-right: 16px;
+      min-width: 50px;
+      margin-right: 12px;
       
       .day {
-        font-size: 12px;
+        font-size: 11px;
         text-transform: uppercase;
         color: #666;
       }
       
       .date {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 700;
         line-height: 1;
       }
       
       .month {
-        font-size: 12px;
+        font-size: 11px;
         text-transform: uppercase;
         color: #666;
       }
@@ -439,14 +584,14 @@
       
       .time-range {
         font-weight: 500;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
       }
       
       .availability {
         display: flex;
         align-items: center;
         gap: 4px;
-        font-size: 12px;
+        font-size: 11px;
         color: #666;
         
         mat-icon {
@@ -458,6 +603,7 @@
     .selection-indicator {
       mat-icon {
         color: #4caf50;
+        font-size: 18px;
       }
     }
   }
@@ -467,13 +613,13 @@
 .enrollment-actions {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px;
+  gap: 12px;
+  padding: 12px;
   border-top: 1px solid #eee;
   
   .selection-counter {
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     color: #666;
   }
   
@@ -481,442 +627,185 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px 24px;
+    gap: 6px;
+    padding: 10px 16px;
     font-weight: 500;
-    border-radius: 8px;
+    border-radius: 6px;
+    font-size: 14px;
     
     mat-icon {
-      margin-right: 8px;
-    }
-    
-    mat-spinner {
-      margin-left: 8px;
+      margin-right: 6px;
+      font-size: 18px;
     }
   }
 }
 
-/* Responsive Adjustments */
-@media (max-width: 600px) {
+/* PayPal Container */
+.paypal-container {
+  margin-top: 12px;
+  border: 1px solid #eee;
+  padding: 12px;
+  border-radius: 6px;
+  width: 100%;
+  
+  #paypal-button-container {
+    min-width: 200px;
+    width: 100%;
+  }
+  
+  .cancel-payment-btn {
+    margin-top: 12px;
+    width: 100%;
+    font-size: 14px;
+  }
+}
+
+/* Tablet and Desktop Styles */
+@media (min-width: 600px) {
   .course-hero {
+    margin-bottom: 32px;
+    border-radius: 12px;
+    
+    .hero-image-container {
+      height: 250px;
+    }
+    
     .hero-content {
-      padding: 20px;
+      padding: 24px;
+      
+      .course-badge {
+        padding: 6px 12px;
+        font-size: 14px;
+      }
       
       .course-title {
-        font-size: 24px;
+        font-size: 28px;
+      }
+      
+      .course-meta {
+        gap: 16px;
+        
+        .meta-item {
+          font-size: 14px;
+          gap: 6px;
+          
+          mat-icon {
+            font-size: 18px;
+          }
+        }
       }
     }
   }
   
   .teacher-card {
     .mat-card-header {
-      flex-direction: column;
-      align-items: flex-start;
+      flex-direction: row;
+      align-items: center;
       
       .mat-card-avatar {
-        margin-right: 0;
-        margin-bottom: 12px;
+        margin-right: 16px;
+        margin-bottom: 0;
       }
     }
-  }
-}.calendar-day {
-  // ... your existing styles ...
-
-  &.selected {
-    background-color: #3f51b5 !important;
-    color: white !important;
     
-    .date-number {
-      color: white !important;
+    .teacher-avatar {
+      width: 60px;
+      height: 60px;
+      font-size: 20px;
     }
   }
-}.session-overview-card {
-  margin-top: 2rem;
-
-  .session-overview-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
+  
   .session-overview-item {
-    padding: 1rem;
-    border-radius: 12px;
-    background-color: #f5f5f5;
-    display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
-    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+}
 
-    .session-date-time {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      font-weight: 500;
+@media (min-width: 900px) {
+  .course-content-grid {
+    grid-template-columns: 1fr 2fr;
+    display: grid;
+    flex-direction: unset;
+    gap: 24px;
+  }
+  
+  .course-hero {
+    .hero-image-container {
+      height: 300px;
     }
-
-    .session-meta {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-
-      span {
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-        font-weight: bold;
-
-        &.available {
-          color: #2e7d32;
+    
+    .hero-content {
+      padding: 32px;
+      
+      .course-title {
+        font-size: 32px;
+      }
+    }
+  }
+  
+  .details-card {
+    .stats-grid {
+      gap: 16px;
+      
+      .stat-item {
+        padding: 12px;
+        
+        .stat-value {
+          font-size: 24px;
         }
-
-        &.reserved {
-          color: #f57c00;
-        }
-
-        &.canceled {
-          color: #c62828;
+        
+        .stat-label {
+          font-size: 12px;
         }
       }
-
-      a {
-        color: #1e88e5;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-
-        mat-icon {
-          font-size: 20px;
+    }
+  }
+  
+  .calendar-container {
+    .calendar-day {
+      font-size: 14px;
+      
+      .date-number {
+        font-size: 14px;
+      }
+      
+      .session-dots {
+        .session-dot {
+          width: 6px;
+          height: 6px;
         }
       }
     }
   }
 }
-.homepage-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
 
-/* Hero Section */
-.hero-section {
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  padding: 60px 0;
-  
-  .hero-content {
-    flex: 1;
-    
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      line-height: 1.2;
+/* Very small devices (phones, 400px and down) */
+@media (max-width: 400px) {
+  .course-hero {
+    .hero-image-container {
+      height: 180px;
     }
     
-    .subtitle {
-      font-size: 1.2rem;
-      color: #666;
-      margin-bottom: 2rem;
+    .hero-content {
+      .course-title {
+        font-size: 18px;
+      }
+      
+      .course-meta {
+        gap: 8px;
+      }
     }
   }
   
-  .search-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 2rem;
-    
-    mat-form-field {
-      width: 100%;
-    }
-  }
-  
-  .stats-bar {
-    display: flex;
-    gap: 30px;
+  .stats-grid {
+    grid-template-columns: 1fr !important;
     
     .stat-item {
-      text-align: center;
-      
-      .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #3f51b5;
-      }
-      
-      .stat-label {
-        display: block;
-        color: #666;
-      }
+      text-align: left !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
     }
   }
-  
-  .hero-image {
-    flex: 1;
-    img {
-      width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-  }
-}
-
-/* Categories Section */
-.categories-section {
-  margin: 60px 0;
-  
-  .section-title {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 2rem;
-  }
-  
-  .categories-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    
-    .category-card {
-      text-align: center;
-      padding: 20px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      
-      &:hover {
-        transform: translateY(-5px);
-      }
-      
-      .category-icon {
-        background: #f0f4ff;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 15px;
-        
-        mat-icon {
-          color: #3f51b5;
-          font-size: 30px;
-        }
-      }
-      
-      h3 {
-        margin: 10px 0 5px;
-      }
-      
-      p {
-        color: #666;
-        font-size: 0.9rem;
-      }
-    }
-  }
-}
-
-/* Enhanced Course Cards */
-.enhanced-course-card {
-  transition: transform 0.3s ease;
-  position: relative;
-  
-  &:hover {
-    transform: translateY(-5px);
-  }
-  
-  .course-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px 10px;
-    border-radius: 4px;
-    color: white;
-    font-size: 0.8rem;
-    font-weight: 500;
-    
-    &.beginner {
-      background: #4caf50;
-    }
-    &.intermediate {
-      background: #ff9800;
-    }
-    &.advanced {
-      background: #f44336;
-    }
-  }
-  
-  img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-  }
-  
-  .course-meta {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    color: #666;
-    
-    span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-  }
-  
-  h3 {
-    margin: 0 0 5px;
-    font-size: 1.1rem;
-  }
-  
-  .instructor {
-    color: #666;
-    font-size: 0.9rem;
-    margin-bottom: 15px;
-  }
-  
-  .price {
-    font-weight: 700;
-    color: #3f51b5;
-  }
-  
-  .free-badge {
-    background: #e8f5e9;
-    color: #4caf50;
-    padding: 3px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    font-weight: 500;
-  }
-}
-
-/* Responsive Adjustments */
-@media (max-width: 992px) {
-  .hero-section {
-    flex-direction: column;
-    text-align: center;
-    
-    .stats-bar {
-      justify-content: center;
-    }
-  }
-  
-  .categories-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
-}.paypal-container {
-  margin-top: 20px;
-  border: 1px solid #eee;
-  padding: 15px;
-  border-radius: 4px;
-  
-  .cancel-payment-btn {
-    margin-top: 15px;
-  }
-}/* Ensure PayPal button has proper spacing */
-.paypal-container {
-  margin-top: 16px;
-  width: 100%;
-}
-
-/* Optional: Adjust PayPal button width */
-#paypal-button-container {
-  min-width: 200px;
-  max-width: 300px;
-  margin: 0 auto; /* Center horizontally */
-}/* Add to your component's CSS file */
-.calendar-day.past-day {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.session-slot.past-session {
-  background-color: #f5f5f5;
-  color: #999;
-  pointer-events: none;
-}
-
-.session-dot.past {
-  opacity: 0.5;
-}.course-description {
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-.course-description p {
-  margin-bottom: 1em;
-}
-
-.course-description ol, 
-.course-description ul {
-  margin-left: 20px;
-  margin-bottom: 1em;
-}
-
-.course-description li {
-  margin-bottom: 0.5em;
-}
-
-.course-description blockquote {
-  border-left: 4px solid #ddd;
-  padding-left: 15px;
-  margin-left: 0;
-  color: #666;
-  font-style: italic;
-  margin-bottom: 1em;
-}
-
-.course-description strong {
-  font-weight: bold;
-}/* Add this to your existing SCSS file */
-.course-description {
-  line-height: 1.6;
-  color: #555;
-  overflow-wrap: break-word;
-  
-  /* Styles for Quill-generated content */
-  p {
-    margin-bottom: 1em;
-  }
-  
-  ol, ul {
-    margin-left: 1.5em;
-    margin-bottom: 1em;
-    padding-left: 0;
-    
-    li {
-      margin-bottom: 0.5em;
-    }
-  }
-  
-  blockquote {
-    border-left: 4px solid #3f51b5;
-    padding-left: 1em;
-    margin-left: 0;
-    color: #555;
-    font-style: italic;
-    margin: 1em 0;
-  }
-  
-  strong, b {
-    font-weight: bold;
-  }
-  
-  em, i {
-    font-style: italic;
-  }
-  
-  u {
-    text-decoration: underline;
-  }
-  
-  /* Remove extra spacing from empty paragraphs */
-  p:empty {
-    display: none;
-  }
-  
-  /* Fix for Quill's nbsp entities */
-  white-space: normal;
 }
