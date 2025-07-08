@@ -42,7 +42,7 @@ namespace DoLearn.API.Features.Courses.GetCourse
                 schedule?.EndDate ?? DateTimeOffset.MinValue,
                 schedule.Sessions,
                 ImgURL: "https://www.dolearn.net" + course.ImgURL,
-                course.Description,
+                course?.Description,
                 course.CreatedBy
 
 

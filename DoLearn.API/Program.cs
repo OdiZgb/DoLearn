@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -24,7 +25,9 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     ContentRootPath = Directory.GetCurrentDirectory(),
     WebRootPath = "wwwroot"
 });
-
+builder.Services.Configure<IISServerOptions>(options => options.MaxRequestBodySize = 100_000_000);
+builder.Services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = 100_000_000);
+builder.WebHost.ConfigureKestrel(serverOptions => serverOptions.Limits.MaxRequestBodySize = 100_000_000);
 // --- SERVICES ---
 
 // 1. DbContext
@@ -95,7 +98,22 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(5000);
 });
+// --- Configure Request Size Limits ---
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = 100 * 1024 * 1024; // 100MB (adjust as needed)
+});
 
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // 100MB (must match IIS/Kestrel)
+});
+
+// For Kestrel (if self-hosting)
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024; // 100MB
+});
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
