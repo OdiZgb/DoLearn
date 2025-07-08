@@ -35,8 +35,11 @@
       <!-- Description -->
       <div class="form-group">
         <label>Description:</label>
-        <textarea formControlName="description" class="modern-textarea"></textarea>
-        <div class="counter">{{ courseForm.get('description')?.value?.length || 0 }}/500</div>
+        <quill-editor
+  formControlName="description"
+  [style]="{height: '200px'}">
+</quill-editor>
+        <div class="counter">{{ courseForm.get('description')?.value?.length || 0 }}/10000</div>
         <div class="error" *ngIf="courseForm.get('description')?.invalid && courseForm.get('description')?.touched">
           Maximum 500 characters allowed
         </div>

@@ -59,41 +59,23 @@
 
         </mat-card-header>
 
-        <mat-card-content>
-
-          <p class="course-description">{{ course.description || 'No description available' }}</p>
-
-
-
-          <div class="stats-grid">
-
-            <div class="stat-item">
-
-              <div class="stat-value">{{ allSessions.length }}</div>
-
-              <div class="stat-label">Sessions</div>
-
-            </div>
-
-            <div class="stat-item">
-
-              <div class="stat-value">{{ REQUIRED_SESSIONS }}</div>
-
-              <div class="stat-label">Required</div>
-
-            </div>
-
-            <div class="stat-item">
-
-              <div class="stat-value">{{ calculateTotalHours() }}</div>
-
-              <div class="stat-label">Total Hours</div>
-
-            </div>
-
+      <mat-card-content>
+      <div class="course-description" [innerHTML]="getSafeHtml(course.description)"></div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value">{{ allSessions.length }}</div>
+            <div class="stat-label">Sessions</div>
           </div>
-
-        </mat-card-content>
+          <div class="stat-item">
+            <div class="stat-value">{{ REQUIRED_SESSIONS }}</div>
+            <div class="stat-label">Required</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ calculateTotalHours() }}</div>
+            <div class="stat-label">Total Hours</div>
+          </div>
+        </div>
+      </mat-card-content>
 
       </mat-card>
 

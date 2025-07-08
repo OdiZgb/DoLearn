@@ -840,4 +840,83 @@
 
 .session-dot.past {
   opacity: 0.5;
+}.course-description {
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.course-description p {
+  margin-bottom: 1em;
+}
+
+.course-description ol, 
+.course-description ul {
+  margin-left: 20px;
+  margin-bottom: 1em;
+}
+
+.course-description li {
+  margin-bottom: 0.5em;
+}
+
+.course-description blockquote {
+  border-left: 4px solid #ddd;
+  padding-left: 15px;
+  margin-left: 0;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 1em;
+}
+
+.course-description strong {
+  font-weight: bold;
+}/* Add this to your existing SCSS file */
+.course-description {
+  line-height: 1.6;
+  color: #555;
+  overflow-wrap: break-word;
+  
+  /* Styles for Quill-generated content */
+  p {
+    margin-bottom: 1em;
+  }
+  
+  ol, ul {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+    padding-left: 0;
+    
+    li {
+      margin-bottom: 0.5em;
+    }
+  }
+  
+  blockquote {
+    border-left: 4px solid #3f51b5;
+    padding-left: 1em;
+    margin-left: 0;
+    color: #555;
+    font-style: italic;
+    margin: 1em 0;
+  }
+  
+  strong, b {
+    font-weight: bold;
+  }
+  
+  em, i {
+    font-style: italic;
+  }
+  
+  u {
+    text-decoration: underline;
+  }
+  
+  /* Remove extra spacing from empty paragraphs */
+  p:empty {
+    display: none;
+  }
+  
+  /* Fix for Quill's nbsp entities */
+  white-space: normal;
 }

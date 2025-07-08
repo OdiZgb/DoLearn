@@ -11,7 +11,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { Category, CategoryService } from "../../../services/category.service";
-
+import { QuillModule } from 'ngx-quill';
 
 @Component({
   selector: 'app-create-course',
@@ -24,7 +24,8 @@ import { Category, CategoryService } from "../../../services/category.service";
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    QuillModule
   ], // Add these
   styleUrls: ['./create-course.component.scss']
 })
@@ -37,7 +38,15 @@ export class CreateCourseComponent implements OnInit {
   selectedDays: string[] = [];
   categories: Category[] = [];
   flattenedCategories: Array<{id: number, nameWithHierarchy: string}> = [];
-
+quillModules = {
+  toolbar: [
+    ['bold', 'italic', 'underline'],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    ['clean']
+  ],
+  // Add RTL support
+  direction: 'rtl' // Optional for Arabic text direction
+}
   constructor(
     private fb: FormBuilder,
     private coursesService: CoursesService,
@@ -71,21 +80,20 @@ export class CreateCourseComponent implements OnInit {
 
   private initializeForm(): void {
     this.courseForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
-      courseCode: ['', [Validators.required, Validators.pattern(/^[A-Z0-9]{3,10}$/)]],
-      description: ['', [Validators.maxLength(500)]],
-      categoryId: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]],
-      recurring: [false],
-      repeatInterval: [1],
-      sessionStart: [''],
-      sessionEnd: [''],
-      repeatWeeks: [1, [Validators.min(1), Validators.max(12)]],
-      sessions: this.fb.array([]),
-
-    });
+  title: ['', [Validators.required, Validators.minLength(3)]],
+  courseCode: ['', [Validators.required, Validators.pattern(/^[A-Z0-9]{3,10}$/)]],
+  categoryId: ['', Validators.required],
+  description: ['', Validators.maxLength(10000)],
+  startDate: ['', Validators.required],
+  endDate: ['', Validators.required],
+  recurring: [false],
+  repeatInterval: [''],
+  sessionStart: [''],
+  sessionEnd: [''],
+  repeatWeeks: [''],
+  price: ['', [Validators.required, Validators.min(0)]],
+  sessions: this.fb.array([])
+});
   }
 
   get sessions(): FormArray {
@@ -105,48 +113,64 @@ export class CreateCourseComponent implements OnInit {
     }
   }
 
-  generateSessions(): void {
+generateSessions(): void {
+  // Clear existing sessions first
+  while (this.sessions.length) {
+    this.sessions.removeAt(0);
+  }
+
+  // Validate inputs
+  if (!this.selectedDays.length || !this.validateSessionTimes()) {
+    return;
+  }
+
   const startDate = new Date(this.courseForm.value.startDate);
   const endDate = new Date(this.courseForm.value.endDate);
-  const repeatInterval = this.courseForm.value.repeatInterval;
-  const sessionStart = this.courseForm.value.sessionStart;
-  const sessionEnd = this.courseForm.value.sessionEnd;
-  const repeatWeeks = this.courseForm.value.repeatWeeks;
+  const repeatInterval = parseInt(this.courseForm.value.repeatInterval) || 1;
+  const [startHours, startMinutes] = this.courseForm.value.sessionStart.split(':').map(Number);
+  const [endHours, endMinutes] = this.courseForm.value.sessionEnd.split(':').map(Number);
+  const repeatWeeks = parseInt(this.courseForm.value.repeatWeeks) || 1;
 
-  // Create a temporary array to hold sessions for preview
   const allSessions: FormGroup[] = [];
 
-  // Generate sessions for each selected day within the date range
+  // Calculate the end date based on repeatWeeks
+  const calculatedEndDate = addWeeks(startDate, repeatWeeks * repeatInterval);
+  const finalEndDate = isBefore(calculatedEndDate, endDate) ? calculatedEndDate : endDate;
+
   this.selectedDays.forEach(day => {
     const dayIndex = this.daysOfWeek.indexOf(day);
     
+    // Find first occurrence of the selected day after start date
     let currentDate = new Date(startDate);
-    // Find first occurrence of the selected day
     while (currentDate.getDay() !== (dayIndex + 1) % 7) {
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    let weekCount = 0;
-    while (currentDate <= endDate && weekCount < repeatWeeks) {
+    // Generate sessions for each week
+    for (let week = 0; week < repeatWeeks; week += repeatInterval) {
       const sessionDate = new Date(currentDate);
-      const startTime = this.setTime(sessionDate, sessionStart);
-      const endTime = this.setTime(sessionDate, sessionEnd);
+      sessionDate.setDate(sessionDate.getDate() + (7 * week));
 
-      if (isBefore(startTime, endTime)) {
-        allSessions.push(this.fb.group({
-          startTime: [startTime.toISOString(), Validators.required],
-          endTime: [endTime.toISOString(), Validators.required],
-          active: [true]
-        }));
+      // Skip if beyond the end date
+      if (sessionDate > finalEndDate) {
+        continue;
       }
 
-      // Move to next interval
-      currentDate.setDate(currentDate.getDate() + (7 * repeatInterval));
-      weekCount += repeatInterval;
+      const startTime = new Date(sessionDate);
+      startTime.setHours(startHours, startMinutes, 0, 0);
+
+      const endTime = new Date(sessionDate);
+      endTime.setHours(endHours, endMinutes, 0, 0);
+
+      allSessions.push(this.fb.group({
+        startTime: [startTime.toISOString(), Validators.required],
+        endTime: [endTime.toISOString(), Validators.required],
+        active: [true]
+      }));
     }
   });
 
-  // Sort sessions by date and add to form array
+  // Sort and add sessions
   allSessions.sort((a, b) => 
     new Date(a.value.startTime).getTime() - new Date(b.value.startTime).getTime()
   ).forEach(session => this.sessions.push(session));

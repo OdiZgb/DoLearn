@@ -27,7 +27,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SessionDto } from './session.dto';
 
 import { FormsModule } from '@angular/forms';
-
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 interface CalendarDay {
 
   date: Date;
@@ -130,7 +130,7 @@ userReservedSessions: any[] = [];
     private snackBar: MatSnackBar,
 
     private router: Router,
-
+private sanitizer: DomSanitizer
 
 
   ) {
@@ -144,7 +144,9 @@ userReservedSessions: any[] = [];
 
 
   }
-
+  getSafeHtml(content: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(content || 'No description available');
+  }
     redirectToRegisterPage(): void {
 
       this.router.navigate(['/register']);
