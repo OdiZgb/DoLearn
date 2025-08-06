@@ -43,7 +43,8 @@ namespace DoLearn.API.Features.Courses.GetCourse
                 schedule.Sessions,
                 ImgURL: "https://www.dolearn.net" + course.ImgURL,
                 course?.Description,
-                course.CreatedBy
+                course.CreatedBy,
+                course.SoftDelete
 
 
             );

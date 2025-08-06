@@ -114,6 +114,11 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024; // 100MB
 });
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // Already present
+    options.ValueCountLimit = int.MaxValue; // ✅ Increase the form key count limit
+});
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {

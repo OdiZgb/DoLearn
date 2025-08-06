@@ -51,7 +51,7 @@ public class EnrollInCourseCommandHandler : IRequestHandler<EnrollInCourseComman
                 .SelectMany(e => e.ReservedSessions)
                 .Any(rs => rs.Start < session.Finish && rs.Finish > session.Start);
 
-            if (hasConflict) return EnrollmentResult.Conflict;
+            if (hasConflict && user.Role.ToString()!="3") return EnrollmentResult.Conflict;
             Random rnd = new Random();
             int randomNum = rnd.Next(10, 11);
             double randomFloat = rnd.NextDouble();

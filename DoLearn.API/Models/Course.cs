@@ -14,6 +14,7 @@ public class Course
     public int CategoryId { get; set; }
     public int Capacity { get; set; }
     public string? ImgURL { get; set; }
+    public bool? SoftDelete { set; get; } = false;
 
     public User CreatedBy { get; set; } = null!;
 

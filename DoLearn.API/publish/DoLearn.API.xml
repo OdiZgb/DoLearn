@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DoLearn.API</name>
+    </assembly>
+    <members>
+        <member name="T:DoLearn.API.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:DoLearn.API.Migrations.InitialCreate2">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.InitialCreate2.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.InitialCreate2.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.InitialCreate2.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:DoLearn.API.Migrations.GoogleAuth001">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.GoogleAuth001.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.GoogleAuth001.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.GoogleAuth001.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:DoLearn.API.Migrations.softdeletecourse">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.softdeletecourse.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.softdeletecourse.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:DoLearn.API.Migrations.softdeletecourse.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

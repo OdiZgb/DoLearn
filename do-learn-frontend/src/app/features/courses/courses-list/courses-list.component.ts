@@ -18,6 +18,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { TruncatePipe } from '../../messages/chat-contacts/(truncate.pipe';
 import { TimeAgoPipe } from '../../../Shared/time-ago.pipe';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   standalone: true,
@@ -35,8 +36,6 @@ import { TimeAgoPipe } from '../../../Shared/time-ago.pipe';
     MatTreeModule,
     MatListModule,
     MatExpansionModule,
-    TruncatePipe,
-    MatProgressSpinnerModule
   ]
 })
 export class CoursesListComponent implements OnInit {
@@ -58,7 +57,9 @@ export class CoursesListComponent implements OnInit {
     private coursesService: CoursesService,
     private categoryService: CategoryService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private sanitizer: DomSanitizer
+
   ) {}
 
   ngOnInit(): void {
@@ -76,7 +77,9 @@ export class CoursesListComponent implements OnInit {
       error: (err) => console.error('Error loading categories', err)
     });
   }
-
+  getSafeHtml(content: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(content || 'No description available');
+  }
   private loadAllCourses(): void {
     this.isLoading = true;
     this.coursesService.getCourses().subscribe({

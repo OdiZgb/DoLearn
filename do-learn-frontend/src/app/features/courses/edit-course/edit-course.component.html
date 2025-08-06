@@ -1,0 +1,38 @@
+<form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+    <h2>Edit Course</h2>
+    
+    <!-- Reuse the same form as create-course.component.html -->
+    <!-- Make sure to update button text to "Update Course" -->
+    <!-- Add a note about existing image -->
+    
+    <div class="form-section">
+      <h3>Course Media</h3>
+      
+      <div class="form-group">
+        <label>Course Image:</label>
+        <div *ngIf="existingImageUrl" class="existing-image">
+          <img [src]="existingImageUrl" alt="Current course image" class="preview-image">
+          <div class="image-note">Current image</div>
+        </div>
+        <div class="file-upload">
+          <input type="file" (change)="onFileChange($event)" id="fileInput" hidden>
+          <label for="fileInput" class="upload-btn">
+            <mat-icon>cloud_upload</mat-icon>
+            {{ selectedFile?.name || 'Change Image' }}
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Reuse the rest of create-course.component.html here -->
+    <!-- ... -->
+    
+    <div class="form-actions">
+      <button type="submit" class="submit-btn" [disabled]="courseForm.invalid">
+        Update Course
+      </button>
+      <button type="button" class="cancel-btn" (click)="router.navigate(['/courses', courseId])">
+        Cancel
+      </button>
+    </div>
+</form>

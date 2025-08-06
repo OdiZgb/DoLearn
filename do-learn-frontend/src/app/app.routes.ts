@@ -21,6 +21,7 @@ export const routes: Routes = [
   { path: '', component: AppComponent},
   { path: 'courses', component: CoursesListComponent },
   { path: 'courses/create', component: CreateCourseComponent },
+  { path: 'courses/edit/:id', component: CreateCourseComponent },
   { path: 'courses/:id', component: CourseDetailsComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },

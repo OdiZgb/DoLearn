@@ -82,6 +82,9 @@ namespace DoLearn.API.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool?>("SoftDelete")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -135,13 +138,13 @@ namespace DoLearn.API.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsSoftDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("StartDate")
+                    b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -166,7 +169,7 @@ namespace DoLearn.API.Migrations
                     b.Property<int>("CourseScheduleId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Finish")
+                    b.Property<DateTimeOffset>("Finish")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsCanceled")
@@ -179,7 +182,7 @@ namespace DoLearn.API.Migrations
                         .IsRequired()
                         .HasColumnType("integer[]");
 
-                    b.Property<DateTime>("Start")
+                    b.Property<DateTimeOffset>("Start")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -238,7 +241,6 @@ namespace DoLearn.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordResetToken")
@@ -288,10 +290,10 @@ namespace DoLearn.API.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("EndedAt")
+                    b.Property<DateTimeOffset?>("EndedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("EnrolledAt")
+                    b.Property<DateTimeOffset>("EnrolledAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Notes")
@@ -324,7 +326,7 @@ namespace DoLearn.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsRead")

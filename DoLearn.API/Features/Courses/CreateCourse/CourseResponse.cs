@@ -10,6 +10,7 @@ public record CourseResponse(
     List<CourseSession> SessionStartTimes,
     string? ImgURL,
     string Description,
-    User Teacher
+    User Teacher,
+    bool? SoftDelete
     
 );

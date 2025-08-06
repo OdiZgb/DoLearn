@@ -73,4 +73,15 @@ export class CoursesService {
   getCoursesByCategoryId(categoryId: number): Observable<Course[]> {
     return this.http.get<Course[]>(`${this.apiUrl}/GetCoursesByCategoryId/${categoryId}`);
   }
+updateCourse(id: number, formData: FormData): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${id}`, formData); // Changed to PUT
+}
+
+getCourseForEdit(id: number): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/${id}/edit`);
+}
+
+softDeleteCourse(courseId:number){
+  return this.http.delete(`${this.apiUrl}/${courseId}/delete`)
+}
 }

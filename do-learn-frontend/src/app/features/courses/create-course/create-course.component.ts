@@ -114,11 +114,6 @@ quillModules = {
   }
 
 generateSessions(): void {
-  // Clear existing sessions first
-  while (this.sessions.length) {
-    this.sessions.removeAt(0);
-  }
-
   // Validate inputs
   if (!this.selectedDays.length || !this.validateSessionTimes()) {
     return;
@@ -131,11 +126,16 @@ generateSessions(): void {
   const [endHours, endMinutes] = this.courseForm.value.sessionEnd.split(':').map(Number);
   const repeatWeeks = parseInt(this.courseForm.value.repeatWeeks) || 1;
 
-  const allSessions: FormGroup[] = [];
+  // Create a Set of existing session start times (as ISO strings) to avoid duplicates
+  const existingStartTimes = new Set(
+    this.sessions.controls.map(control => control.value.startTime)
+  );
 
   // Calculate the end date based on repeatWeeks
   const calculatedEndDate = addWeeks(startDate, repeatWeeks * repeatInterval);
   const finalEndDate = isBefore(calculatedEndDate, endDate) ? calculatedEndDate : endDate;
+
+  const newSessions: FormGroup[] = [];
 
   this.selectedDays.forEach(day => {
     const dayIndex = this.daysOfWeek.indexOf(day);
@@ -162,18 +162,36 @@ generateSessions(): void {
       const endTime = new Date(sessionDate);
       endTime.setHours(endHours, endMinutes, 0, 0);
 
-      allSessions.push(this.fb.group({
-        startTime: [startTime.toISOString(), Validators.required],
-        endTime: [endTime.toISOString(), Validators.required],
-        active: [true]
-      }));
+      const startTimeISO = startTime.toISOString();
+      
+      // Only add if session doesn't already exist
+      if (!existingStartTimes.has(startTimeISO)) {
+        newSessions.push(this.fb.group({
+          startTime: [startTimeISO, Validators.required],
+          endTime: [endTime.toISOString(), Validators.required],
+          active: [true]
+        }));
+      }
     }
   });
 
-  // Sort and add sessions
-  allSessions.sort((a, b) => 
+  // Add new sessions to existing ones
+  newSessions.forEach(session => this.sessions.push(session));
+  
+  // Sort all sessions by start time
+  this.sortSessions();
+}
+
+// New function to sort sessions
+private sortSessions(): void {
+  const sessionsArray = this.sessions.controls;
+  const sorted = sessionsArray.slice().sort((a, b) => 
     new Date(a.value.startTime).getTime() - new Date(b.value.startTime).getTime()
-  ).forEach(session => this.sessions.push(session));
+  );
+
+  // Clear and repopulate to apply sorting
+  this.sessions.clear();
+  sorted.forEach(control => this.sessions.push(control));
 }
   private setTime(date: Date, timeString: string): Date {
     const [hours, minutes] = timeString.split(':').map(Number);
